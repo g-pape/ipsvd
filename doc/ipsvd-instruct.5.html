@@ -1,135 +1,136 @@
 
 
 
-<HTML>
-<HEAD>
-<TITLE>ipsvd-instruct(5) manual page</TITLE>
-</HEAD>
-<BODY bgcolor=white>
-<a href="http://smarden.org/pape/">G. Pape</a><br><A HREF="index.html">ipsvd</A><hr><P>
+<html>
+<head>
+<title>ipsvd-instruct(5) manual page</title>
+</head>
+<body bgcolor='white'>
+<a href='#toc'>Table of Contents</a><p>
 
-<H2><A NAME="sect0">Name</A></H2>
-ipsvd-instruct - format of the <I>ipsvd(8)</I> instructions directory 
-<H2><A NAME="sect1">Description</A></H2>
+<h2><a name='sect0' href='#toc0'>Name</a></h2>
+ipsvd-instruct - format of the <i>ipsvd(8)</i> instructions directory 
+<h2><a name='sect1' href='#toc1'>Description</a></h2>
 The
-internet protocol service daemons, <B><I>ipsvd</B>(7)</I>, can be told to read and follow
+internet protocol service daemons, <i><b>ipsvd</b>(7)</i>, can be told to read and follow
 instructions from a directory on incoming connections to the socket they
-listen on. <P>
+listen on. <p>
 For mostly static instructions or for performance reasons, it
 is possible to compile the instructions from a directory into a constant
-database (cdb) with <B><I>ipsvd-cdb</B>(8)</I> for faster lookup, and to tell <B><I>ipsvd</B>(7)</I>
+database (cdb) with <i><b>ipsvd-cdb</b>(8)</i> for faster lookup, and to tell <i><b>ipsvd</b>(7)</i>
 to read the instructions from there. 
-<H2><A NAME="sect2">Matching</A></H2>
+<h2><a name='sect2' href='#toc2'>Matching</a></h2>
 On each incoming connection,
-the <B><I>ipsvd</B>(7)</I> matches the client's IP address against files in the instructions
-directory. For example, the IP address <I>a.b.c.d</I> which reverse resolves to <I>eric.burdon.smarden.org</I>
+the <i><b>ipsvd</b>(7)</i> matches the client&rsquo;s IP address against files in the instructions
+directory. For example, the IP address <i>a.b.c.d</i> which reverse resolves to <i>moa.bit.smarden.org</i>
 is matched against the following files in the instructions directory, in
 this order, first match wins: 
-<OL>
-.<LI><I>a.b.c.d</I> </LI>.<LI><I>a.b.c</I> </LI>.<LI><I>a.b</I> </LI>.<LI><I>a</I> </LI>
-</OL>
-<P>
-If the client's hostname has
+<ol>
+.<li><i>a.b.c.d</i> </li>.<li><i>a.b.c</i> </li>.<li><i>a.b</i> </li>.<li><i>a</i> </li>
+</ol>
+<p>
+If the client&rsquo;s hostname has
 been successfully looked up in DNS: 
-<OL>
-.<LI><I>eric.burdon.smarden.org</I> </LI>.<LI><I>burdon.smarden.org</I>
-</LI>.<LI><I>smarden.org</I> </LI>.<LI><I>org</I> </LI>
-</OL>
-<P>
-And finally the catchall file ``0'' (zero): 
-<OL>
-.<LI><I>0</I> </LI>
-</OL>
-<P>
-After successfully
-matching a client's IP address or hostname against the instructions directory,
-<B><I>ipsvd</B>(7)</I> examines the file that matched the IP address or hostname, and
-acts accordingly: 
-<OL>
-.<LI>If neither the user's read permission, nor the user's execute
-permission is set for the file, the connection is closed immediately. </LI>.<LI>If
-the file has the user's execute permission set, <B><I>ipsvd</B>(7)</I> reads the contents
-of the file and runs <I>/bin/sh</I> -c '&lt;contents&gt;' instead of the default program
-<I>prog</I> given at the command line for this connection. </LI>.<LI>If the file has the
-user's read permission set, <B><I>ipsvd</B>(7)</I> reads the contents of the file and
-interprets each line as an instruction for this connection (see below).
-</LI>
-</OL>
-<P>
-If the client's IP address or hostname doesn't match any file in the instructions
-directory, the default action is taken (the program <I>prog</I> is run to handle
-the connection). 
-<H2><A NAME="sect3">Instructions</A></H2>
-If <B><I>ipsvd</B>(7)</I> is given instructions for an incoming
-connection, it reads the corresponding file and interprets each line as
-follows. The file may be empty, meaning that there is no special instruction.
+<ol>
+.<li><i>moa.bit.smarden.org</i> </li>.<li><i>bit.smarden.org</i> </li>.<li><i>smarden.org</i>
+</li>.<li><i>org</i> </li>
+</ol>
+<p>
+And finally the catchall file &lsquo;&lsquo;0&rsquo;&rsquo; (zero): 
+<ol>
+.<li><i>0</i> </li>
+</ol>
+<p>
+After successfully matching
+a client&rsquo;s IP address or hostname against the instructions directory, <i><b>ipsvd</b>(7)</i>
+examines the file that matched the IP address or hostname, and acts accordingly:
 
-<DL>
+<ol>
+.<li>If neither the user&rsquo;s read permission, nor the user&rsquo;s execute permission
+is set for the file, the connection is closed immediately. </li>.<li>If the file has
+the user&rsquo;s execute permission set, <i><b>ipsvd</b>(7)</i> reads the contents of the file
+and runs <i>/bin/sh</i> -c &rsquo;&lt;contents&gt;&rsquo; instead of the default program <i>prog</i> given at
+the command line for this connection. </li>.<li>If the file has the user&rsquo;s read permission
+set, <i><b>ipsvd</b>(7)</i> reads the contents of the file and interprets each line as
+an instruction for this connection (see below). </li>
+</ol>
+<p>
+If the client&rsquo;s IP address
+or hostname doesn&rsquo;t match any file in the instructions directory, the default
+action is taken (the program <i>prog</i> is run to handle the connection). 
+<h2><a name='sect3' href='#toc3'>Instructions</a></h2>
+If
+<i><b>ipsvd</b>(7)</i> is given instructions for an incoming connection, it reads the
+corresponding file and interprets each line as follows. The file may be
+empty, meaning that there is no special instruction. 
+<dl>
 
-<DT><B>+</B><I>VAR=VALUE</I> </DT>
-<DD>environment. If the line starts with a plus (``+''), and the string
-following the plus contains a ``='', <B><I>ipsvd</B>(7)</I> puts the string following the
-plus into the environment before starting <I>prog</I> to handle the connection.
-If the string following the plus doesn't contain a ``='', <B><I>ipsvd</B>(7)</I> makes sure
-that the environment variable with the name string is not set. </DD>
+<dt><b>+</b><i>VAR=VALUE</i> </dt>
+<dd>environment.
+If the line starts with a plus (&lsquo;&lsquo;+&rsquo;&rsquo;), and the string following the plus contains
+a &lsquo;&lsquo;=&rsquo;&rsquo;, <i><b>ipsvd</b>(7)</i> puts the string following the plus into the environment before
+starting <i>prog</i> to handle the connection. If the string following the plus
+doesn&rsquo;t contain a &lsquo;&lsquo;=&rsquo;&rsquo;, <i><b>ipsvd</b>(7)</i> makes sure that the environment variable with
+the name string is not set. </dd>
 
-<DT><B>C</B><I>num[:<I>msg</I>]</I>
-</DT>
-<DD>concurrency. If the line starts with a ``C'', and is followed by a number, the
-per host concurrency limit for the IP address that initiated the connection
-is set to this number. If <I>num</I> is followed by ``:<I>msg'',</I> the message <I>msg</I> is written
-to this client if possible, if the per host concurrency limit is reached.
-<P>
- <I>msg</I> may contain backslash-escaped characters as follows: ``\\'' is converted
-to a single backslash, ``\n'' is converted to a new line character, and ``\r'' is
-converted to a carriage return. <P>
- Only the first concurrency instruction
-is considered. Not all <B><I>ipsvd</B>(7)</I>'s support per host concurrency. </DD>
-</DL>
-<P>
-If <B><I>ipsvd</B>(7)</I>
-cannot interpret a line, it prints a warning, discards the line, and continues
-with the next instruction if any. 
-<H2><A NAME="sect4">Example Instructions</A></H2>
+<dt><b>C</b><i>num[:<i>msg</i>]</i> </dt>
+<dd>concurrency. If the line starts with
+a &lsquo;&lsquo;C&rsquo;&rsquo;, and is followed by a number, the per host concurrency limit for the
+IP address that initiated the connection is set to this number. If <i>num</i> is
+followed by &lsquo;&lsquo;:<i>msg&rsquo;&rsquo;,</i> the message <i>msg</i> is written to this client if possible,
+if the per host concurrency limit is reached. 
+<p> <i>msg</i> may contain backslash-escaped
+characters as follows: &lsquo;&lsquo;\\&rsquo;&rsquo; is converted to a single backslash, &lsquo;&lsquo;\n&rsquo;&rsquo; is converted
+to a new line character, and &lsquo;&lsquo;\r&rsquo;&rsquo; is converted to a carriage return. 
+<p> Only
+the first concurrency instruction is considered. Not all <i><b>ipsvd</b>(7)</i>&rsquo;s support
+per host concurrency. </dd>
+</dl>
+<p>
+If <i><b>ipsvd</b>(7)</i> cannot interpret a line, it prints a warning,
+discards the line, and continues with the next instruction if any. 
+<h2><a name='sect4' href='#toc4'>Example
+Instructions</a></h2>
 
-<DL>
+<dl>
 
-<DT>+MEMORY=20000 </DT>
-<DD>This
-instruction causes the environment variable ``MEMORY'' with the value ``20000''
-to be available to the program <I>prog</I> that handles the connection. </DD>
+<dt>+MEMORY=20000 </dt>
+<dd>This instruction causes the environment variable
+&lsquo;&lsquo;MEMORY&rsquo;&rsquo; with the value &lsquo;&lsquo;20000&rsquo;&rsquo; to be available to the program <i>prog</i> that handles
+the connection. </dd>
 
-<DT>+DEBUG=
-</DT>
-<DD>This instruction adds the variable ``DEBUG'' with an empty value to the environment.
-</DD>
+<dt>+DEBUG= </dt>
+<dd>This instruction adds the variable &lsquo;&lsquo;DEBUG&rsquo;&rsquo; with an
+empty value to the environment. </dd>
 
-<DT>+LOGNAME </DT>
-<DD>This instructions makes sure that the environment variable ``LOGNAME''
-is unset when running <I>prog</I>. </DD>
+<dt>+LOGNAME </dt>
+<dd>This instructions makes sure that
+the environment variable &lsquo;&lsquo;LOGNAME&rsquo;&rsquo; is unset when running <i>prog</i>. </dd>
 
-<DT>C16 </DT>
-<DD>Set the per host concurrency to 16. A connection
-will be closed silently if there are already 16 active connections from
-this client's IP address. </DD>
-</DL>
+<dt>C16 </dt>
+<dd>Set the
+per host concurrency to 16. A connection will be closed silently if there
+are already 16 active connections from this client&rsquo;s IP address. </dd>
+</dl>
 
-<H2><A NAME="sect5">See Also</A></H2>
-<I>ipsvd(7)</I>, <I>ipsvd-cdb(8)</I>, <I>tcpsvd(8)</I>, <I>udpsvd(8)</I>
-<P>
-<I>http://smarden.org/ipsvd/</I> 
-<H2><A NAME="sect6">Author</A></H2>
-Gerrit Pape &lt;pape@smarden.org&gt; <P>
+<h2><a name='sect5' href='#toc5'>See Also</a></h2>
+<i>ipsvd(7)</i>,
+<i>ipsvd-cdb(8)</i>, <i>tcpsvd(8)</i>, <i>udpsvd(8)</i> <p>
+<i>http://smarden.org/ipsvd/</i> 
+<h2><a name='sect6' href='#toc6'>Author</a></h2>
+Gerrit
+Pape &lt;pape@smarden.org&gt; <p>
 
-<HR><P>
-<A NAME="toc"><B>Table of Contents</B></A><P>
-<UL>
-<LI><A NAME="toc0" HREF="#sect0">Name</A></LI>
-<LI><A NAME="toc1" HREF="#sect1">Description</A></LI>
-<LI><A NAME="toc2" HREF="#sect2">Matching</A></LI>
-<LI><A NAME="toc3" HREF="#sect3">Instructions</A></LI>
-<LI><A NAME="toc4" HREF="#sect4">Example Instructions</A></LI>
-<LI><A NAME="toc5" HREF="#sect5">See Also</A></LI>
-<LI><A NAME="toc6" HREF="#sect6">Author</A></LI>
-</UL>
-</BODY></HTML>
+<hr><p>
+<a name='toc'><b>Table of Contents</b></a><p>
+<ul>
+<li><a name='toc0' href='#sect0'>Name</a></li>
+<li><a name='toc1' href='#sect1'>Description</a></li>
+<li><a name='toc2' href='#sect2'>Matching</a></li>
+<li><a name='toc3' href='#sect3'>Instructions</a></li>
+<li><a name='toc4' href='#sect4'>Example Instructions</a></li>
+<li><a name='toc5' href='#sect5'>See Also</a></li>
+<li><a name='toc6' href='#sect6'>Author</a></li>
+</ul>
+</body>
+</html>

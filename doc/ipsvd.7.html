@@ -1,87 +1,94 @@
 
 
 
-<HTML>
-<HEAD>
-<TITLE>ipsvd(7) manual page</TITLE>
-</HEAD>
-<BODY bgcolor=white>
-<a href="http://smarden.org/pape/">G. Pape</a><br><A HREF="index.html">ipsvd</A><hr><P>
+<html>
+<head>
+<title>ipsvd(7) manual page</title>
+</head>
+<body bgcolor='white'>
+<a href='#toc'>Table of Contents</a><p>
 
-<H2><A NAME="sect0">Name</A></H2>
+<h2><a name='sect0' href='#toc0'>Name</a></h2>
 ipsvd - Internet protocol service daemon 
-<H2><A NAME="sect1">Synopsis</A></H2>
-<I>ipsvd</I> [-hp] [-l <I>name</I>]
-[-i <I>dir</I>|-x <I>cdb</I>] [-t <I>sec</I>] <I>host</I> <I>port</I> <I>prog</I> 
-<H2><A NAME="sect2">Description</A></H2>
+<h2><a name='sect1' href='#toc1'>Synopsis</a></h2>
+<i>ipsvd</i> [-hp] [-l <i>name</i>]
+[-i <i>dir</i>|-x <i>cdb</i>] [-t <i>sec</i>] <i>host</i> <i>port</i> <i>prog</i> 
+<h2><a name='sect2' href='#toc2'>Description</a></h2>
 An implementation of an
 internet protocol service daemon provides the command line interface as
 shown in SYNOPSIS above (additional options are possible), and supports
 pre-defined instructions for handling connections through files in a instructions
-directory, and through a constant database, as described in <B><I>ipsvd-instruct</B>(5)</I>.
-<P>
+directory, and through a constant database, as described in <i><b>ipsvd-instruct</b>(5)</i>.
+<p>
 Currently there are two implementations of an internet protocol service
-daemon: a TCP/IP service daemon, <B><I>tcpsvd</B>(8)</I>, and an UDP/IP service daemon,
-<B><I>udpsvd</B>(8)</I>. More internet protocol service daemons may appear in the future.
+daemon: a TCP/IP service daemon, <i><b>tcpsvd</b>(8)</i>, and an UDP/IP service daemon,
+<i><b>udpsvd</b>(8)</i>. More internet protocol service daemons may appear in the future.
 
-<H2><A NAME="sect3">Options</A></H2>
+<h2><a name='sect3' href='#toc3'>Options</a></h2>
 
-<DL>
+<dl>
 
-<DT><B>-i <I>dir</B> </I></DT>
-<DD>read instructions for handling new connections from the instructions
-directory <I>dir</I>. See <B><I>ipsvd-instruct</B>(5)</I> for details. </DD>
+<dt><b>-i <i>dir</b> </i></dt>
+<dd>read instructions for handling new connections from the instructions
+directory <i>dir</i>. See <i><b>ipsvd-instruct</b>(5)</i> for details. </dd>
 
-<DT><B>-x <I>cdb</B> </I></DT>
-<DD>read instructions
-for handling new connections from the constant database <I>cdb</I>. The constant
+<dt><b>-x <i>cdb</b> </i></dt>
+<dd>read instructions
+for handling new connections from the constant database <i>cdb</i>. The constant
 database normally is created from an instructions directory by running
-<B><I>ipsvd-cdb</B>(8)</I>. </DD>
+<i><b>ipsvd-cdb</b>(8)</i>. </dd>
 
-<DT><B>-t <I>sec</B> </I></DT>
-<DD>timeout. This option only takes effect if the -i option
+<dt><b>-t <i>sec</b> </i></dt>
+<dd>timeout. This option only takes effect if the -i option
 is given. While checking the instructions directory, check the time of last
 access of the file that matches the clients address or hostname if any,
-discard and remove the file if it wasn't accessed within the last <I>sec</I> seconds;
-<B>ipsvd</B> does not discard or remove a file if the user's write permission is
+discard and remove the file if it wasn&rsquo;t accessed within the last <i>sec</i> seconds;
+<b>ipsvd</b> does not discard or remove a file if the user&rsquo;s write permission is
 not set, for those files the timeout is disabled. Default is 0, which means
-that the timeout is disabled. </DD>
+that the timeout is disabled. </dd>
 
-<DT><B>-l <I>name</B> </I></DT>
-<DD>local hostname. Do not look up the local
-hostname in DNS, but use <I>name</I> as hostname. </DD>
+<dt><b>-l <i>name</b> </i></dt>
+<dd>local hostname. Do not look up the local
+hostname in DNS, but use <i>name</i> as hostname. </dd>
 
-<DT><B>-h</B> </DT>
-<DD>Look up the client's hostname
-in DNS. </DD>
+<dt><b>-u <i>user</i>[:<i>group</i>]</b> </dt>
+<dd>drop permissions.
+Switch user ID to <i>user</i>&rsquo;s UID, and group ID to <i>user</i>&rsquo;s primary GID before running
+<i>prog</i>. If <i>user</i> is followed by a colon and a group name, the group ID is switched
+to the GID of <i>group</i> instead. All supplementary groups are removed. </dd>
 
-<DT><B>-p</B> </DT>
-<DD>paranoid. After looking up the client's hostname in DNS, look up
-the IP addresses in DNS for that hostname, and forget about the hostname
-if none of the addresses match the client's IP address. You should set this
-option if you use hostname based instructions. The -p option implies the
--h option. </DD>
-</DL>
+<dt><b>-h</b> </dt>
+<dd>Look
+up the client&rsquo;s hostname in DNS. </dd>
 
-<H2><A NAME="sect4">Signals</A></H2>
-If an <B>ipsvd</B> receives a TERM signal, it exists with 0. 
-<H2><A NAME="sect5">See
-Also</A></H2>
-<I>tcpsvd(8)</I>, <I>udpsvd(8)</I>, <I>ipsvd-instruct(5)</I>, <I>ipsvd-cdb(8)</I> <P>
-<I>http://smarden.org/ipsvd/</I>
+<dt><b>-p</b> </dt>
+<dd>paranoid. After looking up the client&rsquo;s
+hostname in DNS, look up the IP addresses in DNS for that hostname, and
+forget about the hostname if none of the addresses match the client&rsquo;s IP
+address. You should set this option if you use hostname based instructions.
+The -p option implies the -h option. </dd>
+</dl>
 
-<H2><A NAME="sect6">Author</A></H2>
-Gerrit Pape &lt;pape@smarden.org&gt; <P>
+<h2><a name='sect4' href='#toc4'>Signals</a></h2>
+If an <b>ipsvd</b> receives a TERM signal,
+it exists with 0. 
+<h2><a name='sect5' href='#toc5'>See Also</a></h2>
+<i>tcpsvd(8)</i>, <i>udpsvd(8)</i>, <i>ipsvd-instruct(5)</i>, <i>ipsvd-cdb(8)</i>
+<p>
+<i>http://smarden.org/ipsvd/</i> 
+<h2><a name='sect6' href='#toc6'>Author</a></h2>
+Gerrit Pape &lt;pape@smarden.org&gt; <p>
 
-<HR><P>
-<A NAME="toc"><B>Table of Contents</B></A><P>
-<UL>
-<LI><A NAME="toc0" HREF="#sect0">Name</A></LI>
-<LI><A NAME="toc1" HREF="#sect1">Synopsis</A></LI>
-<LI><A NAME="toc2" HREF="#sect2">Description</A></LI>
-<LI><A NAME="toc3" HREF="#sect3">Options</A></LI>
-<LI><A NAME="toc4" HREF="#sect4">Signals</A></LI>
-<LI><A NAME="toc5" HREF="#sect5">See Also</A></LI>
-<LI><A NAME="toc6" HREF="#sect6">Author</A></LI>
-</UL>
-</BODY></HTML>
+<hr><p>
+<a name='toc'><b>Table of Contents</b></a><p>
+<ul>
+<li><a name='toc0' href='#sect0'>Name</a></li>
+<li><a name='toc1' href='#sect1'>Synopsis</a></li>
+<li><a name='toc2' href='#sect2'>Description</a></li>
+<li><a name='toc3' href='#sect3'>Options</a></li>
+<li><a name='toc4' href='#sect4'>Signals</a></li>
+<li><a name='toc5' href='#sect5'>See Also</a></li>
+<li><a name='toc6' href='#sect6'>Author</a></li>
+</ul>
+</body>
+</html>
