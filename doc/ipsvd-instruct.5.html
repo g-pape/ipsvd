@@ -83,68 +83,68 @@ if the per host concurrency limit is reached.
 characters as follows: &lsquo;&lsquo;\\&rsquo;&rsquo; is converted to a single backslash, &lsquo;&lsquo;\n&rsquo;&rsquo; is converted
 to a new line character, and &lsquo;&lsquo;\r&rsquo;&rsquo; is converted to a carriage return. 
 <p> On multiple
-concurrency instructions the last processed instruction is considered. Not
-all <i><b>ipsvd</b>(7)</i>&rsquo;s support per host concurrency. </dd>
+concurrency instructions the last processed concurrency instruction is
+considered. Not all <i><b>ipsvd</b>(7)</i>&rsquo;s support per host concurrency. </dd>
 
-<dt><b>=</b><i>hostname[:<i>forward</i>]</i> </dt>
-<dd>check hostname.
-If the line starts with a &lsquo;&lsquo;=&rsquo;&rsquo;, and is followed by a hostname, <i><b>ipsvd</b>(7)</i> looks
-up the IP address for <i>hostname</i> in DNS and checks if this address matches
-the client&rsquo;s IP address. If so, <i><i>ipsvd</i>(7)</i> stops processing the instructions
-here and runs <i>prog</i>. If <i>hostname</i> is followed a colon and <i>forward</i>, <i><b>ipsvd</b>(7)</i>
-now examines the file <i>forward</i> and acts accordingly, instead of running
-<i>prog</i>. All check hostname instructions in <i>forward</i> are ignored. If <i>forward</i>
-does not exist, the connection is closed. 
-<p> <i>hostname</i> may be &lsquo;&lsquo;0&rsquo;&rsquo; (zero), matching
-any IP address. 
-<p> Note: Using check hostname instructions can cause significant
-delay while responding to connection attemps, caused by DNS lookups. </dd>
+<dt><b>=</b><i>hostname[:<i>forward</i>]</i>
+</dt>
+<dd>check hostname. If the line starts with a &lsquo;&lsquo;=&rsquo;&rsquo;, and is followed by a hostname,
+<i><b>ipsvd</b>(7)</i> looks up the IP address for <i>hostname</i> in DNS and checks if this
+address matches the client&rsquo;s IP address. If so, <i><i>ipsvd</i>(7)</i> stops processing
+the instructions here and runs <i>prog</i>. If <i>hostname</i> is followed a colon and
+<i>forward</i>, <i><b>ipsvd</b>(7)</i> now examines the file <i>forward</i> and acts accordingly, instead
+of running <i>prog</i>. All check hostname instructions in <i>forward</i> are ignored.
+If <i>forward</i> does not exist, the connection is closed. 
+<p> <i>hostname</i> may be &lsquo;&lsquo;0&rsquo;&rsquo;
+(zero), matching any IP address. 
+<p> Note: Using check hostname instructions
+can cause significant delay while responding to connection attemps, caused
+by DNS lookups. </dd>
 </dl>
 <p>
-If
-<i><b>ipsvd</b>(7)</i> cannot interpret a line, it prints a warning, discards the line,
-and continues with the next instruction if any. <p>
-After processing all instructions,
-<i><b>ipsvd</b>(7)</i> runs <i>prog</i>. If the file contains at least one check hostname instruction,
-and none was successful, it closes the connection instead of running <i>prog</i>.
-
+If <i><b>ipsvd</b>(7)</i> cannot interpret a line, it prints a warning,
+discards the line, and continues with the next instruction if any. <p>
+After
+processing all instructions, <i><b>ipsvd</b>(7)</i> runs <i>prog</i>. If the file contains at
+least one check hostname instruction, and none was successful, it closes
+the connection instead of running <i>prog</i>. 
 <h2><a name='sect4'>Example Instructions</a></h2>
 
 <dl>
 
-<dt>+MEMORY=20000 </dt>
-<dd>This instruction causes the environment
-variable &lsquo;&lsquo;MEMORY&rsquo;&rsquo; with the value &lsquo;&lsquo;20000&rsquo;&rsquo; to be available to the program <i>prog</i>
-that handles the connection. </dd>
+<dt>+MEMORY=20000
+</dt>
+<dd>This instruction causes the environment variable &lsquo;&lsquo;MEMORY&rsquo;&rsquo; with the value
+&lsquo;&lsquo;20000&rsquo;&rsquo; to be available to the program <i>prog</i> that handles the connection. </dd>
 
-<dt>+DEBUG= </dt>
-<dd>This instruction adds the variable
-&lsquo;&lsquo;DEBUG&rsquo;&rsquo; with an empty value to the environment. </dd>
+<dt>+DEBUG=
+</dt>
+<dd>This instruction adds the variable &lsquo;&lsquo;DEBUG&rsquo;&rsquo; with an empty value to the environment.
+</dd>
 
 <dt>+LOGNAME </dt>
-<dd>This instructions
-makes sure that the environment variable &lsquo;&lsquo;LOGNAME&rsquo;&rsquo; is unset when running
-<i>prog</i>. </dd>
+<dd>This instructions makes sure that the environment variable &lsquo;&lsquo;LOGNAME&rsquo;&rsquo;
+is unset when running <i>prog</i>. </dd>
 
 <dt>C16 </dt>
-<dd>Set the per host concurrency to 16. A connection will be closed
-silently if there are already 16 active connections from this client&rsquo;s IP
-address. </dd>
+<dd>Set the per host concurrency to 16. A connection
+will be closed silently if there are already 16 active connections from
+this client&rsquo;s IP address. </dd>
 
 <dt>=floyd.dyn.smarden.org:127.0.0.1 </dt>
-<dd>Check IP address of the dynamic hostname
-<i>floyd.dyn.smarden.org</i>. If one of the IP addresses <i>floyd.dyn.smarden.org</i> currently
-resolves to matches the client&rsquo;s IP address, handle the connection through
-the file <i>127.0.0.1</i> in the instructions directory. </dd>
+<dd>Check IP address of
+the dynamic hostname <i>floyd.dyn.smarden.org</i>. If one of the IP addresses <i>floyd.dyn.smarden.org</i>
+currently resolves to matches the client&rsquo;s IP address, handle the connection
+through the file <i>127.0.0.1</i> in the instructions directory. </dd>
 </dl>
 
 <h2><a name='sect5'>See Also</a></h2>
-<i>ipsvd(7)</i>, <i>ipsvd-cdb(8)</i>,
-<i>tcpsvd(8)</i>, <i>udpsvd(8)</i> <p>
+<i>ipsvd(7)</i>,
+<i>ipsvd-cdb(8)</i>, <i>tcpsvd(8)</i>, <i>udpsvd(8)</i> <p>
 <i>http://smarden.org/ipsvd/</i> 
 <h2><a name='sect6'>Author</a></h2>
-Gerrit Pape &lt;pape@smarden.org&gt;
-<p>
+Gerrit
+Pape &lt;pape@smarden.org&gt; <p>
 
 <hr><p>
 <a name='toc'><b>Table of Contents</b></a><p>

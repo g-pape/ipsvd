@@ -19,15 +19,17 @@ ipsvd-cdb - create constant database from ipsvd instructions directory
 daemon, <i><b>ipsvd</b>(7)</i>, into the newly created constant database <i>cdb.tmp</i>. If <i>cdb.tmp</i>
 exists, it will be destroyed. <b>ipsvd-cdb</b> then renames <i>cdb.tmp</i> to <i>cdb</i>. If <i>cdb</i>
 exists, it will be destroyed. <p>
-If <b>ipsvd-cdb</b> has trouble building the constant
-database, it exits with an error message, and leaves <i>cdb</i> unchanged. 
-<h2><a name='sect3'>See
-Also</a></h2>
-<i>ipsvd(7)</i>, <i>tcpsvd(8)</i>, <i>udpsvd(8)</i>, <i>ipsvd-instruct(5)</i> <p>
-<i>http://smarden.org/ipsvd/</i>
-
+<b>ipsvd-cdb</b> skips filenames starting with two
+dots. <p>
+If <b>ipsvd-cdb</b> has trouble building the constant database, it exits with
+an error message, and leaves <i>cdb</i> unchanged. 
+<h2><a name='sect3'>See Also</a></h2>
+<i>ipsvd(7)</i>, <i>tcpsvd(8)</i>,
+<i>udpsvd(8)</i>, <i>ipsvd-instruct(5)</i> <p>
+<i>http://smarden.org/ipsvd/</i> 
 <h2><a name='sect4'>Author</a></h2>
-Gerrit Pape &lt;pape@smarden.org&gt; <p>
+Gerrit Pape
+&lt;pape@smarden.org&gt; <p>
 
 <hr><p>
 <a name='toc'><b>Table of Contents</b></a><p>
