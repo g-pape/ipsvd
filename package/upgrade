@@ -7,9 +7,9 @@ test -d src || sh -cx '! : Wrong working directory.'
 here=`env - PATH=$PATH pwd`
 parent=`dirname $here`
 
-echo 'Creating symlink ipsvd -> ipsvd-0.9.1...'
+echo 'Creating symlink ipsvd -> ipsvd-0.9.2...'
 rm -f ipsvd
-ln -s ipsvd-0.9.1 ipsvd
+ln -s ipsvd-0.9.2 ipsvd
 mv -f ipsvd ..
 
 echo 'Making command links in /command...'

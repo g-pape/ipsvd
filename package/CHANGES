@@ -1,5 +1,5 @@
 ipsvd 0.9.2
-
+Sat, 15 May 2004 14:11:54 +0000
   * doc/examples.html: use html named entities; minor.
   * man/sslio.8: clarify that chroot is done before keys are read (thx
     Charlie Brady).
