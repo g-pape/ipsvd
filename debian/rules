@@ -16,8 +16,8 @@ DIR =$(shell pwd)/debian/ipsvd
 
 unpack: deb-checkdir unpack-stamp
 unpack-stamp:
-	tar xzf ipsvd-0.9.7.tar.gz
-	ln -s ipsvd-0.9.7 net/ipsvd
+	tar xzf ipsvd-0.10.0.tar.gz
+	ln -s ipsvd-0.10.0 net/ipsvd
 	echo '$(CC) $(CFLAGS)' >net/ipsvd/src/conf-cc
 	echo '$(CC) $(LDFLAGS)' >net/ipsvd/src/conf-ld
 	touch unpack-stamp
@@ -28,8 +28,8 @@ build-stamp: unpack-stamp
 	$(MAKE) -Cnet/ipsvd/src default check
 	if test -r /usr/include/matrixSsl.h; then \
 	  (cd net/ipsvd/src && \
-	  ./compile sslio.c && \
-	  ./load sslio uidgid.o unix.a byte.a time.a -lmatrixssl); \
+	  ./compile sslio.c && ./compile sslerror_str.c && \
+	  ./load sslio uidgid.o sslerror_str.o unix.a byte.a time.a -lmatrixssl); \
 	fi
 	touch build-stamp
 
