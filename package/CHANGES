@@ -1,5 +1,5 @@
 ipsvd 0.9.7
-Wed, 01 Dec 2004 17:00:11 +0000
+Fri, 03 Dec 2004 10:15:37 +0000
   * ipsvd_check.c: catch all failures of openreadclose(); disregard
     hostnames (looked up in dns) starting with a dot; fix cdb check on check
     hostname instruction with non-existent forward to match instruction
