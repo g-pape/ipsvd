@@ -22,8 +22,8 @@ and listens on the socket for incoming datagrams.
 If a datagram is available on the socket,
 .B udpsvd
 conditionally starts a program, with standard input reading from the socket,
-and standard output writing to the socket, to handle this, and possibly more,
-datagrams.
+and standard output redirected to standard error, to handle this, and possibly
+more datagrams.
 .B udpsvd
 does not start the program if another program that it has started before
 still is running.

@@ -148,7 +148,7 @@ void connection_accept(int c) {
   }
   else run =prog;
 
-  if ((fd_move(0, c) == -1) || (fd_copy(1, 0) == -1))
+  if ((fd_move(0, c) == -1) || (fd_copy(1, 2) == -1))
     drop("unable to set filedescriptor");
   sig_uncatch(sig_term);
   sig_uncatch(sig_pipe);

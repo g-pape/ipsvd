@@ -64,6 +64,22 @@ Do not look up the local hostname in DNS, but use
 .I name
 as hostname.
 .TP
+.B \-u \fIuser\fR[:\fIgroup\fR]
+drop permissions.
+Switch user ID to
+.IR user 's
+UID, and group ID to
+.IR user 's
+primary GID before running
+.IR prog .
+If
+.I user
+is followed by a colon and a group name, the group ID is switched to
+the GID of
+.I group
+instead.
+All supplementary groups are removed.
+.TP
 .B \-h
 Look up the client's hostname in DNS.
 .TP

@@ -1,4 +1,4 @@
-ipsvd 0.5.1
+ipsvd 0.6.0
 Mon, 29 Sep 2003 10:35:11 +0200
   * man/ipsvd-instruct.5: minor.
   * ipsvd_scan.h, ipsvd_scan.c: new; ipsvd_scan_port(): get port number
@@ -6,6 +6,9 @@ Mon, 29 Sep 2003 10:35:11 +0200
   * tcpsvd.c, udpsvd.c: support name from /etc/services as command line
     option port.
   * man/tcpsvd.8, man/udpsvd.8, Makefile: adapt.
+  * man/ipsvd.7: -u option is now mandatory.
+  * udpsvd.c, man/udpsvd.8: stdout is redirected to stderr.
+  * doc/index.html: minor.
 
 ipsvd 0.5.0
 Wed, 06 Aug 2003 15:39:11 +0200

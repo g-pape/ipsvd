@@ -25,9 +25,9 @@ It currently includes a TCP/IP service daemon, and a UDP/IP service daemon.
 <p>
 An internet protocol service (<i>ipsv</i>) daemon waits for incoming
 connections on a local socket.
-On incoming connections, the <i>ipsv</i> daemon conditionally runs an
-arbitrary program with standard input reading from the socket, and standard
-output writing to the socket, that handles the connection.
+On incoming connections, it conditionally runs an arbitrary program with
+standard input reading from the socket, and standard output writing to the
+socket (if connected), that handles the connection.
 Standard error is used for logging.
 <p>
 <i>ipsv</i> daemons can be told to read and follow pre-defined instructions
