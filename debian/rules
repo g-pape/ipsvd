@@ -16,8 +16,8 @@ DIR =$(shell pwd)/debian/ipsvd
 
 unpack: deb-checkdir unpack-stamp
 unpack-stamp:
-	tar xzf ipsvd-0.10.0.tar.gz
-	ln -s ipsvd-0.10.0 net/ipsvd
+	tar xzf ipsvd-0.10.1.tar.gz
+	ln -s ipsvd-0.10.1 net/ipsvd
 	echo '$(CC) $(CFLAGS)' >net/ipsvd/src/conf-cc
 	echo '$(CC) $(LDFLAGS)' >net/ipsvd/src/conf-ld
 	touch unpack-stamp
