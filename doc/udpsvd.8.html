@@ -15,7 +15,7 @@ udpsvd - UDP/IP service daemon
 [-i <I>dir</I>|-x <I>cdb</I>] [-t <I>sec</I>] <I>host</I> <I>port</I> <I>prog</I> 
 <H2><A NAME="sect2">Description</A></H2>
 <B>udpsvd</B> creates an UDP/IP
-socket, binds it to the address <I>host</I>:<I>prog</I>, and listens on the socket for
+socket, binds it to the address <I>host</I>:<I>port</I>, and listens on the socket for
 incoming datagrams. <P>
 If a datagram is available on the socket, <B>udpsvd</B> conditionally
 starts a program, with standard input reading from the socket, and standard
@@ -23,7 +23,7 @@ output writing to the socket, to handle this, and possibly more, datagrams.
 <B>udpsvd</B> does not start the program if another program that it has started
 before still is running. If the program exits, <B>udpsvd</B> again listens to the
 socket until a new datagram is available. If there are still datagrams available
-on the socket, the program is restarted immediatly. <P>
+on the socket, the program is restarted immediately. <P>
 <B>udpsvd</B> optionally checks
 for special intructions depending on the IP address or hostname of the
 client sending the datagram which not yet was handled by a running program,
@@ -72,22 +72,24 @@ is created from an instructions directory by running <B><I>ipsvd-cdb</B>(8)</I>.
 
 <DT><B>-t <I>sec</B>
 </I></DT>
-<DD>timeout. While checking the instructions directory, check the time of last
-access of the file that matches the clients address or hostname if any,
-and discard and remove the file if it wasn't accessed within the last <I>sec</I>
-seconds. This option only takes effect if the -i option is given. Default
-is 0, which means that the timeout is disabled. </DD>
+<DD>timeout. This option only takes effect if the -i option is given. While checking
+the instructions directory, check the time of last access of the file that
+matches the clients address or hostname if any, discard and remove the
+file if it wasn't accessed within the last <I>sec</I> seconds; <B>udpsvd</B> does not
+discard or remove a file if the user's write permission is not set, for
+those files the timeout is disabled. Default is 0, which means that the
+timeout is disabled. </DD>
 
 <DT><B>-l <I>name</B> </I></DT>
-<DD>local hostname. Do
-not look up the local hostname in DNS, but use <I>name</I> as hostname. By default
-<B>udpsvd</B> looks up the local hostname once at startup.  </DD>
+<DD>local hostname. Do not look up the local hostname
+in DNS, but use <I>name</I> as hostname. By default <B>udpsvd</B> looks up the local hostname
+once at startup.  </DD>
 
 <DT><B>-u <I>user</I>[:<I>group</I>]</B> </DT>
-<DD>drop
-permissions. Switch user ID to <I>user</I>'s UID, and group ID to <I>user</I>'s primary
-GID after creating and binding to the socket. If <I>user</I> is followed by a colon
-and a group name, the group ID is switched to the GID of <I>group</I> instead.
+<DD>drop permissions. Switch user ID to <I>user</I>'s
+UID, and group ID to <I>user</I>'s primary GID after creating and binding to the
+socket. If <I>user</I> is followed by a colon and a group name, the group ID is
+switched to the GID of <I>group</I> instead. All supplementary groups are removed.
 </DD>
 
 <DT><B>-h</B> </DT>

@@ -15,7 +15,7 @@ tcpsvd - TCP/IP service daemon
 [-b <I>n]</I> [-u <I>user]</I> [-l <I>name]</I> [-i <I>dir</I>|-x <I>cdb</I>] [ -t <I>sec</I>] <I>host</I> <I>port</I> <I>prog</I> 
 <H2><A NAME="sect2">Description</A></H2>
 <B>tcpsvd</B>
-creates a TCP/IP socket, binds it to the address <I>host</I>:<I>prog</I>, and listens
+creates a TCP/IP socket, binds it to the address <I>host</I>:<I>port</I>, and listens
 on the socket for incoming connections. <P>
 On each incoming connection, <B>tcpsvd</B>
 conditionally runs a program, with standard input reading from the socket,
@@ -55,23 +55,25 @@ from the instructions directory <I>dir</I>. See <B><I>ipsvd-instruct</B>(5)</I> 
 by running <B><I>ipsvd-cdb</B>(8)</I>. </DD>
 
 <DT><B>-t <I>sec</B> </I></DT>
-<DD>timeout. While checking the instructions directory,
-check the time of last access of the file that matches the clients address
-or hostname if any, and discard and remove the file if it wasn't accessed
-within the last <I>sec</I> seconds. This option only takes effect if the -i option
-is given. Default is 0, which means that the timeout is disabled. </DD>
+<DD>timeout. This option only takes effect if the
+-i option is given. While checking the instructions directory, check the
+time of last access of the file that matches the clients address or hostname
+if any, discard and remove the file if it wasn't accessed within the last
+<I>sec</I> seconds; <B>tcpsvd</B> does not discard or remove a file if the user's write
+permission is not set, for those files the timeout is disabled. Default
+is 0, which means that the timeout is disabled. </DD>
 
-<DT><B>-l <I>name</B>
-</I></DT>
-<DD>local hostname. Do not look up the local hostname in DNS, but use <I>name</I> as
-hostname. This option must be set if <B>tcpsvd</B> listens on port 53 to avoid
-loops. </DD>
+<DT><B>-l <I>name</B> </I></DT>
+<DD>local hostname. Do
+not look up the local hostname in DNS, but use <I>name</I> as hostname. This option
+must be set if <B>tcpsvd</B> listens on port 53 to avoid loops. </DD>
 
-<DT><B>-u <I>user</I>[:<I>group</I>]</B> </DT>
-<DD>drop permissions. Switch user ID to <I>user</I>'s UID, and
-group ID to <I>user</I>'s primary GID after creating and binding to the socket.
-If <I>user</I> is followed by a colon and a group name, the group ID is switched
-to the GID of <I>group</I> instead. </DD>
+<DT><B>-u <I>user</I>[:<I>group</I>]</B>
+</DT>
+<DD>drop permissions. Switch user ID to <I>user</I>'s UID, and group ID to <I>user</I>'s primary
+GID after creating and binding to the socket. If <I>user</I> is followed by a colon
+and a group name, the group ID is switched to the GID of <I>group</I> instead.
+All supplementary groups are removed. </DD>
 
 <DT><B>-c <I>n</B> </I></DT>
 <DD>concurrency. Handle up to <I>n</I> connections

@@ -1,5 +1,5 @@
 ipsvd 0.5.0
-
+Wed, 06 Aug 2003 15:39:11 +0200
   * doc/examples.html: typo (dead link, thx clemens fischer).
   * man/ipsvd.7, man/tcpsvd.8, man/udpsvd.8: typos; wording.
   * uidgid.c, uidgid.h: new; get uid/gid by name.

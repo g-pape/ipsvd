@@ -39,36 +39,37 @@ database normally is created from an instructions directory by running
 <B><I>ipsvd-cdb</B>(8)</I>. </DD>
 
 <DT><B>-t <I>sec</B> </I></DT>
-<DD>timeout. While checking the instructions directory, check
-the time of last access of the file that matches the clients address or
-hostname if any, and discard the file if it wasn't accessed within the last
-<I>sec</I> seconds; the file additionally is removed unless the user's write permission
-is unset. This option only takes effect if the -i option is given. Default
-is 0, which means that the timeout is disabled. </DD>
+<DD>timeout. This option only takes effect if the -i option
+is given. While checking the instructions directory, check the time of last
+access of the file that matches the clients address or hostname if any,
+discard and remove the file if it wasn't accessed within the last <I>sec</I> seconds;
+<B>ipsvd</B> does not discard or remove a file if the user's write permission is
+not set, for those files the timeout is disabled. Default is 0, which means
+that the timeout is disabled. </DD>
 
 <DT><B>-l <I>name</B> </I></DT>
-<DD>local hostname. Do
-not look up the local hostname in DNS, but use <I>name</I> as hostname. </DD>
+<DD>local hostname. Do not look up the local
+hostname in DNS, but use <I>name</I> as hostname. </DD>
 
 <DT><B>-h</B> </DT>
-<DD>Look
-up the client's hostname in DNS. </DD>
+<DD>Look up the client's hostname
+in DNS. </DD>
 
 <DT><B>-p</B> </DT>
-<DD>paranoid. After looking up the client's
-hostname in DNS, look up the IP addresses in DNS for that hostname, and
-forget about the hostname if none of the addresses match the client's IP
-address. You should set this option if you use hostname based instructions.
-The -p option implies the -h option. </DD>
+<DD>paranoid. After looking up the client's hostname in DNS, look up
+the IP addresses in DNS for that hostname, and forget about the hostname
+if none of the addresses match the client's IP address. You should set this
+option if you use hostname based instructions. The -p option implies the
+-h option. </DD>
 </DL>
 
 <H2><A NAME="sect4">Signals</A></H2>
-If an <B>ipsvd</B> receives a TERM signal,
-it exists with 0. 
-<H2><A NAME="sect5">See Also</A></H2>
-<I>tcpsvd(8)</I>, <I>udpsvd(8)</I>, <I>ipsvd-instruct(5)</I>, <I>ipsvd-cdb(8)</I>
-<P>
-<I>http://smarden.org/ipsvd/</I> 
+If an <B>ipsvd</B> receives a TERM signal, it exists with 0. 
+<H2><A NAME="sect5">See
+Also</A></H2>
+<I>tcpsvd(8)</I>, <I>udpsvd(8)</I>, <I>ipsvd-instruct(5)</I>, <I>ipsvd-cdb(8)</I> <P>
+<I>http://smarden.org/ipsvd/</I>
+
 <H2><A NAME="sect6">Author</A></H2>
 Gerrit Pape &lt;pape@smarden.org&gt; <P>
 
