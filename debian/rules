@@ -14,20 +14,28 @@ endif
 
 DIR =`pwd`/debian/ipsvd
 
+unpack: deb-checkdir unpack-stamp
+unpack-stamp:
+	tar xzf ipsvd-0.9.0.tar.gz
+	ln -s ipsvd-0.9.0 net/ipsvd
+	echo "$(CC) $(CFLAGS)" >net/ipsvd/src/conf-cc
+	echo "$(CC) $(LDFLAGS)" >net/ipsvd/src/conf-ld
+	touch unpack-stamp
+
 build: deb-checkdir build-stamp
-build-stamp:
-	tar xzpf ipsvd-0.9.0.tar.gz
+build-stamp: unpack-stamp
 	-gcc -v
-	( cd net/ipsvd-0.9.0/src && \
-	ln -s ipsvd-0.9.0 ipsvd && mv ipsvd ../.. && \
-	echo "$(CC) $(CFLAGS)" >conf-cc && \
-	echo "$(CC) $(LDFLAGS)" >conf-ld && \
-	$(MAKE) )
+	$(MAKE) -Cnet/ipsvd/src default check
+	if test -r /usr/include/matrixSsl.h; then \
+	  ( cd net/ipsvd/src && \
+	  ./compile sslio.c && \
+	  ./load sslio uidgid.o unix.a byte.a time.a -lmatrixssl ); \
+	fi
 	touch build-stamp
 
 clean: deb-checkdir deb-checkuid
 	rm -rf net
-	rm -f build-stamp
+	rm -f unpack-stamp build-stamp
 	rm -rf "$(DIR)"
 	rm -f debian/files debian/substvars changelog
 
@@ -38,6 +46,8 @@ install: deb-checkdir deb-checkuid build-stamp
 	for i in tcpsvd udpsvd ipsvd-cdb; do \
 	  install -m0755 net/ipsvd/src/$$i "$(DIR)"/usr/bin/ || exit 1; \
 	done
+	test ! -x net/ipsvd/src/sslio || \
+	  install -m0755 net/ipsvd/src/sslio "$(DIR)"/usr/bin/
 	$(STRIP) -R .comment -R .note "$(DIR)"/usr/bin/*
 	# man pages
 	for i in 5 7 8; do \
@@ -58,6 +68,6 @@ binary-arch: install ipsvd.deb
 	dpkg -b "$(DIR)" ..
 
 binary: binary-indep binary-arch
-.PHONY: build clean install binary-indep binary-arch binary
+.PHONY: unpack build clean install binary-indep binary-arch binary
 
 include debian/implicit
