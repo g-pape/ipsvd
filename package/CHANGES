@@ -1,5 +1,5 @@
 ipsvd 0.11.0
-Sun, 20 Feb 2005 14:55:59 +0000
+Sun, 20 Feb 2005 15:02:11 +0000
   * man/tcpsvd.8: typo (thx Bastian Kleineidam).
   * sslio.check, sslio.dist, sslio.pem: new; ssl program check.
   * Makefile: don't limit sslio program to linux systype; run ssl program

@@ -1,3 +1,10 @@
+ipsvd (0.11.0-1) unstable; urgency=low
+
+  * new upstream version.
+    * fix typo in tcpsvd.8 (thx Bastian Kleineidam, closes: 293363).
+
+ -- Gerrit Pape <pape@smarden.org>  Sun, 20 Feb 2005 15:02:24 +0000
+
 ipsvd (0.10.1-1) unstable; urgency=low
 
   * new upstream version.
