@@ -5,6 +5,7 @@ Sun, 04 May 2003 12:39:50 +0200
   * man/ipsvd-instruct.5, man/tcpsvd.8: adapt.
   * ipsvd_fmt.c, ipsvd_fmt.h: ipsvd_fmt_msg(): convert backslash-escaped
     characters in message.
+  * package/upgrade: typo.
 
 ipsvd 0.3.4
 Tue, 29 Apr 2003 14:56:43 +0200

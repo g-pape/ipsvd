@@ -24,11 +24,11 @@ build: build-stamp
 build-stamp: configure-stamp 
 	dh_testdir
 
-	tar xfzp ipsvd-0.3.4.tar.gz
+	tar xfzp ipsvd-0.4.0.tar.gz
 	( \
 	set -e; \
-	cd net/ipsvd-0.3.4/src; \
-	ln -s ipsvd-0.3.4 ipsvd; mv ipsvd ../..; \
+	cd net/ipsvd-0.4.0/src; \
+	ln -s ipsvd-0.4.0 ipsvd; mv ipsvd ../..; \
 	echo '/usr/include/djbdns' >conf-djbdnsinc; \
 	$(MAKE); \
 	)
