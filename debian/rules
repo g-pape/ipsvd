@@ -46,7 +46,7 @@ install: deb-checkdir deb-checkuid build-stamp
 
 binary-indep:
 
-binary-arch: build install ipsvd.deb
+binary-arch: install ipsvd.deb
 	dpkg-shlibdeps "$(DIR)"/usr/bin/*
 	dpkg-gencontrol -isp -pipsvd -P"$(DIR)"
 	dpkg -b "$(DIR)" ..
