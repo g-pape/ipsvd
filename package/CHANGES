@@ -1,3 +1,10 @@
+ipsvd 0.6.3
+  * doc/examples.html: update bincimaps example; add check hostname
+    instruction sample.
+  * ipsvd_check.c, ipsvd_check.h: support check host instructions; change
+    some internals.
+  * man/ipsvd-instruct.5: document check host instructions.
+
 ipsvd 0.6.1
 Tue, 14 Oct 2003 11:17:29 +0000
   * ipsvd_scan.c: include sys/types.h (fixes build failure on freebsd,

@@ -43,8 +43,7 @@ instructions through the directory <tt>./peers</tt>.
  exec 2>&1
  exec tcpsvd -vvp -c40 -C10 -l0 -i./peers 10.0.0.14 993 \
    bincimap-up --logtype=multilog --conf=/etc/bincimap/bincimap.conf --ssl -- \
-     /usr/bin/checkpw \
-     /usr/sbin/bincimapd --conf=/etc/bincimap/bincimap.conf
+     /usr/bin/checkpw /usr/sbin/bincimapd
 </pre>
 This <tt>run</tt> script provides a
 <a href="http://www.qmail.org/">qmail-smtpd</a> service on
@@ -110,6 +109,14 @@ port 23,
 and the usual <i>telnetd</i> service for all others, do
 <pre>
  # echo 'sshd -i' >./peers/10.2.0.14; chmod 744 ./peers/10.2.0.14
+</pre>
+To allow only connections from IP addresses the (dynamic) hostnames
+<tt>floyd.dyn.smarden.org</tt> and <tt>greg.dyn.smarden.org</tt> currently
+resolve to, do
+<pre>
+ # echo '=floyd.dyn.smarden.org' &gt;./peers/0
+ # echo '=greg.dyn.smarden.org' &gt;&gt;./peers/0
+ # chmod 644 ./peers/0
 </pre>
 See <a href="ipsvd-instruct.5.html">ipsvd instructions</a> for details.
 <hr>

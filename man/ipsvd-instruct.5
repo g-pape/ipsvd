@@ -122,15 +122,58 @@ may contain backslash-escaped characters as follows: ``\\\\'' is converted to
 a single backslash, ``\\n'' is converted to a new line character, and ``\\r''
 is converted to a carriage return.
 
-Only the first concurrency instruction is considered.
+On multiple concurrency instructions the last processed instruction is
+considered.
 Not all
 .BR ipsvd (7)'s
 support per host concurrency.
+.TP
+.BI = hostname\fR[:\fIforward\fR]
+check hostname.
+If the line starts with a ``='', and is followed by a hostname,
+.BR ipsvd (7)
+looks up the IP address for
+.I hostname
+in DNS and checks if this address matches the client's IP address.
+If so,
+.IR ipsvd (7)
+stops processing the instructions here and runs
+.IR prog .
+If
+.I hostname
+is followed a colon and
+.IR forward ,
+.BR ipsvd (7)
+now examines the file
+.I forward
+and acts accordingly, instead of running
+.IR prog .
+All check hostname instructions in
+.I forward
+are ignored.
+If
+.I forward
+does not exist, the connection is closed.
+
+.I hostname
+may be ``0'' (zero), matching any IP address.
+
+Note:
+Using check hostname instructions can cause significant delay while
+responding to connection attemps, caused by DNS lookups.
 .P
 If
 .BR ipsvd (7)
 cannot interpret a line, it prints a warning, discards the line, and
 continues with the next instruction if any.
+.P
+After processing all instructions,
+.BR ipsvd (7)
+runs
+.IR prog .
+If the file contains at least one check hostname instruction, and none was
+successful, it closes the connection instead of running
+.IR prog .
 .SH EXAMPLE INSTRUCTIONS
 .TP
 +MEMORY=20000
@@ -152,6 +195,16 @@ C16
 Set the per host concurrency to 16.
 A connection will be closed silently if there are already 16 active
 connections from this client's IP address.
+.TP
+=floyd.dyn.smarden.org:127.0.0.1
+Check IP address of the dynamic hostname
+.IR floyd.dyn.smarden.org .
+If the IP address
+.I floyd.dyn.smarden.org
+currently resolves to matches the client's IP address, handle the connection
+through the file
+.I 127.0.0.1
+in the instructions directory.
 .SH SEE ALSO
 ipsvd(7),
 ipsvd-cdb(8),
