@@ -17,7 +17,8 @@ udpsvd: load udpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
 	`cat socket.lib`
 
 ipsvd-cdb: load ipsvd-cdb.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a
-	./load ipsvd-cdb ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a -ldjbdns
+	./load ipsvd-cdb ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a \
+	-ldjbdns `cat socket.lib`
 
 tcpsvd.o: compile sysdeps tcpsvd.c ipsvd_log.h
 	./compile tcpsvd.c
