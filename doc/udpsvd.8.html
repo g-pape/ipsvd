@@ -83,34 +83,36 @@ is 0, which means that the timeout is disabled. </DD>
 not look up the local hostname in DNS, but use <I>name</I> as hostname. By default
 <B>udpsvd</B> looks up the local hostname once at startup.  </DD>
 
-<DT><B>-u <I>user</B> </I></DT>
-<DD>drop permissions.
-Switch user ID to <I>user</I>'s UID, and group ID to <I>user</I>'s primary GID after creating
-and binding to the socket. </DD>
+<DT><B>-u <I>user</I>[:<I>group</I>]</B> </DT>
+<DD>drop
+permissions. Switch user ID to <I>user</I>'s UID, and group ID to <I>user</I>'s primary
+GID after creating and binding to the socket. If <I>user</I> is followed by a colon
+and a group name, the group ID is switched to the GID of <I>group</I> instead.
+</DD>
 
 <DT><B>-h</B> </DT>
 <DD>Look up the client's hostname in DNS. </DD>
 
 <DT><B>-p</B> </DT>
-<DD>paranoid.
-After looking up the client's hostname in DNS, look up the IP addresses
-in DNS for that hostname, and forget the hostname if none of the addresses
-match the client's IP address. You should set this option if you use hostname
-based instructions. The -p option implies the -h option. </DD>
+<DD>paranoid. After looking up the client's
+hostname in DNS, look up the IP addresses in DNS for that hostname, and
+forget the hostname if none of the addresses match the client's IP address.
+You should set this option if you use hostname based instructions. The -p
+option implies the -h option. </DD>
 
 <DT><B>-v</B> </DT>
-<DD>verbose. Print verbose
-messages to standard output. </DD>
+<DD>verbose. Print verbose messages to standard
+output. </DD>
 
 <DT><B>-vv</B> </DT>
-<DD>more verbose. Print more verbose messages
-to standard output. </DD>
+<DD>more verbose. Print more verbose messages to standard output. </DD>
 </DL>
 
-<H2><A NAME="sect5">See Also</A></H2>
-<I>ipsvd(7)</I>, <I>tcpsvd(8)</I>, <I>ipsvd-instruct(5)</I>, <I>ipsvd-cdb(8)</I>
-<P>
-<I>http://smarden.org/ipsvd/</I> 
+<H2><A NAME="sect5">See
+Also</A></H2>
+<I>ipsvd(7)</I>, <I>tcpsvd(8)</I>, <I>ipsvd-instruct(5)</I>, <I>ipsvd-cdb(8)</I> <P>
+<I>http://smarden.org/ipsvd/</I>
+
 <H2><A NAME="sect6">Author</A></H2>
 Gerrit Pape &lt;pape@smarden.org&gt; <P>
 

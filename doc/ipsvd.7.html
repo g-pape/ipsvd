@@ -41,13 +41,14 @@ database normally is created from an instructions directory by running
 <DT><B>-t <I>sec</B> </I></DT>
 <DD>timeout. While checking the instructions directory, check
 the time of last access of the file that matches the clients address or
-hostname if any, and discard and remove the file if it wasn't accessed within
-the last <I>sec</I> seconds. This option only takes effect if the -i option is given.
-Default is 0, which means that the timeout is disabled. </DD>
+hostname if any, and discard the file if it wasn't accessed within the last
+<I>sec</I> seconds; the file additionally is removed unless the user's write permission
+is unset. This option only takes effect if the -i option is given. Default
+is 0, which means that the timeout is disabled. </DD>
 
 <DT><B>-l <I>name</B> </I></DT>
-<DD>local hostname.
-Do not look up the local hostname in DNS, but use <I>name</I> as hostname. </DD>
+<DD>local hostname. Do
+not look up the local hostname in DNS, but use <I>name</I> as hostname. </DD>
 
 <DT><B>-h</B> </DT>
 <DD>Look

@@ -67,63 +67,65 @@ is given. Default is 0, which means that the timeout is disabled. </DD>
 hostname. This option must be set if <B>tcpsvd</B> listens on port 53 to avoid
 loops. </DD>
 
-<DT><B>-u <I>user</B> </I></DT>
-<DD>drop permissions. Switch user ID to <I>user</I>'s UID, and group ID
-to <I>user</I>'s primary GID after creating and binding to the socket. </DD>
+<DT><B>-u <I>user</I>[:<I>group</I>]</B> </DT>
+<DD>drop permissions. Switch user ID to <I>user</I>'s UID, and
+group ID to <I>user</I>'s primary GID after creating and binding to the socket.
+If <I>user</I> is followed by a colon and a group name, the group ID is switched
+to the GID of <I>group</I> instead. </DD>
 
 <DT><B>-c <I>n</B> </I></DT>
-<DD>concurrency.
-Handle up to <I>n</I> connections simultaneously. Default is 30. If there are <I>n</I>
-connections active, <B>tcpsvd</B> defers acceptance of a new connection until
-an active connection is closed. </DD>
+<DD>concurrency. Handle up to <I>n</I> connections
+simultaneously. Default is 30. If there are <I>n</I> connections active, <B>tcpsvd</B>
+defers acceptance of a new connection until an active connection is closed.
+</DD>
 
 <DT><B>-C <I>n</I>[:<I>msg</I>]</B> </DT>
-<DD>per host concurrency. Allow only
-up to <I>n</I> connections from the same IP address simultaneously. If there are
-<I>n</I> active connections from one IP address, new incoming connections from
-this IP address are closed immediately. If <I>n</I> is followed by :<I>msg,</I> the message
-<I>msg</I> is written to the client if possible, before closing the connection.
-By default <I>msg</I> is empty. See <B><I>ipsvd-instruct</B>(7)</I> for supported escape sequences
-in <I>msg</I>. <P>
- For each accepted connection, the current per host concurrency
-is available through the environment variable <I>TCPCONCURRENCY</I>. <I>n</I> and <I>msg</I>
-can be overwritten by <B><I>ipsvd</B>(7)</I> instructions, see <B><I>ipsvd-instruct</B>(5)</I>.<B></B> By default
-<B>tcpsvd</B> doesn't keep track of connections. </DD>
+<DD>per host concurrency. Allow only up to <I>n</I> connections from the
+same IP address simultaneously. If there are <I>n</I> active connections from one
+IP address, new incoming connections from this IP address are closed immediately.
+If <I>n</I> is followed by :<I>msg,</I> the message <I>msg</I> is written to the client if possible,
+before closing the connection. By default <I>msg</I> is empty. See <B><I>ipsvd-instruct</B>(7)</I>
+for supported escape sequences in <I>msg</I>. <P>
+ For each accepted connection, the
+current per host concurrency is available through the environment variable
+<I>TCPCONCURRENCY</I>. <I>n</I> and <I>msg</I> can be overwritten by <B><I>ipsvd</B>(7)</I> instructions, see
+<B><I>ipsvd-instruct</B>(5)</I>.<B></B> By default <B>tcpsvd</B> doesn't keep track of connections. </DD>
 
 <DT><B>-h</B> </DT>
-<DD>Look up the client's hostname
-in DNS. </DD>
+<DD>Look
+up the client's hostname in DNS. </DD>
 
 <DT><B>-p</B> </DT>
-<DD>paranoid. After looking up the client's hostname in DNS, look up
-the IP addresses in DNS for that hostname, and forget about the hostname
-if none of the addresses match the client's IP address. You should set this
-option if you use hostname based instructions. The -p option implies the
--h option. </DD>
+<DD>paranoid. After looking up the client's
+hostname in DNS, look up the IP addresses in DNS for that hostname, and
+forget about the hostname if none of the addresses match the client's IP
+address. You should set this option if you use hostname based instructions.
+The -p option implies the -h option. </DD>
 
 <DT><B>-b <I>n</B> </I></DT>
-<DD>backlog. Allow a backlog of approximately <I>n</I> TCP SYNs. On some
-systems <I>n</I> is silently limited. Default is 20. </DD>
+<DD>backlog. Allow a backlog of approximately
+<I>n</I> TCP SYNs. On some systems <I>n</I> is silently limited. Default is 20. </DD>
 
 <DT><B>-E</B> </DT>
-<DD>no special environment. Do
-not set up TCP-related environment variables. </DD>
+<DD>no special
+environment. Do not set up TCP-related environment variables. </DD>
 
 <DT><B>-v</B> </DT>
-<DD>verbose. Print verbose messsages
-to standard output. </DD>
+<DD>verbose. Print
+verbose messsages to standard output. </DD>
 
 <DT><B>-vv</B> </DT>
-<DD>more verbose. Print more verbose messages to standard
-output. </DD>
+<DD>more verbose. Print more verbose
+messages to standard output. </DD>
 </DL>
 
 <H2><A NAME="sect4">See Also</A></H2>
-<I>ipsvd(7)</I>, <I>udpsvd(8)</I>, <I>ipsvd-instruct(5)</I>, <I>ipsvd-cdb(8)</I> <P>
-<I>http://smarden.org/ipsvd/</I>
-
+<I>ipsvd(7)</I>, <I>udpsvd(8)</I>, <I>ipsvd-instruct(5)</I>,
+<I>ipsvd-cdb(8)</I> <P>
+<I>http://smarden.org/ipsvd/</I> 
 <H2><A NAME="sect5">Author</A></H2>
-Gerrit Pape &lt;pape@smarden.org&gt; <P>
+Gerrit Pape &lt;pape@smarden.org&gt;
+<P>
 
 <HR><P>
 <A NAME="toc"><B>Table of Contents</B></A><P>

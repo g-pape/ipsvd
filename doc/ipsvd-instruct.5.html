@@ -46,80 +46,80 @@ matching a client's IP address or hostname against the instructions directory,
 <B><I>ipsvd</B>(7)</I> examines the file that matched the IP address or hostname, and
 acts accordingly: 
 <OL>
-.<LI>If the file doesn't have any of the user's access permissions
-set (chmod 0), the connection is closed immediately. </LI>.<LI>If the file has the
-user's execute permission set, <B><I>ipsvd</B>(7)</I> reads the contents of the file and
-runs <I>/bin/sh</I> -c '&lt;contents&gt;' instead of the default program <I>prog</I> given at the
-command line for this connection. </LI>.<LI>If the file has the user's read permission
-set, <B><I>ipsvd</B>(7)</I> reads the contents of the file and interprets each line as
-an instruction for this connection (see below). </LI>
+.<LI>If neither the user's read permission, nor the user's execute
+permission is set for the file, the connection is closed immediately. </LI>.<LI>If
+the file has the user's execute permission set, <B><I>ipsvd</B>(7)</I> reads the contents
+of the file and runs <I>/bin/sh</I> -c '&lt;contents&gt;' instead of the default program
+<I>prog</I> given at the command line for this connection. </LI>.<LI>If the file has the
+user's read permission set, <B><I>ipsvd</B>(7)</I> reads the contents of the file and
+interprets each line as an instruction for this connection (see below).
+</LI>
 </OL>
 <P>
-If the client's IP address
-or hostname doesn't match any file in the instructions directory, the default
-action is taken (the program <I>prog</I> is run to handle the connection). 
+If the client's IP address or hostname doesn't match any file in the instructions
+directory, the default action is taken (the program <I>prog</I> is run to handle
+the connection). 
 <H2><A NAME="sect3">Instructions</A></H2>
-If
-<B><I>ipsvd</B>(7)</I> is given instructions for an incoming connection, it reads the
-corresponding file and interprets each line as follows. The file may be
-empty, meaning that there is no special instruction. 
+If <B><I>ipsvd</B>(7)</I> is given instructions for an incoming
+connection, it reads the corresponding file and interprets each line as
+follows. The file may be empty, meaning that there is no special instruction.
+
 <DL>
 
 <DT><B>+</B><I>VAR=VALUE</I> </DT>
-<DD>environment.
-If the line starts with a plus (``+''), and the string following the plus contains
-a ``='', <B><I>ipsvd</B>(7)</I> puts the string following the plus into the environment before
-starting <I>prog</I> to handle the connection. If the string following the plus
-doesn't contain a ``='', <B><I>ipsvd</B>(7)</I> makes sure that the environment variable with
-the name string is not set. </DD>
+<DD>environment. If the line starts with a plus (``+''), and the string
+following the plus contains a ``='', <B><I>ipsvd</B>(7)</I> puts the string following the
+plus into the environment before starting <I>prog</I> to handle the connection.
+If the string following the plus doesn't contain a ``='', <B><I>ipsvd</B>(7)</I> makes sure
+that the environment variable with the name string is not set. </DD>
 
-<DT><B>C</B><I>num[:<I>msg</I>]</I> </DT>
-<DD>concurrency. If the line starts with
-a ``C'', and is followed by a number, the per host concurrency limit for the
-IP address that initiated the connection is set to this number. If <I>num</I> is
-followed by ``:<I>msg'',</I> the message <I>msg</I> is written to this client if possible,
-if the per host concurrency limit is reached. <P>
- <I>msg</I> may contain backslash-escaped
-characters as follows: ``\\'' is converted to a single backslash, ``\n'' is converted
-to a new line character, and ``\r'' is converted to a carriage return. <P>
- Only
-the first concurrency instruction is considered. Not all <B><I>ipsvd</B>(7)</I>'s support
-per host concurrency. </DD>
+<DT><B>C</B><I>num[:<I>msg</I>]</I>
+</DT>
+<DD>concurrency. If the line starts with a ``C'', and is followed by a number, the
+per host concurrency limit for the IP address that initiated the connection
+is set to this number. If <I>num</I> is followed by ``:<I>msg'',</I> the message <I>msg</I> is written
+to this client if possible, if the per host concurrency limit is reached.
+<P>
+ <I>msg</I> may contain backslash-escaped characters as follows: ``\\'' is converted
+to a single backslash, ``\n'' is converted to a new line character, and ``\r'' is
+converted to a carriage return. <P>
+ Only the first concurrency instruction
+is considered. Not all <B><I>ipsvd</B>(7)</I>'s support per host concurrency. </DD>
 </DL>
 <P>
-If <B><I>ipsvd</B>(7)</I> cannot interpret a line, it prints a warning,
-discards the line, and continues with the next instruction if any. 
-<H2><A NAME="sect4">Example
-Instructions</A></H2>
+If <B><I>ipsvd</B>(7)</I>
+cannot interpret a line, it prints a warning, discards the line, and continues
+with the next instruction if any. 
+<H2><A NAME="sect4">Example Instructions</A></H2>
 
 <DL>
 
 <DT>+MEMORY=20000 </DT>
-<DD>This instruction causes the environment variable
-``MEMORY'' with the value ``20000'' to be available to the program <I>prog</I> that handles
-the connection. </DD>
+<DD>This
+instruction causes the environment variable ``MEMORY'' with the value ``20000''
+to be available to the program <I>prog</I> that handles the connection. </DD>
 
-<DT>+DEBUG= </DT>
-<DD>This instruction adds the variable ``DEBUG'' with an
-empty value to the environment. </DD>
+<DT>+DEBUG=
+</DT>
+<DD>This instruction adds the variable ``DEBUG'' with an empty value to the environment.
+</DD>
 
 <DT>+LOGNAME </DT>
-<DD>This instructions makes sure that
-the environment variable ``LOGNAME'' is unset when running <I>prog</I>. </DD>
+<DD>This instructions makes sure that the environment variable ``LOGNAME''
+is unset when running <I>prog</I>. </DD>
 
 <DT>C16 </DT>
-<DD>Set the
-per host concurrency to 16. A connection will be closed silently if there
-are already 16 active connections from this client's IP address. </DD>
+<DD>Set the per host concurrency to 16. A connection
+will be closed silently if there are already 16 active connections from
+this client's IP address. </DD>
 </DL>
 
 <H2><A NAME="sect5">See Also</A></H2>
-<I>ipsvd(7)</I>,
-<I>ipsvd-cdb(8)</I>, <I>tcpsvd(8)</I>, <I>udpsvd(8)</I> <P>
+<I>ipsvd(7)</I>, <I>ipsvd-cdb(8)</I>, <I>tcpsvd(8)</I>, <I>udpsvd(8)</I>
+<P>
 <I>http://smarden.org/ipsvd/</I> 
 <H2><A NAME="sect6">Author</A></H2>
-Gerrit
-Pape &lt;pape@smarden.org&gt; <P>
+Gerrit Pape &lt;pape@smarden.org&gt; <P>
 
 <HR><P>
 <A NAME="toc"><B>Table of Contents</B></A><P>
