@@ -5,7 +5,7 @@ ipsvd (0.9.6-1) unstable; urgency=low
   * debian/README.Debian.diet: minor.
   * debian/rules: adapt; minor cleanup.
 
- -- Gerrit Pape <pape@smarden.org>  Mon,  2 Aug 2004 19:40:58 +0000
+ -- Gerrit Pape <pape@smarden.org>  Mon,  2 Aug 2004 19:59:42 +0000
 
 ipsvd (0.9.5-1) unstable; urgency=low
 
