@@ -1,3 +1,5 @@
+  * doc/examples.html: typo (dead link, thx clemens fischer).
+
 ipsvd 0.4.1
 Mon, 12 May 2003 10:18:05 +0200
   * ipsvd_fmt.c: minor cleanup.
