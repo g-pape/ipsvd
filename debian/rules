@@ -9,7 +9,7 @@ CFLAGS =-g -O2 -Wall
 LDFLAGS =-Os
 CC =gcc
 ifneq (,$(findstring diet,$(DEB_BUILD_OPTIONS)))
-  CC =diet -v -Os gcc
+  CC =diet -v -Os gcc -nostdinc
 endif
 
 DIR =`pwd`/debian/ipsvd
@@ -18,7 +18,6 @@ unpack: deb-checkdir unpack-stamp
 unpack-stamp:
 	tar xzf ipsvd-0.9.5.tar.gz
 	ln -s ipsvd-0.9.5 net/ipsvd
-	(cd net/ipsvd && patch -p0) <debian/diff/sslio-man.diff
 	echo "$(CC) $(CFLAGS)" >net/ipsvd/src/conf-cc
 	echo "$(CC) $(LDFLAGS)" >net/ipsvd/src/conf-ld
 	touch unpack-stamp
