@@ -1,7 +1,7 @@
 ipsvd (0.9.0-1) unstable; urgency=low
 
   * new upstream version.
-  * debian/control: Build-Depends: matrixssl-dev [archs it is available
+  * debian/control: Build-Depends: libmatrixssl-dev [archs it is available
     for].
   * debian/rules: new target unpack; build, install sslio where matrixssl
     is available.
