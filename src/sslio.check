@@ -1,32 +1,32 @@
 #!/bin/sh
 rm -rf "${ctmp}"
+OPTS=
+test `id -u` -ne 0 || OPTS='-uroot'
 
-sslio
-echo $?
-sslio -V
-echo $?
+(sslio 2>&1; echo $?) |grep -v usage
+(sslio -V 2>&1; echo $?) |grep -v usage
 
 mkdir "${ctmp}"
-mkfifo "${ctmp}"/p0
-mkfifo "${ctmp}"/p1
-sh -c 'exec <"${ctmp}"/p0
-       exec >"${ctmp}"/p1
-       sslio -Csslio.pem sh -c "sleep 1; echo foo"' &
+mkfifo -m0600 "${ctmp}"/p0
+mkfifo -m0600 "${ctmp}"/p1
+sh -c "exec <${ctmp}/p0
+       exec >${ctmp}/p1
+       sslio $OPTS -Csslio.pem sh -c 'sleep 1; echo foo'" &
 pid=$!
-sh -c 'exec 7>"${ctmp}"/p0
-       exec 6<"${ctmp}"/p1
-       sslio -c sh -c "sleep 2; exec cat <&6"'
+sh -c "exec 7>${ctmp}/p0
+       exec 6<${ctmp}/p1
+       sslio $OPTS -c sh -c 'sleep 2; exec cat <&6'"
 echo $?
 sleep 1
 wait $pid
 echo $?
-sh -c 'exec <"${ctmp}"/p0
-       exec >"${ctmp}"/p1
-       sslio -Csslio.pem sh -c "sleep 2; exec cat >&2"' &
+sh -c "exec <${ctmp}/p0
+       exec >${ctmp}/p1
+       sslio $OPTS -Csslio.pem sh -c 'sleep 2; exec cat >&2'" &
 pid=$!
-sh -c 'exec 7>"${ctmp}"/p0
-       exec 6<"${ctmp}"/p1
-       sslio -c sh -c "sleep 1; echo bar >&7"'
+sh -c "exec 7>${ctmp}/p0
+       exec 6<${ctmp}/p1
+       sslio $OPTS -c sh -c 'sleep 1; echo bar >&7'"
 rc=$?
 sleep 3
 echo $rc

@@ -1,8 +1,6 @@
-usage: sslio [-C cert] [-K key] [-A ca] [-cv] prog
 
 111
 $Id$
-usage: sslio [-C cert] [-K key] [-A ca] [-cv] prog
 
 111
 foo
