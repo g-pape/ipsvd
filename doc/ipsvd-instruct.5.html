@@ -6,11 +6,11 @@
 <title>ipsvd-instruct(5) manual page</title>
 </head>
 <body bgcolor='white'>
-<a href='#toc'>Table of Contents</a><p>
+<a href='http://smarden.org/pape/'>G. Pape</a><br><a href='index.html'>ipsvd</a><hr>
 
-<h2><a name='sect0' href='#toc0'>Name</a></h2>
+<h2><a name='sect0'>Name</a></h2>
 ipsvd-instruct - format of the <i>ipsvd(8)</i> instructions directory 
-<h2><a name='sect1' href='#toc1'>Description</a></h2>
+<h2><a name='sect1'>Description</a></h2>
 The
 internet protocol service daemons, <i><b>ipsvd</b>(7)</i>, can be told to read and follow
 instructions from a directory on incoming connections to the socket they
@@ -19,7 +19,7 @@ For mostly static instructions or for performance reasons, it
 is possible to compile the instructions from a directory into a constant
 database (cdb) with <i><b>ipsvd-cdb</b>(8)</i> for faster lookup, and to tell <i><b>ipsvd</b>(7)</i>
 to read the instructions from there. 
-<h2><a name='sect2' href='#toc2'>Matching</a></h2>
+<h2><a name='sect2'>Matching</a></h2>
 On each incoming connection,
 the <i><b>ipsvd</b>(7)</i> matches the client&rsquo;s IP address against files in the instructions
 directory. For example, the IP address <i>a.b.c.d</i> which reverse resolves to <i>moa.bit.smarden.org</i>
@@ -58,7 +58,7 @@ an instruction for this connection (see below). </li>
 If the client&rsquo;s IP address
 or hostname doesn&rsquo;t match any file in the instructions directory, the default
 action is taken (the program <i>prog</i> is run to handle the connection). 
-<h2><a name='sect3' href='#toc3'>Instructions</a></h2>
+<h2><a name='sect3'>Instructions</a></h2>
 If
 <i><b>ipsvd</b>(7)</i> is given instructions for an incoming connection, it reads the
 corresponding file and interprets each line as follows. The file may be
@@ -89,7 +89,7 @@ per host concurrency. </dd>
 <p>
 If <i><b>ipsvd</b>(7)</i> cannot interpret a line, it prints a warning,
 discards the line, and continues with the next instruction if any. 
-<h2><a name='sect4' href='#toc4'>Example
+<h2><a name='sect4'>Example
 Instructions</a></h2>
 
 <dl>
@@ -113,11 +113,11 @@ per host concurrency to 16. A connection will be closed silently if there
 are already 16 active connections from this client&rsquo;s IP address. </dd>
 </dl>
 
-<h2><a name='sect5' href='#toc5'>See Also</a></h2>
+<h2><a name='sect5'>See Also</a></h2>
 <i>ipsvd(7)</i>,
 <i>ipsvd-cdb(8)</i>, <i>tcpsvd(8)</i>, <i>udpsvd(8)</i> <p>
 <i>http://smarden.org/ipsvd/</i> 
-<h2><a name='sect6' href='#toc6'>Author</a></h2>
+<h2><a name='sect6'>Author</a></h2>
 Gerrit
 Pape &lt;pape@smarden.org&gt; <p>
 

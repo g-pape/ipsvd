@@ -6,14 +6,14 @@
 <title>udpsvd(8) manual page</title>
 </head>
 <body bgcolor='white'>
-<a href='#toc'>Table of Contents</a><p>
+<a href='http://smarden.org/pape/'>G. Pape</a><br><a href='index.html'>ipsvd</a><hr>
 
-<h2><a name='sect0' href='#toc0'>Name</a></h2>
+<h2><a name='sect0'>Name</a></h2>
 udpsvd - UDP/IP service daemon 
-<h2><a name='sect1' href='#toc1'>Synopsis</a></h2>
+<h2><a name='sect1'>Synopsis</a></h2>
 <b>udpsvd</b> [-hpvv] [-u <i>user]</i> [-l <i>name]</i>
 [-i <i>dir</i>|-x <i>cdb</i>] [-t <i>sec</i>] <i>host</i> <i>port</i> <i>prog</i> 
-<h2><a name='sect2' href='#toc2'>Description</a></h2>
+<h2><a name='sect2'>Description</a></h2>
 <b>udpsvd</b> creates an UDP/IP
 socket, binds it to the address <i>host</i>:<i>port</i>, and listens on the socket for
 incoming datagrams. <p>
@@ -29,7 +29,7 @@ datagrams available on the socket, the program is restarted immediately.
 or hostname of the client sending the datagram which not yet was handled
 by a running program, see <i><b>ipsvd-instruct</b>(5)</i> for details. <p>
 
-<h3><a name='sect3' href='#toc3'>Attention:</a></h3>
+<h3><a name='sect3'>Attention:</a></h3>
 UDP is
 a connectionless protocol. Most programs that handle user datagrams, such
 as <i><b>talkd</b>(8)</i>, keep running after receiving a datagram, and process subsequent
@@ -42,7 +42,7 @@ On the other hand, it makes perfectly sense with programs like
 <i><b>tftpd</b>(8)</i>, that fork to establish a separate connection to the client when
 receiving the datagram. In general it&rsquo;s adequate to set up special instructions
 for programs that support being run by tcpwrapper. 
-<h2><a name='sect4' href='#toc4'>Options</a></h2>
+<h2><a name='sect4'>Options</a></h2>
 
 <dl>
 
@@ -112,11 +112,11 @@ messages to standard output. </dd>
 to standard output. </dd>
 </dl>
 
-<h2><a name='sect5' href='#toc5'>See Also</a></h2>
+<h2><a name='sect5'>See Also</a></h2>
 <i>ipsvd(7)</i>, <i>tcpsvd(8)</i>, <i>ipsvd-instruct(5)</i>, <i>ipsvd-cdb(8)</i>
 <p>
 <i>http://smarden.org/ipsvd/</i> 
-<h2><a name='sect6' href='#toc6'>Author</a></h2>
+<h2><a name='sect6'>Author</a></h2>
 Gerrit Pape &lt;pape@smarden.org&gt; <p>
 
 <hr><p>
