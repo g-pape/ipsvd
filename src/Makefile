@@ -7,8 +7,8 @@ default: $(IT)
 tcpsvd: load tcpsvd.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a
 	./load tcpsvd ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a -ldjbdns
 
-udpsvd: load udpsvd.o byte.a unix.a time.a
-	./load udpsvd byte.a unix.a time.a -ldjbdns
+udpsvd: load udpsvd.o ipsvd_fmt.o byte.a unix.a time.a
+	./load udpsvd ipsvd_fmt.o byte.a unix.a time.a -ldjbdns
 
 ipsvd-cdb: load ipsvd-cdb.o cdb.a byte.a unix.a
 	./load ipsvd-cdb cdb.a byte.a unix.a -ldjbdns
@@ -84,11 +84,11 @@ byte_diff.o: byte.h byte_diff.c compile
 byte_rchr.o: byte.h byte_rchr.c compile
 	./compile byte_rchr.c
 
-#chkshsgr: chkshsgr.o load
-#	./load chkshsgr 
-#
-#chkshsgr.o: chkshsgr.c compile
-#	./compile chkshsgr.c
+chkshsgr: chkshsgr.o load
+	./load chkshsgr 
+
+chkshsgr.o: chkshsgr.c compile
+	./compile chkshsgr.c
 
 choose: choose.sh warn-auto.sh
 	rm -f choose

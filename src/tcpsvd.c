@@ -131,13 +131,7 @@ void connection_accept(int c) {
     if(! stralloc_0(&match)) drop_nomem();
   }
   else i =1;
-
-  if (pwd) {
-    /* drop permissions */
-    if (prot_gid(pwd->pw_gid) == -1) drop("unable to set gid");
-    if (prot_uid(pwd->pw_uid) == -1) drop("unable to set uid");
-  }
-
+ 
   if (verbose) {
     connection_status();
     out(INFO);
@@ -162,6 +156,7 @@ void connection_accept(int c) {
     out(bufnum); out(" :"); outfix(remote_hostname.s); out(":");
     outfix(remote_ip); out(":"); out(remote_port);
   }
+
   switch(i) {
   case 0:
     if (verbose) {
@@ -203,14 +198,13 @@ void connection_accept(int c) {
     else out(":");
   case 1:
     if (verbose) flush("\n");
+    if (ucspi) ucspi_env();
     if ((fd_move(0, c) == -1) || (fd_copy(1, 0) == -1))
       drop("unable to set filedescriptor");
     sig_uncatch(sig_child);
     sig_unblock(sig_child);
     sig_uncatch(sig_term);
     sig_uncatch(sig_pipe);
-
-    if (ucspi) ucspi_env();
     pathexec(prog);
     break;
   case 3:
@@ -223,14 +217,13 @@ void connection_accept(int c) {
       out(" "); outfix(match.s);
       out(":sh -c "); outfix(rule.s); flush("\n");
     }
+    if (ucspi) ucspi_env();
     if ((fd_move(0, c) == -1) || (fd_copy(1, 0) == -1))
       drop("unable to set filedescriptor");
     sig_uncatch(sig_child);
     sig_unblock(sig_child);
     sig_uncatch(sig_term);
     sig_uncatch(sig_pipe);
-
-    if (ucspi) ucspi_env();
     pathexec(run);
     break;
   }
@@ -273,7 +266,7 @@ int main(int argc, const char **argv) {
 
   progname =*argv;
 
-  while ((opt =getopt(argc, argv, "c:r:x:u:dEHvV")) != opteof) {
+  while ((opt =getopt(argc, argv, "c:r:x:u:nEHvV")) != opteof) {
     switch(opt) {
     case 'c':
       scan_ulong(optarg, &svmax);
@@ -289,7 +282,7 @@ int main(int argc, const char **argv) {
       if (! (pwd =getpwnam(optarg)))
 	strerr_die3x(100, FATAL, "unknown user: ", (char*)optarg);
       break;
-    case 'd':
+    case 'n':
       deny =1;
       break;
     case 'E':
@@ -347,6 +340,11 @@ int main(int argc, const char **argv) {
     fatal("unable to bind socket");
   if (listen(s, 20) == -1) fatal("unable to listen");
   ndelay_off(s);
+  if (pwd) {
+    /* drop permissions */
+    if (prot_gid(pwd->pw_gid) == -1) drop("unable to set gid");
+    if (prot_uid(pwd->pw_uid) == -1) drop("unable to set uid");
+  }
   close(0);
 
   if (verbose) {
