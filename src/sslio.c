@@ -17,9 +17,10 @@
 #include "sgetopt.h"
 #include "env.h"
 #include "sig.h"
+#include "sslerror_str.h"
 
-#define USAGEROOT " -u user [-U user] [-/ root] [-C cert] [-K key] [-v] prog"
-#define USAGE " [-C cert] [-K key] [-v] prog"
+#define USAGEROOT " -u user [-U user] [-/ root] [-C cert] [-K key] [-A ca] [-vc] prog"
+#define USAGE " [-C cert] [-K key] [-A ca] [-cv] prog"
 #define VERSION "$Id$"
 #define NAME "sslio["
 #define FATAL "]: fatal: "
@@ -37,23 +38,37 @@ void usage() {
 }
 void die_nomem() { strerr_die4x(111, NAME, id, FATAL, "out of memory."); }
 void fatalm(char *m0) { strerr_die5sys(111, NAME, id, FATAL, m0, ": "); }
+void fatalmx(char *m0) {
+  strerr_warn4(NAME, id, FATAL, m0, 0);
+  _exit(111);
+}
 void fatal(char *m0) {
-  strerr_warn5(NAME, id, FATAL, m0, ": ", &strerr_sys);
-  finish();
+  strerr_warn5(NAME, id, FATAL, m0, ": ", &strerr_sys); finish();
+  _exit(111);
+}
+void fatalx(char *m0) {
+  strerr_warn4(NAME, id, FATAL, m0, 0); finish();
+  _exit(111);
+}
+void fatals(char *m0, int e) {
+  strerr_warn6(NAME, id, FATAL, m0, ": ", sslerror_str(e), 0); finish();
   _exit(111);
 }
 void warn(char *m0) { strerr_warn5(NAME, id, WARNING, m0, ": ", &strerr_sys); }
+void warnx(char *m0) { strerr_warn4(NAME, id, WARNING, m0, 0); }
 void info(char *m0) { strerr_warn4(NAME, id, INFO, m0, 0); }
 void infou(char *m0, unsigned long u) {
   ul[fmt_ulong(ul, u)] =0;
   strerr_warn5(NAME, id, INFO, m0, ul, 0);
 }
 
-char *cert ="./cert.pem";
+char *cert =0;
 char *key =0;
 char *user =0;
+char *ca =0;
 char *svuser =0;
 char *root =0;
+unsigned int client =0;
 unsigned int verbose =0;
 
 struct uidgid ugid, svugid;
@@ -110,20 +125,21 @@ void finish(void) {
 	continue;
       }
       if (rc == SSL_ERROR)
-	if (verbose) warn("matrixSslEncodeClosureAlert returns ssl error");
+	if (verbose) warnx("unable to encode ssl close notify");
       if (rc == 0) {
 	if (write(fdstdou, decou.start, decou.end -decou.start)
 	    != (decou.end -decou.start)) {
-	  if (verbose) warn("unable to send ssl closure alert");
+	  if (verbose) warn("unable to send ssl close notify");
 	  break;
 	}
-	if (verbose > 2) info("sending ssl closure alert");
+	if (verbose > 2) info("sending ssl close notify");
 	if (verbose > 2) infou("write bytes: ", decou.end -decou.start);
 	bytesou +=decou.end -decou.start;
       }
       break;
     }
   /* bummer */
+  matrixSslFreeKeys(keys);
   matrixSslDeleteSession(ssl);
   matrixSslClose();
   if (fdstdou != -1) close(fdstdou);
@@ -134,6 +150,13 @@ void finish(void) {
     infou("bytes in: ", bytesin); infou("bytes ou: ", bytesou);
   }
 }
+int validate(sslCertInfo_t *cert, void *arg) {
+  sslCertInfo_t *c =cert;
+
+  while (c->next) c =c->next;
+  return(c->verified);
+}
+
 void encode(void) {
   if ((len =read(encpipe[0], encinbuf.s, encin.size)) < 0)
     fatal("unable to read from prog");
@@ -144,14 +167,17 @@ void encode(void) {
   }
   for (;;) {
     rc =matrixSslEncode(ssl, encin.buf, len, &encou);
-    if (rc == SSL_ERROR) fatal("matrixSslEncode returns ssl error");
+    if (rc == SSL_ERROR) {
+      close(fdstdou); fdstdou =-1;
+      fatalx("unable to encode data");
+    }
     if (rc == SSL_FULL) {
       if (! blowup(&encou, &encoubuf, bufsizeou)) die_nomem();
       if (verbose > 1) infou("encode output buffer size: ", encou.size);
       continue;
     }
     if (write(fdstdou, encou.start, encou.end -encou.start)
-	!= encou.end -encou.start) fatal("unable to write to stdout");
+	!= encou.end -encou.start) fatal("unable to write to network");
     if (verbose > 2) infou("write bytes: ", encou.end -encou.start);
     bytesou +=encou.end -encou.start;
     encou.start =encou.end =encou.buf =encoubuf.s;
@@ -163,9 +189,9 @@ void decode(void) {
     if (getdec) {
       len =decin.size -(decin.end -decin.buf);
       if ((len =read(fdstdin, decin.end, len)) < 0)
-	fatal("unable to read from stdin");
+	fatal("unable to read from network");
       if (len == 0) {
-	if (verbose > 2) info("eof reading from stdin");
+	if (verbose > 2) info("eof reading from network");
 	close(fdstdin); close(decpipe[1]);
 	fdstdin =decpipe[1] =-1;
 	return;
@@ -178,7 +204,13 @@ void decode(void) {
     for (;;) {
       rc =matrixSslDecode(ssl, &decin, &decou, &error, &alvl, &adesc);
       if (rc == SSL_SUCCESS) break;
-      if (rc == SSL_ERROR) fatal("matrixSslDecode returns ssl error");
+      if (rc == SSL_ERROR) {
+	if (decou.end > decou.start)
+	  if (write(fdstdou, decou.start, decou.end -decou.start)
+	      != decou.end -decou.start) warn("unable to write to network");
+	close(fdstdou); fdstdou =-1;
+	fatals("ssl decode error", error);
+      }
       if (rc == SSL_PROCESS_DATA) {
 	if (write(decpipe[1], decou.start, decou.end -decou.start)
 	    != decou.end -decou.start) fatal("unable to write to prog");
@@ -201,8 +233,10 @@ void decode(void) {
 	break;
       }
       if (rc == SSL_ALERT) {
-	if (adesc != SSL_ALERT_CLOSE_NOTIFY) fatal("ssl alert from peer");
-	if (verbose > 2) info("ssl alert from peer");
+	close(fdstdou); fdstdou =-1;
+	if (adesc != SSL_ALERT_CLOSE_NOTIFY)
+	  fatals("ssl alert from peer", adesc);
+	if (verbose > 2) info("close notify from peer");
 	finish();
 	_exit(0);
       }
@@ -246,6 +280,18 @@ void doio(void) {
   if (! stralloc_ready(&decoubuf, bufsizeou)) die_nomem();
   decou.buf =decou.start =decou.end =decoubuf.s; decou.size =bufsizeou;
 
+  if (client) {
+    rc =matrixSslEncodeClientHello(ssl, &decou, 0);
+    if (rc != 0) fatalx("unable to encode client hello");
+    if (write(fdstdou, decou.start, decou.end -decou.start)
+	!= (decou.end -decou.start))
+      fatal("unable to send client hello");
+    if (verbose > 2) info("sending client hello");
+    if (verbose > 2) infou("write bytes: ", decou.end -decou.start);
+    bytesou +=decou.end -decou.start;
+    decou.start =decou.end =decou.buf;
+  }
+
   for (;;) {
     iopause_fd *xx =x;
     int l =2;
@@ -278,13 +324,15 @@ int main(int argc, const char **argv) {
   pid =getpid();
   id[fmt_ulong(id, pid)] =0;
 
-  while ((opt =getopt(argc, argv, "u:U:/:C:K:vV")) != opteof) {
+  while ((opt =getopt(argc, argv, "u:U:/:C:K:A:cvV")) != opteof) {
     switch(opt) {
     case 'u': user =(char*)optarg; break;
     case 'U': svuser =(char*)optarg; break;
     case '/': root =(char*)optarg; break;
     case 'C': cert =(char*)optarg; break;
     case 'K': key =(char*)optarg; break;
+    case 'c': client =1; fdstdin =6; fdstdou =7; break;
+    case 'A': ca =(char*)optarg; break;
     case 'v': ++verbose; break;
     case 'V': strerr_warn1(VERSION, 0);
     case '?': usage();
@@ -296,10 +344,15 @@ int main(int argc, const char **argv) {
   if (getuid() == 0) { if (! user) usage(); }
   else { if (root || user || svuser) usage(); }
 
-  if (user) if (! uidgid_get(&ugid, user, 1))
-    strerr_die3x(100, FATAL, "unknown user/group: ", user);
-  if (svuser) if (! uidgid_get(&svugid, svuser, 1))
-    strerr_die3x(100, FATAL, "unknown user/group for prog: ", svuser);
+  if (! client) if (! cert) cert ="./cert.pem";
+  if (user) if (! uidgid_get(&ugid, user, 1)) {
+    if (errno) fatalm("unable to get user/group");
+    strerr_die5x(100, NAME, id, FATAL, "unknown user/group: ", user);
+  }
+  if (svuser) if (! uidgid_get(&svugid, svuser, 1)) {
+    if (errno) fatalm("unable to get user/group");
+    strerr_die5x(100, NAME, id, FATAL, "unknown user/group: ", svuser);
+  }
 
   if ((s =env_get("SSLIO_BUFIN"))) scan_ulong(s, &bufsizein);
   if ((s =env_get("SSLIO_BUFOU"))) scan_ulong(s, &bufsizeou);
@@ -314,7 +367,7 @@ int main(int argc, const char **argv) {
       fatalm("unable to close encoding pipe output");
     if (close(decpipe[0]) == -1)
       fatalm("unable to close decoding pipe input");
-    matrixSslOpen();
+    if (matrixSslOpen() < 0) fatalm("unable to initialize ssl");
     if (root) {
       if (chdir(root) == -1) fatalm("unable to change to new root directory");
       if (chroot(".") == -1) fatalm("unable to chroot");
@@ -324,11 +377,14 @@ int main(int argc, const char **argv) {
       if (prot_gid(ugid.gid) == -1) fatalm("unable to set gid");
       if (prot_uid(ugid.uid) == -1) fatalm("unable to set uid");
     }
-    if (! key) key =cert;
-    if (matrixSslReadKeys(&keys, cert, key, 0, 0) < 0)
-      fatalm("unable to read certfile or keyfile");
-    if (matrixSslNewSession(&ssl, keys, 0, SSL_FLAGS_SERVER) < 0)
-      fatalm("unable to create ssl session");
+    if (! client) if (! key) key =cert;
+    if (matrixSslReadKeys(&keys, cert, key, 0, ca) < 0) {
+      if (client) fatalm("unable to read cert, key, or ca file");
+      fatalm("unable to read cert or key file");
+    }
+    if (matrixSslNewSession(&ssl, keys, 0, client?0:SSL_FLAGS_SERVER) < 0)
+      fatalmx("unable to create ssl session");
+    if (client) if (ca) matrixSslSetCertValidator(ssl, &validate, 0);
 
     sig_catch(sig_term, sig_term_handler);
     sig_ignore(sig_pipe);

@@ -3,6 +3,7 @@
 #include <grp.h>
 #include "uidgid.h"
 #include "str.h"
+#include "error.h"
 
 unsigned int uidgid_get(struct uidgid *u, char *ug, unsigned int dogrp) {
   char *g =0;
@@ -15,13 +16,15 @@ unsigned int uidgid_get(struct uidgid *u, char *ug, unsigned int dogrp) {
       ug[d] =0;
       g =ug +d +1;
     }
+  errno =0;
   pwd =getpwnam(ug);
+  if (! pwd) return(0);
   if (g) {
+    errno =0;
     gr =getgrnam(g);
     ug[d] =':';
+    if (! gr) return(0);
   }
-  if (! pwd) return(0);
-  if (g && ! gr) return(0);
   if (gr)
     u->gid =gr->gr_gid;
   else

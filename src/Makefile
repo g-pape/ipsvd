@@ -24,8 +24,8 @@ ipsvd-cdb: load ipsvd-cdb.o ipsvd_fmt.o ipsvd_check.o cdb.a dns.a unix.a \
 	./load ipsvd-cdb ipsvd_fmt.o ipsvd_check.o cdb.a dns.a unix.a byte.a \
 	  time.a `cat socket.lib`
 
-sslio: load sslio.o uidgid.o unix.a byte.a time.a matrixssl.a
-	./load sslio uidgid.o unix.a byte.a time.a matrixssl.a
+sslio: load sslio.o uidgid.o sslerror_str.o unix.a byte.a time.a matrixssl.a
+	./load sslio uidgid.o sslerror_str.o unix.a byte.a time.a matrixssl.a
 
 matrixssl.a: makelib matrixssl
 	install -m0644 Makefile.matrixssl matrixssl/src/Makefile.matrixssl
@@ -93,6 +93,9 @@ ipsvd_scan.o: compile ipsvd_scan.c
 
 uidgid.o: compile uidgid.c uidgid.h
 	./compile uidgid.c
+
+sslerror_str.o: compile sslerror_str.c sslerror_str.h
+	./compile sslerror_str.c
 
 socket.lib: compile load trysocketlib.c
 	./compile trysocketlib.c

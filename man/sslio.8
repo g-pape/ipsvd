@@ -3,6 +3,7 @@
 sslio \- SSL input/output for service programs
 .SH SYNOPSIS
 .B sslio
+[\-cv]
 [\-u
 .IR user ]
 [\-U
@@ -13,33 +14,35 @@ sslio \- SSL input/output for service programs
 .IR cert ]
 [\-K
 .IR key ]
-[\-v]
+[\-A
+.IR ca ]
 .I prog
 .SH DESCRIPTION
 .B sslio
 provides SSL encrypted network connections for service programs started by
-.BR tcpsvd (8),
+.BR tcpsvd (8)
 or
-.BR tcpserver (1).
+.BR tcpserver (1),
+and
+.BR tcpclient (1).
 .P
 Normally
 .B sslio
 is started by
 .BR tcpsvd (8)
 or
-.BR tcpserver (1),
+.BR tcpclient(1),
 in turn starts the service program
 .IR prog ,
 and runs as child process of the service program.
 After performing the SSL handshake,
 .B sslio
-reads SSL encrypted data from standard input (the network), and writes
-decrypted data to the standard input of
+reads SSL encrypted data from the network, and writes decrypted data to the
+service program
 .IR prog ;
-it reads data from the standard output of
+it reads data from the service program
 .IR prog ,
-and writes SSL encrypted data to standard output (the network).
-.P
+and writes SSL encrypted data to the network.
 .B sslio
 should run under a different user ID than the service program, and with a
 changed root directory.
@@ -106,21 +109,43 @@ This option should be set when
 is started by root, and cannot be set otherwise.
 .TP
 .B \-C \fIcert
-cert file.
-read the certificate from the file
+cert file (server mode).
+Read the certificate from the file
 .I cert
 (default is ``./cert.pem'').
-If the -/ option is given, first the root directory is changed, then the
+If the \-/ option is given, first the root directory is changed, then the
 cert file is read.
 .TP
 .B \-K \fIkey
-private key.
+private key (server mode).
 Read the private key from the file
 .I key
 (default is
 .IR cert ).
-If the -/ option is given, first the root directory is changed, then the
+If the \-/ option is given, first the root directory is changed, then the
 private key is read.
+.TP
+.B \-A \fIca
+ca file (client mode).
+Read the trusted root certificate from the file
+.IR ca .
+Multiple files can be specified, using a semicolon as delimiter.
+If the \-/ option is given, first the root directory is changed, then the
+ca file is read.
+.TP
+.B \-c
+client mode.
+This option must be given when running
+.B sslio
+under
+.BR tcpclient (1).
+In client mode, filedescriptors 6 and 7 are used instead of standard input
+and standard ouput to read from and write to the network and the service
+program.
+If the \-A option is given,
+.B sslio
+refuses to connect to a servers which's certificates cannot be verified by
+the root certificates, it accepts any server certificate otherwise.
 .TP
 .B \-v
 verbose.
