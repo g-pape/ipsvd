@@ -1,8 +1,9 @@
 ipsvd (0.4.1-1) unstable; urgency=low
 
   * new upstream version.
+  * initial official Debian package (closes: #193017).
 
- -- Gerrit Pape <pape@smarden.org>  Mon, 12 May 2003 10:18:14 +0200
+ -- Gerrit Pape <pape@smarden.org>  Thu, 15 May 2003 10:36:22 +0200
 
 ipsvd (0.4.0-1) unstable; urgency=low
 
