@@ -1,3 +1,15 @@
+ipsvd 0.9.7
+
+  * ipsvd_check.c: catch all failures of openreadclose(); disregard
+    hostnames (looked up in dns) starting with a dot; fix cdb check on check
+    hostname instruction with non-existent forward to match instruction
+    directory behavior (deny connection).
+  * ipsvd_hostname.c: properly handle failure and nxdomain/noptr of
+    dns_name4().
+  * doc/examples.html: minor.
+  * tcpsvd.c: bug: socka didn't get updated after ECONNABORTED from accept();
+    fix: re-set socka_size for each connection (thx Sergei Kolobov).
+
 ipsvd 0.9.6
 Mon, 02 Aug 2004 19:18:50 +0000
   * sslio.c: minor cleanup; adapt few verbose log messages; detect

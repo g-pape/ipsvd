@@ -59,7 +59,7 @@ struct uidgid ugid;
 static char seed[128];
 char bufnum[FMT_ULONG];
 struct sockaddr_in socka;
-int socka_size =sizeof(socka);
+int socka_size;
 unsigned int phcc =0;
 
 static stralloc sa ={0};
@@ -154,6 +154,7 @@ void connection_accept(int c) {
       warn2("unable to look up hostname", remote_ip);
     if (! stralloc_0(&remote_hostname)) drop_nomem();
   }
+  socka_size =sizeof(socka);
   if (getsockname(c, (struct sockaddr*)&socka, &socka_size) == -1)
     drop("unable to get local address");
   if (! local_hostname.len) {
@@ -374,6 +375,7 @@ int main(int argc, const char **argv) {
   }
   for (;;) {
     while (cnum >= cmax) sig_pause();
+    socka_size =sizeof(socka);
 
     sig_unblock(sig_child);
     conn =accept(s, (struct sockaddr *)&socka, &socka_size);

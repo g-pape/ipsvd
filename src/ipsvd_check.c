@@ -135,14 +135,14 @@ int ipsvd_check_direntry(stralloc *d, stralloc *m, char *ip,
       *rc =IPSVD_DENY; return(1);
     }
     if (s.st_mode & S_IXUSR) {
-      if (! openreadclose(m->s, d, 256)) return(-1);
+      if (openreadclose(m->s, d, 256) <= 0) return(-1);
       if (d->len && (d->s[d->len -1] == '\n')) d->len--;
       if (! stralloc_0(d)) return(-1);
       *rc =IPSVD_EXEC;
       return(1);
     }
     if (s.st_mode & S_IRUSR) {
-      if (! openreadclose(m->s, d, 256)) return(-1);
+      if (openreadclose(m->s, d, 256) <= 0) return(-1);
       if (d->len && (d->s[d->len -1] == '\n')) d->len--;
       for (i =0; i < d->len; i++) if (d->s[i] == '\n') d->s[i] =0;
       if (! stralloc_0(d)) return(-1);
@@ -192,7 +192,7 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir,
   /* host */
   if (name) {
     for (;;) {
-      if (! *name) break;
+      if (! *name || (*name == '.')) break;
       match->len =base;
       if (! stralloc_cats(match, name)) return(-1);
       if (! stralloc_0(match)) return(-1);
@@ -295,7 +295,7 @@ int ipsvd_check_cdb(stralloc *data, stralloc *match, char *cdb,
   /* host */
   if (name) {
     for (;;) {
-      if (! *name) break;
+      if (! *name || (*name == '.')) break;
       if (! stralloc_copys(match, name)) return(-1);
       if (! stralloc_0(match)) return(-1);
       ok =ipsvd_check_cdbentry(data, match, ip, &rc);
@@ -343,7 +343,7 @@ int ipsvd_check_cdb(stralloc *data, stralloc *match, char *cdb,
     return(rc);
   }
   strerr_warn4(progname, ": warning: ", match->s, ": not found", 0);
-  return(IPSVD_DEFAULT);
+  return(IPSVD_DENY);
 }
 
 int ipsvd_check(int c, stralloc *data, stralloc *match, char *db,
