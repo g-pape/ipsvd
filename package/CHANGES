@@ -1,8 +1,13 @@
 ipsvd 0.4.1
-Sun, 11 May 2003 13:12:12 +0200
+Mon, 12 May 2003 10:18:05 +0200
   * ipsvd_fmt.c: minor cleanup.
   * tcpsvd.c: include sys/types.h (really; thx clemens fischer); minor
     cleanup.
+  * doc/examples.html: add qmail-smtpd example; minor adaptations.
+  * man/ipsvd-instruct.5, man/ipsvd.7: don't remove files without write
+    permission set on timeout.
+  * tcpsvd.c, udpsvd.c: support -uuser[:group].
+  * man/tcpsvd.8, man/udpsvd.8: adapt.
 
 ipsvd 0.4.0
 Mon, 05 May 2003 13:15:45 +0200

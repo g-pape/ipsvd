@@ -26,13 +26,13 @@ This <tt>run</tt> script provides a
 database <tt>./peers.cdb</tt>.
 <pre>
  #!/bin/sh
- MAXSMTPD="`cat /var/qmail/control/concurrencyincoming`"
  exec 2>&1
+ MAXSMTPD="`cat /var/qmail/control/concurrencyincoming`"
  exec softlimit -m2000000 \
    env SMTPGREETING=smarden.org \
-     MAILRULES=/etc/mailfront/smtpfront-qmail/mailrules \
+       MAILRULES=/etc/mailfront/smtp/mailrules \
    tcpsvd -vp -uqmaild -c"$MAXSMTPD" -x./peers.cdb 192.168.2.1 25 \
-      smtpfront-qmail
+     smtpfront-qmail
 </pre>
 This <tt>run</tt> script provides a
 <a href="http://www.bincimap.org/">bincimaps</a> service on
@@ -46,13 +46,25 @@ instructions through the directory <tt>./peers</tt>.
      /usr/bin/checkpw \
      /usr/sbin/bincimapd --conf=/etc/bincimap/bincimap.conf
 </pre>
+This <tt>run</tt> script provides a
+<a href="http://www.qmail.org/">qmail-smtpd</a> service on
+<tt>192.168.14.6:25</tt>, with per-host concurrency limit, and with per-host
+instructions through the directory <tt>./peers</tt>.
+<pre>
+ #!/bin/sh
+ exec 2>&1
+ exec softlimit -m2000000 \
+  tcpsvd -vvh -i./peers -uqmaild \
+    -c40 -C'10:421 per host concurrency limit reached\r\n' \
+      192.168.14.6 25 qmail-smtpd
+</pre>
 <hr>
 <h3><a name="udp">UDP/IP service examples</a></h3>
 This <tt>run</tt> script provides a <i>talkd</i> service on
 <tt>192.168.1.1:517</tt>
 <pre>
  #!/bin/sh
- exec udpsvd -utalk 192.168.1.1 517 in.talkd
+ exec udpsvd -unobody:tty 192.168.1.1 517 in.talkd
 </pre>
 This <tt>run</tt> script provides a <i>tftpd</i> service on
 <tt>0.0.0.0:69</tt> with per-IP-address instructions through the directory

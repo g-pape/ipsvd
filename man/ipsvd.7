@@ -49,9 +49,10 @@ running
 timeout.
 While checking the instructions directory, check the time of last access of
 the file that matches the clients address or hostname if any, and discard
-and remove the file if it wasn't accessed within the last
+the file if it wasn't accessed within the last
 .I sec
-seconds.
+seconds;
+the file additionally is removed unless the user's write permission is unset.
 This option only takes effect if the \-i option is given.
 Default is 0, which means that the timeout is disabled.
 .TP

@@ -62,8 +62,8 @@ examines the file that matched the IP address or hostname, and acts
 accordingly:
 .TP
 1.
-If the file doesn't have any of the user's access permissions set (chmod 0),
-the connection is closed immediately.
+If neither the user's read permission, nor the user's execute permission is
+set for the file, the connection is closed immediately.
 .TP
 2.
 If the file has the user's execute permission set,

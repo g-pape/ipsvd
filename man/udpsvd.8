@@ -120,13 +120,19 @@ By default
 .B udpsvd
 looks up the local hostname once at startup. 
 .TP
-.B \-u \fIuser
+.B \-u \fIuser\fR[:\fIgroup\fR]
 drop permissions.
 Switch user ID to
 .IR user 's
 UID, and group ID to
 .IR user 's
 primary GID after creating and binding to the socket.
+If
+.I user
+is followed by a colon and a group name, the group ID is switched to
+the GID of
+.I group
+instead.
 .TP
 .B \-h
 Look up the client's hostname in DNS.

@@ -3,6 +3,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <pwd.h>
+#include <grp.h>
 #include <dns.h>
 #include <socket.h>
 #include <ip4.h>
@@ -54,6 +55,7 @@ stralloc remote_hostname ={0};
 char remote_ip[IP4_FMT];
 char remote_port[FMT_ULONG];
 struct passwd *pwd =0;
+struct group *gr;
 
 static char seed[128];
 char bufnum[FMT_ULONG];
@@ -232,6 +234,7 @@ void connection_accept(int c) {
 
 int main(int argc, const char **argv) {
   int opt;
+  char *user =0;
   char *host;
   unsigned long port;
   stralloc sa ={0};
@@ -267,8 +270,7 @@ int main(int argc, const char **argv) {
       iscdb =1;
       break;
     case 'u':
-      if (! (pwd =getpwnam(optarg)))
-	strerr_die3x(100, FATAL, "unknown user: ", (char*)optarg);
+      user =(char*)optarg;
       break;
     case 'l':
       if (! stralloc_copys(&local_hostname, optarg)) die_nomem();
@@ -309,6 +311,23 @@ int main(int argc, const char **argv) {
   prog =argv;
   if (phccmax > cmax) phccmax =cmax;
 
+  if (user) {
+    char *group =0;
+
+    if (user[(delim =str_chr(user, ':'))] == ':') {
+      user[delim] =0;
+      group =user +delim +1;
+    }
+    if (! (pwd =getpwnam(user)))
+      strerr_die3x(100, FATAL, "unknown user: ", user);
+    if (group) {
+      if (! (gr =getgrnam(group)))
+	strerr_die3x(100, FATAL, "unknown group: ", group);
+      pwd->pw_gid =gr->gr_gid;
+      user[delim] =':';
+    }
+  }
+  
   dns_random_init(seed);
   sig_block(sig_child);
   sig_catch(sig_child, sig_child_handler);
