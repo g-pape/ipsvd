@@ -11,6 +11,9 @@ ipsvd_hostname.o
 ipsvd_phcc.o
 ipsvd_scan.o
 uidgid.o
+socket.lib
+trysocketlib
+trysocketlib.o
 cdb_hash.o
 cdb_make.o
 cdb.a

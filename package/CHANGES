@@ -1,3 +1,9 @@
+ipsvd 0.6.1
+Mon, 13 Oct 2003 14:55:28 +0000
+  * trysocketlib.c: new; check for libraries needed for socket() on some
+    systems (solaris, thx Uffe Jakobsen).
+  * Makefile: adapt.
+
 ipsvd 0.6.0
 Mon, 29 Sep 2003 10:59:15 +0000
   * man/ipsvd-instruct.5: minor.

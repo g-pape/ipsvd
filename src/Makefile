@@ -5,14 +5,16 @@ IT=tcpsvd udpsvd ipsvd-cdb
 default: $(IT)
 
 tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
-	ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a byte.a unix.a
+	ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a byte.a unix.a socket.lib
 	./load tcpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
-	ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a byte.a unix.a -ldjbdns
+	ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a byte.a unix.a -ldjbdns \
+	`cat socket.lib`
 
 udpsvd: load udpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
-	ipsvd_scan.o uidgid.o cdb.a byte.a unix.a time.a
+	ipsvd_scan.o uidgid.o cdb.a byte.a unix.a time.a socket.lib
 	./load udpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
-	ipsvd_scan.o uidgid.o cdb.a byte.a unix.a time.a -ldjbdns
+	ipsvd_scan.o uidgid.o cdb.a byte.a unix.a time.a -ldjbdns \
+	`cat socket.lib`
 
 ipsvd-cdb: load ipsvd-cdb.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a
 	./load ipsvd-cdb ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a -ldjbdns
@@ -46,6 +48,15 @@ ipsvd_scan.o: compile ipsvd_scan.c
 
 uidgid.o: compile uidgid.c uidgid.h
 	./compile uidgid.c
+
+socket.lib: compile load trysocketlib.c
+	./compile trysocketlib.c
+	( ./load trysocketlib >/dev/null 2>&1 || \
+	  ( ./load trysocketlib -lxnet >/dev/null 2>&1 && echo '-lxnet' ) || \
+	  ( ./load trysocketlib -lsocket -lnsl >/dev/null 2>&1 && \
+	    echo '-lsocket -lnsl' ) \
+	) >socket.lib
+	rm -f trysocketlib.o trysocketlib
 
 clean:
 	rm -f `cat TARGETS` *~
