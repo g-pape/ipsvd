@@ -36,8 +36,8 @@ matrixSsl.h: matrixssl
 	rm -f matrixSsl.h
 	ln -s matrixssl/matrixSsl.h matrixSsl.h
 
-matrixssl: matrixssl-1-0-1.tar.gz compile load
-	gzip -dc matrixssl-1-0-1.tar.gz |tar xf -
+matrixssl: matrixssl-1-0-2.tar.gz compile load
+	gzip -dc matrixssl-1-0-2.tar.gz |tar xf -
 	sed -e 's/#define USE_MULTITHREADING/#undef USE_MULTITHREADING/' \
 	  <matrixssl/src/matrixConfig.h >matrixConfig.h && \
 	    mv -f matrixConfig.h matrixssl/src/matrixConfig.h
@@ -105,7 +105,7 @@ socket.lib: compile load trysocketlib.c
 
 command.linux: sysdeps
 	( ( test "`cut -c1-5 <systype`" != 'linux' && echo nolinux ) || \
-	  ( test ! -r matrixssl-1-0-1.tar.gz && echo nomatrixssl ) || \
+	  ( test ! -r matrixssl-1-0-2.tar.gz && echo nomatrixssl ) || \
 	  echo sslio ) >command.linux
 
 nolinux:

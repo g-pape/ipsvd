@@ -5,6 +5,7 @@ ipsvd 0.9.2
     Charlie Brady).
   * sslio.c: include <sys/types.h>; ignore sig_pipe, catch sig_term; send
     ssl close alert on end of connection, and fatal errors.
+  * use matrixssl-1-0-2.
 
 ipsvd 0.9.1
 Mon, 03 May 2004 17:08:41 +0000
