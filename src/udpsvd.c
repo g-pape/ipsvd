@@ -46,7 +46,6 @@ unsigned int lookuphost =0;
 
 int s;
 char local_ip[IP4_FMT];
-char local_hostname[] ="";
 char *local_port;
 stralloc remote_hostname ={0};
 char remote_ip[IP4_FMT];
@@ -163,7 +162,7 @@ int main(int argc, const char **argv, const char *const *envp) {
 
   progname =*argv;
 
-  while ((opt =getopt(argc, argv, "vu:hr:x:V")) != opteof) {
+  while ((opt =getopt(argc, argv, "vu:nhi:x:V")) != opteof) {
     switch(opt) {
     case 'v':
       verbose =1;
@@ -172,10 +171,13 @@ int main(int argc, const char **argv, const char *const *envp) {
       if (! (pwd =getpwnam(optarg)))
 	strerr_die3x(100, FATAL, "unknown user: ", (char*)optarg);
       break;
+    case 'n':
+      deny =1;
+      break;
     case 'h':
       lookuphost =1;
       break;
-    case 'r':
+    case 'i':
       if (instructs) usage();
       instructs =optarg;
       break;

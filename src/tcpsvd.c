@@ -38,16 +38,15 @@ const char *progname;
 unsigned int lookuphost =1;
 unsigned int verbose =0;
 unsigned long backlog =20;
-
 const char **prog;
-unsigned int svnum =0;
+unsigned long svnum =0;
 unsigned long svmax =30;
-unsigned long deny =0;
-unsigned long ucspi =1;
+unsigned int deny =0;
+
+unsigned int ucspi =1;
 const char *instructs =0;
 unsigned int iscdb =0;
 char local_ip[IP4_FMT];
-char local_hostname[] ="";
 char *local_port;
 stralloc remote_hostname ={0};
 char remote_ip[IP4_FMT];
@@ -194,13 +193,13 @@ int main(int argc, const char **argv) {
 
   progname =*argv;
 
-  while ((opt =getopt(argc, argv, "c:r:x:u:nEb:HvV")) != opteof) {
+  while ((opt =getopt(argc, argv, "c:i:x:u:nEb:HvV")) != opteof) {
     switch(opt) {
     case 'c':
       scan_ulong(optarg, &svmax);
       if (svmax < 1) usage();
       break;
-    case 'r':
+    case 'i':
       if (instructs) usage();
       instructs =optarg;
       break;
@@ -316,6 +315,7 @@ int main(int argc, const char **argv) {
       close(s);
       connection_accept(conn);
     }
+    if (verbose) connection_status();
     close(conn);
   }
   _exit(0);

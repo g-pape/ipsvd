@@ -33,6 +33,8 @@ int ipsvd_instruct(stralloc *inst, stralloc *match) {
 	  envs[delim] ='=';
 	}
 	break;
+      case 0: /* skip empty line */
+	break;
       default:
 	strerr_warn6(progname, ": warning: ",
 		     "bad instruction: ", match->s, ": ", envs, 0);
@@ -63,6 +65,7 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir, char *ip) {
       }
       if (s.st_mode & S_IXUSR) {
 	if (! openreadclose(tmp.s, data, 256)) return(-1);
+	if (! data->len) return(IPSVD_INSTRUCT);
 	if (data->s[data->len -1] == '\n') data->len--;
 	if (! stralloc_0(data)) return(-1);
 	if (! stralloc_copyb(match, tmp.s, tmp.len)) return(-1);
@@ -71,6 +74,7 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir, char *ip) {
       }
       if (s.st_mode & S_IRUSR) {
 	if (! openreadclose(tmp.s, data, 256)) return(-1);
+	if (! data->len) return(IPSVD_INSTRUCT);
 	if (data->s[data->len -1] == '\n') data->len--;
 	for (i =0; i < data->len; i++) if (data->s[i] == '\n') data->s[i] =0;
 	if (! stralloc_0(data)) return(-1);
@@ -129,8 +133,6 @@ int ipsvd_check_cdb(stralloc *data, stralloc *match, char *cdb, char *ip) {
 	if (! stralloc_0(match)) return(-1);
 	close(fd);
 	return(ipsvd_instruct(data, match));
-      default:
-	/* could not happen */
       }
     }
     if ((i =byte_rchr(tmp.s, tmp.len, '.')) == tmp.len) break;

@@ -6,7 +6,7 @@ tcpsvd \- TCP/IP service daemon
 [\-nEHv] [\-c
 .I n\fR] [\-b
 .I n\fR] [\-u
-.I user\fR] [\-r
+.I user\fR] [\-i
 .IR dir |\-x
 .I cdb\fR]
 .I host
@@ -78,7 +78,7 @@ UID, and group ID to
 .IR user 's
 primary GID after creating and binding to the socket.
 .TP
-.B \-r \fIdir
+.B \-i \fIdir
 read instructions for handling new connections from the instructions
 directory
 .IR dir .

@@ -4,7 +4,7 @@ udpsvd \- UDP/IP service daemon
 .SH SYNOPSIS
 .B udpsvd
 [\-nhv] [\-u
-.I user\fR] [\-r
+.I user\fR] [\-i
 .IR dir |\-x
 .I cdb\fR]
 .I host
@@ -88,7 +88,7 @@ UID, and group ID to
 .IR user 's
 primary GID after creating and binding to the socket.
 .TP
-.B \-r \fIdir
+.B \-i \fIdir
 read instructions for handling new connections from the instructions
 directory
 .IR dir .
