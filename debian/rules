@@ -24,9 +24,11 @@ build: build-stamp
 build-stamp: configure-stamp 
 	dh_testdir
 
+	tar xfzp ipsvd-0.2.0.tar.gz
 	( \
 	set -e; \
-	cd src; \
+	cd net/ipsvd-0.2.0/src; \
+	ln -s ipsvd-0.2.0 ipsvd; mv ipsvd ../..; \
 	echo '/usr/include/djbdns' >conf-djbdnsinc; \
 	$(MAKE); \
 	)
@@ -38,11 +40,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp configure-stamp
 
-	( \
-	set -e; \
-	cd src; \
-	$(MAKE) clean; \
-	)
+	rm -rf net
 
 	dh_clean
 
@@ -52,8 +50,8 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	for i in src/tcpsvd src/udpsvd src/ipsvd-cdb; do \
-	  install -m0755 $$i $(CURDIR)/debian/ipsvd/usr/bin/; \
+	for i in tcpsvd udpsvd ipsvd-cdb; do \
+	  install -m0755 net/ipsvd/src/$$i $(CURDIR)/debian/ipsvd/usr/bin/; \
 	done
 
 # Build architecture-independent files here.
@@ -68,7 +66,7 @@ binary-arch: build install
 	dh_installdocs
 #	dh_installexamples
 #	dh_installdebconf	
-	dh_installman man/*.8 man/*.7 man/*.5
+	dh_installman net/ipsvd/man/*.[875]
 	dh_link
 	dh_strip
 	dh_compress
