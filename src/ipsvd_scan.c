@@ -1,17 +1,17 @@
 #include <netdb.h>
+#include <netinet/in.h>
 #include "scan.h"
 
 unsigned int ipsvd_scan_port(const char *s, const char *proto,
-			     unsigned long *port) {
+			     unsigned long *p) {
   struct servent *se;
-  unsigned char *p;
 
+  if (! *s) return(0);
   if ((se =getservbyname(s, proto))) {
-    p =&se->s_port;
-    *port =p[0]; *port <<=8; *port +=p[1];
-    printf("port: %d\n", *port);
+    /* what is se->s_port, uint16 or uint32? */
+    *p =htons(se->s_port);
     return(1);
   }
-  if (s[scan_ulong(s, port)]) return(0);
+  if (s[scan_ulong(s, p)]) return(0);
   return(1);
 }
