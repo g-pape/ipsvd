@@ -11,7 +11,7 @@
 <H2><A NAME="sect0">Name</A></H2>
 udpsvd - UDP/IP service daemon 
 <H2><A NAME="sect1">Synopsis</A></H2>
-<B>udpsvd</B> [-Hpv] [-u <I>user]</I> [-l <I>name]</I>
+<B>udpsvd</B> [-hpvv] [-u <I>user]</I> [-l <I>name]</I>
 [-i <I>dir</I>|-x <I>cdb]</I> <I>host</I> <I>port</I> <I>prog</I> 
 <H2><A NAME="sect2">Description</A></H2>
 <B>udpsvd</B> creates an UDP/IP socket,
@@ -22,76 +22,81 @@ starts a program, with standard input reading from the socket, and standard
 output writing to the socket, to handle this, and possibly more, datagrams.
 <B>udpsvd</B> does not start the program if another program that it has started
 before still is running. If the program exits, <B>udpsvd</B> again listens to the
-socket until a new datagram is available. <P>
-<B>udpsvd</B> optionally checks for special
-intructions depending on the IP address of the client sending the datagram
-which not yet was handled by a running program, see <B><I>ipsvd-instruct</B>(5)</I> for
-details. <P>
+socket until a new datagram is available. If there are still datagrams available
+on the socket, the program is restarted immediatly. <P>
+<B>udpsvd</B> optionally checks
+for special intructions depending on the IP address or hostname of the
+client sending the datagram which not yet was handled by a running program,
+see <B><I>ipsvd-instruct</B>(5)</I> for details. <P>
 
 <H3><A NAME="sect3">Attention:</A></H3>
-UDP is a connectionless protocol. Most programs that handle
-user datagrams, such as <B><I>talkd</B>(8)</I>, keep running after receiving a datagram,
-and process subsequent datagrams sent to the socket until a timeout is
-reached. <B>udpsvd</B> only checks special instructions for a datagram that causes
-a startup of the program; not if a program handling datagrams already is
-running. It doesn't make much sense to restrict access through special instructions
-when using such a program. <P>
-On the other hand, it makes perfectly sense with
-programs like <B><I>tftpd</B>(8)</I>, that fork to establish a separate connection to
-the client when receiving the datagram. In general it's adequate to set up
-special instructions for programs that should be run by tcpwrapper. 
+UDP is a connectionless protocol.
+Most programs that handle user datagrams, such as <B><I>talkd</B>(8)</I>, keep running
+after receiving a datagram, and process subsequent datagrams sent to the
+socket until a timeout is reached. <B>udpsvd</B> only checks special instructions
+for a datagram that causes a startup of the program; not if a program handling
+datagrams already is running. It doesn't make much sense to restrict access
+through special instructions when using such a program. <P>
+On the other hand,
+it makes perfectly sense with programs like <B><I>tftpd</B>(8)</I>, that fork to establish
+a separate connection to the client when receiving the datagram. In general
+it's adequate to set up special instructions for programs that support being
+run by tcpwrapper. 
 <H2><A NAME="sect4">Options</A></H2>
 
 <DL>
 
-<DT><I>host</I>
-</DT>
-<DD><I>host</I> either is a hostname, or a dotted-decimal IP address, or 0. If <I>host</I>
-is 0, <B>udpsvd</B> accepts datagrams to any local IP address. </DD>
+<DT><I>host</I> </DT>
+<DD><I>host</I> either is a hostname, or a dotted-decimal
+IP address, or 0. If <I>host</I> is 0, <B>udpsvd</B> accepts datagrams to any local IP
+address. </DD>
 
 <DT><I>port</I> </DT>
-<DD><B>udpsvd</B> accepts
-datagrams to <I>host</I>:<I>port</I>. </DD>
+<DD><B>udpsvd</B> accepts datagrams to <I>host</I>:<I>port</I>. </DD>
 
 <DT><I>prog</I> </DT>
-<DD><I>prog</I> consists of one or more arguments. <B>udpsvd</B>
-normally runs <I>prog</I> to handle a datagram, and possibly more, that is sent
-to the socket, if there is no program that was started before by <B>udpsvd</B>
-still running and handling datagrams. </DD>
+<DD><I>prog</I> consists of
+one or more arguments. <B>udpsvd</B> normally runs <I>prog</I> to handle a datagram, and
+possibly more, that is sent to the socket, if there is no program that
+was started before by <B>udpsvd</B> still running and handling datagrams. </DD>
 
-<DT><B>-u <I>user</B> </I></DT>
-<DD>drop permissions. Switch user
-ID to <I>user</I>'s UID, and group ID to <I>user</I>'s primary GID after creating and binding
-to the socket. </DD>
-
-<DT><B>-i <I>dir</B> </I></DT>
-<DD>read instructions for handling new connections from
-the instructions directory <I>dir</I>. See <B><I>ipsvd-instruct</B>(5)</I> for details. </DD>
+<DT><B>-i <I>dir</B>
+</I></DT>
+<DD>read instructions for handling new connections from the instructions directory
+<I>dir</I>. See <B><I>ipsvd-instruct</B>(5)</I> for details. </DD>
 
 <DT><B>-x <I>cdb</B> </I></DT>
-<DD>read
-instructions for handling new connections from the constant database <I>cdb</I>.
-The constant database normally is created from an instructions directory
-by running <B><I>ipsvd-cdb</B>(8)</I>. </DD>
+<DD>read instructions for handling
+new connections from the constant database <I>cdb</I>. The constant database normally
+is created from an instructions directory by running <B><I>ipsvd-cdb</B>(8)</I>. </DD>
 
-<DT><B>-l <I>name</B> </I></DT>
-<DD>local hostname. Do not look up the local hostname
-in DNS, but use <I>name</I> as hostname. This option must be set if <B>tcpsvd</B> listens
-on port 53 to avoid loops. </DD>
+<DT><B>-l <I>name</B>
+</I></DT>
+<DD>local hostname. Do not look up the local hostname in DNS, but use <I>name</I> as
+hostname. By default <B>udpsvd</B> looks up the local hostname once at startup.
+ </DD>
 
-<DT><B>-H</B> </DT>
-<DD>Do not look up client's hostname in DNS. </DD>
+<DT><B>-u <I>user</B> </I></DT>
+<DD>drop permissions. Switch user ID to <I>user</I>'s UID, and group ID to <I>user</I>'s
+primary GID after creating and binding to the socket. </DD>
+
+<DT><B>-h</B> </DT>
+<DD>Look up the client's
+hostname in DNS. </DD>
 
 <DT><B>-p</B> </DT>
-<DD>paranoid.
-After looking up the client's hostname in DNS, look up the IP addresses
-in DNS for that hostname, and forget the hostname if none of the addresses
-match the client's IP address. You should set this option if you use hostname
-based instructions. The -p option has no effect if the -H option is set. </DD>
+<DD>paranoid. After looking up the client's hostname in DNS,
+look up the IP addresses in DNS for that hostname, and forget the hostname
+if none of the addresses match the client's IP address. You should set this
+option if you use hostname based instructions. The -p option implies the
+-h option. </DD>
 
-<DT><B>-v</B>
-</DT>
+<DT><B>-v</B> </DT>
 <DD>verbose. Print verbose messages to standard output. </DD>
+
+<DT><B>-vv</B> </DT>
+<DD>more verbose.
+Print more verbose messages to standard output. </DD>
 </DL>
 
 <H2><A NAME="sect5">See Also</A></H2>

@@ -63,33 +63,47 @@ If
 <B><I>ipsvd</B>(8)</I> is given instructions for an incoming connection, it reads the
 corresponding file and interprets each line as follows. The file may be
 empty, meaning that there is no special instruction. 
-<OL>
-.<LI>If the line starts
-with a plus (``+''), and the string following the plus contains a ``='', <B><I>ipsvd</B>(8)</I>
-puts the string following the plus into the environment before starting
-<I>prog</I> to handle the connection. If the string following the plus doesn't contain
-a ``='', <B><I>ipsvd</B>(8)</I> prints a warning and discards this line. </LI>
-</OL>
+<DL>
+
+<DT><B>+</B><I>VAR=VALUE</I> </DT>
+<DD>environment.
+If the line starts with a plus (``+''), and the string following the plus contains
+a ``='', <B><I>ipsvd</B>(8)</I> puts the string following the plus into the environment before
+starting <I>prog</I> to handle the connection. If the string following the plus
+doesn't contain a ``='', <B><I>ipsvd</B>(8)</I> prints a warning and discards this line. </DD>
+
+<DT><B>C</B><I>num</I>
+</DT>
+<DD>concurrency. If the line starts with a ``C'', and is followed by a number, the
+per host concurrency limit for the IP address that initiated the connection
+is set to this number. Only the first concurrency instruction is considered.
+Not all <B><I>ipsvd</B>(7)</I>'s support per host concurrency. </DD>
+</DL>
 <P>
-If <B><I>ipsvd</B>(8)</I> cannot
-interpret a line, it prints a warning, discards the line, and continues
-with the next instruction if any. 
+If <B><I>ipsvd</B>(8)</I> cannot interpret
+a line, it prints a warning, discards the line, and continues with the
+next instruction if any. 
 <H2><A NAME="sect4">Example Instructions</A></H2>
 
 <DL>
 
 <DT>+MEMORY=20000 </DT>
-<DD>This
-instruction causes the environment variable ``MEMORY'' with the value ``20000''
-to be availbale to the program <I>prog</I> that handles the connection. </DD>
+<DD>This instruction
+causes the environment variable ``MEMORY'' with the value ``20000'' to be availbale
+to the program <I>prog</I> that handles the connection. </DD>
 
-<DT>+DEBUG=
-</DT>
-<DD>This instruction adds the variable ``DEBUG'' with an empty value to the environment.
-</DD>
+<DT>+DEBUG= </DT>
+<DD>This instruction
+adds the variable ``DEBUG'' with an empty value to the environment. </DD>
+
+<DT>C16 </DT>
+<DD>Set
+the per host concurrency to 16. A connection will be closed silently if
+there are already 16 active connections from this client's IP address. </DD>
 </DL>
 
-<H2><A NAME="sect5">See Also</A></H2>
+<H2><A NAME="sect5">See
+Also</A></H2>
 <I>ipsvd(7)</I>, <I>ipsvd-cdb(8)</I>, <I>tcpsvd(8)</I>, <I>udpsvd(8)</I> <P>
 <I>http://smarden.org/ipsvd/</I>
 
