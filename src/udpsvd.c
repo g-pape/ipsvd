@@ -25,7 +25,7 @@
 #include "wait.h"
 #include "pathexec.h"
 
-#define USAGE " [-nhv] [-u user] [-i dir|-x cdb] host port prog"
+#define USAGE " [-nHv] [-u user] [-i dir|-x cdb] host port prog"
 #define VERSION "$Id$"
 
 #define FATAL "udpsvd: fatal: "
@@ -40,8 +40,9 @@ const char *instructs =0;
 unsigned int iscdb =0;
 unsigned long verbose =0;
 unsigned int deny =0;
-unsigned int lookuphost =0;
+unsigned int lookuphost =1;
 
+static char seed[128];
 int s;
 char local_ip[IP4_FMT];
 char *local_port;
@@ -159,7 +160,7 @@ int main(int argc, const char **argv, const char *const *envp) {
 
   progname =*argv;
 
-  while ((opt =getopt(argc, argv, "vu:nhi:x:V")) != opteof) {
+  while ((opt =getopt(argc, argv, "vu:nHi:x:V")) != opteof) {
     switch(opt) {
     case 'v':
       verbose =1;
@@ -171,8 +172,8 @@ int main(int argc, const char **argv, const char *const *envp) {
     case 'n':
       deny =1;
       break;
-    case 'h':
-      lookuphost =1;
+    case 'H':
+      lookuphost =0;
       break;
     case 'i':
       if (instructs) usage();
@@ -198,6 +199,7 @@ int main(int argc, const char **argv, const char *const *envp) {
   if (! argv || ! *argv) usage();
   prog =argv;
   
+  dns_random_init(seed);
   sig_catch(sig_term, sig_term_handler);
   sig_ignore(sig_pipe);
   

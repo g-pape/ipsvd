@@ -3,7 +3,7 @@
 udpsvd \- UDP/IP service daemon
 .SH SYNOPSIS
 .B udpsvd
-[\-nhv] [\-u
+[\-nHv] [\-u
 .I user\fR] [\-i
 .IR dir |\-x
 .I cdb\fR]
@@ -109,8 +109,8 @@ Discard a datagram instead of starting
 to handle it, if there is no program still running handling datagrams, and if
 there are no special intructions for the client that sent the datagram.
 .TP
-.B \-h
-Look up client's hostname in DNS.
+.B \-H
+Do not look up client's hostname in DNS.
 .TP
 .B -v
 verbose.

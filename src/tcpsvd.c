@@ -50,6 +50,7 @@ char remote_ip[IP4_FMT];
 char remote_port[FMT_ULONG];
 struct passwd *pwd =0;
 
+static char seed[128];
 char bufnum[FMT_ULONG];
 struct sockaddr_in socka;
 int socka_size =sizeof(socka);
@@ -240,6 +241,7 @@ int main(int argc, const char **argv) {
   if (! argv || ! *argv) usage();
   prog =argv;
 
+  dns_random_init(seed);
   sig_block(sig_child);
   sig_catch(sig_child, sig_child_handler);
   sig_catch(sig_term, sig_term_handler);
