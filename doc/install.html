@@ -16,16 +16,25 @@ If you don't have a <tt>/package</tt> directory, create it now:
  # mkdir -p /package
  # chmod 1755 /package
 </pre>
-Download <a href="ipsvd-0.8.2.tar.gz">ipsvd-0.8.2.tar.gz</a> into
+Download <a href="ipsvd-0.9.0.tar.gz">ipsvd-0.9.0.tar.gz</a> into
 <tt>/package</tt> and unpack the archive
 <pre>
  # cd /package
- # gunzip ipsvd-0.8.2.tar
- # tar -xpf ipsvd-0.8.2.tar
- # rm ipsvd-0.8.2.tar
- # cd net/ipsvd-0.8.2
+ # gunzip ipsvd-0.9.0.tar
+ # tar -xpf ipsvd-0.9.0.tar
+ # rm ipsvd-0.9.0.tar
+ # cd net/ipsvd-0.9.0
 </pre>
-Compile and install the <i>ipsvd</i> programs
+If you are installing on Linux, and want to make the
+<a href="sslio.8.html">sslio</a> program available, download the
+<a href="http://www.matrixssl.org">matrixssl</a> library version 1-0-1 and
+move it into the <tt>src/<tt> directory (alternatively download from the
+<a href="http://ftp.debian.org/debian/pool/main/m/matrixssl/">
+Debian archive</a>)
+<pre>
+ # mv matrixssl-1-0-1.tar.gz src/
+</pre>
+Now compile and install the <i>ipsvd</i> programs
 <pre>
  # package/install
 </pre>
@@ -36,8 +45,13 @@ hierarchy, do
 </pre>
 To report success:
 <pre>
- # mail pape-ipsvd-0.8.2@smarden.org &lt;compile/sysdeps
+ # mail pape-ipsvd-0.9.0@smarden.org &lt;compile/sysdeps
 </pre>
+If you use <i>ipsvd</i> regularly, please
+<a href="http://smarden.org/pape/#contribution">contribute</a> to the project.
+<p>
+Refer to the <a href="examples.html">examples</a> to learn how to set up
+services with <i>ipsvd</i>.
 <hr>
 <address><a href="mailto:pape@smarden.org">
 Gerrit Pape &lt;pape@smarden.org&gt;

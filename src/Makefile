@@ -1,10 +1,9 @@
-#IT=unix.a byte.a time.a
-
 IT=tcpsvd udpsvd ipsvd-cdb
 
-default: $(IT) check
+default: command.linux $(IT)
+	$(MAKE) `cat command.linux`
 
-check: check-tcpsvd check-udpsvd check-ipsvd-cdb
+check: default check-tcpsvd check-udpsvd check-ipsvd-cdb
 	./check-local $(IT)
 
 tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
@@ -25,6 +24,21 @@ ipsvd-cdb: load ipsvd-cdb.o ipsvd_fmt.o ipsvd_check.o cdb.a dns.a unix.a \
 	./load ipsvd-cdb ipsvd_fmt.o ipsvd_check.o cdb.a dns.a unix.a byte.a \
 	  time.a `cat socket.lib`
 
+sslio: load sslio.o uidgid.o unix.a byte.a time.a matrixssl.a
+	./load sslio uidgid.o unix.a byte.a time.a matrixssl.a
+
+matrixssl.a: makelib matrixssl
+	install -m0644 Makefile.matrixssl matrixssl/src/Makefile.matrixssl
+	( cd matrixssl/src && $(MAKE) -fMakefile.matrixssl matrixssl.a )
+	install -m0644 matrixssl/src/matrixssl.a matrixssl.a
+
+matrixssl: matrixssl-1-0-1.tar.gz compile load
+	gzip -dc matrixssl-1-0-1.tar.gz |tar xf -
+	sed -e 's/#define USE_MULTITHREADING/#undef USE_MULTITHREADING/' \
+	  <matrixssl/src/matrixConfig.h >matrixConfig.h && \
+	    mv -f matrixConfig.h matrixssl/src/matrixConfig.h
+	touch matrixssl
+
 check-tcpsvd: load check-tcpsvd.o unix.a byte.a
 	./load check-tcpsvd unix.a byte.a
 
@@ -42,6 +56,9 @@ udpsvd.o: compile sysdeps udpsvd.c ipsvd_log.h
 
 ipsvd-cdb.o: compile sysdeps ipsvd-cdb.c
 	./compile ipsvd-cdb.c
+
+sslio.o: compile sysdeps sslio.c
+	./compile sslio.c
 
 check-tcpsvd.o: compile check-tcpsvd.c
 	./compile check-tcpsvd.c
@@ -82,8 +99,19 @@ socket.lib: compile load trysocketlib.c
 	) >socket.lib
 	rm -f trysocketlib.o trysocketlib
 
+command.linux: sysdeps
+	( ( test "`cut -c1-5 <systype`" != 'linux' && echo nolinux ) || \
+	  ( test ! -r matrixssl-1-0-1.tar.gz && echo nomatrixssl ) || \
+	  echo sslio ) >command.linux
+
+nolinux:
+	: no linux system, not making sslio
+nomatrixssl:
+	: no matrixssl library, not making sslio
+
 clean:
 	rm -f `cat TARGETS` *~
+	rm -rf matrixssl
 
 
 alloc.o: alloc.c alloc.h compile error.h

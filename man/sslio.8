@@ -1,0 +1,161 @@
+.TH sslio 8
+.SH NAME
+sslio \- SSL input/output for service daemons
+.SH SYNOPSIS
+.B sslio
+[\-u
+.IR user ]
+[\-U
+.IR user ]
+[\-/
+.IR root ]
+[\-C
+.IR cert ]
+[\-K
+.IR key ]
+[\-v]
+.I prog
+.SH DESCRIPTION
+.B sslio
+provides SSL encrypted network connections for service daemons started by
+.BR tcpsvd (8),
+or
+.BR tcpserver (1).
+.P
+Normally
+.B sslio
+is started by
+.BR tcpsvd (8)
+or
+.BR tcpserver (1),
+in turn starts the service daemon
+.IR prog ,
+and runs as child process of the service daemon.
+After performing the SSL handshake,
+.B sslio
+reads SSL encrypted data from standard input (the network), and writes
+decrypted data to the standard input of
+.IR prog ;
+it reads data from the standard output of
+.IR prog ,
+and writes SSL encrypted data to standard output (the network).
+.P
+.B sslio
+should run under a different user ID than the service daemon, and with a
+changed root directory.
+When started by root, the \-u option must be given, and the \-U and \-/
+options should be given.
+.P
+The
+.B sslio
+program uses the SSLv3 implementation of the matrixssl library.
+.SH OPTIONS
+.TP
+.I prog
+.I prog
+consists of one or more arguments, specifying the service daemon normally
+run directly by
+.BR tcpsvd (8),
+or
+.BR tcpserver (1).
+.TP
+.B \-u \fIuser\fR[:\fIgroup\fR]
+drop permissions.
+Switch user ID to
+.IR user 's
+UID, and group ID to
+.IR user 's
+primary GID before reading data from, or writing data to the network.
+If
+.I user
+is followed by a colon and a group name, the group ID is switched to
+the GID of
+.I group
+instead.
+All supplementary groups are removed.
+This option must be set when
+.B sslio
+is started by root, and cannot be set otherwise.
+.TP
+.B \-U \fIuser\fR[:\fIgroup\fR]
+drop permissions.
+Switch user ID to
+.IR user 's
+UID, and group ID to
+.IR user 's
+primary GID before starting the service daemon
+.IR prog .
+If
+.I user
+is followed by a colon and a group name, the group ID is switched to
+the GID of
+.I group
+instead.
+All supplementary groups are removed.
+This option should be set when
+.B sslio
+is started by root, and cannot be set otherwise.
+.TP
+.B \-/ \fIroot
+chroot.
+Change the root directory to
+.I root
+before reading data from, or writing data to the network.
+This option should be set when
+.B sslio
+is started by root, and cannot be set otherwise.
+.TP
+.B \-C \fIcert
+cert file.
+read the certificate from the file
+.I cert
+(default is ``./cert.pem'').
+.TP
+.B \-K \fIkey
+private key.
+Read the private key from the file
+.I key
+(default is
+.IR cert )
+.TP
+.B \-v
+verbose.
+Print verbose messages to standard error.
+.TP
+.B \-vv
+more verbose.
+Print more verbose messages to standard error.
+.TP
+.B \-vvv
+even more verbose.
+Print even more verbose messages to standard error.
+.SH ENVIRONMENT
+.TP
+SSLIO_BUFIN
+The environment variable
+.I SSLIO_BUFIN
+overrides the default input buffer size for
+.B sslio
+(8192).
+.TP
+SSLIO_BUFOU
+The environment variable
+.I SSLIO_BUFOU
+overrides the default output buffer size for
+.B sslio
+(12288).
+If the output buffer is too small to hold encrypted or decrypted data,
+.B sslio
+automatically blows up the buffer to
+.I SSLIO_BUFOU
+more bytes.
+.SH SEE ALSO
+tcpsvd(8),
+udpsvd(8),
+ipsvd(7),
+ipsvd-instruct(5),
+ipsvd-cdb(8)
+.P
+http://smarden.org/ipsvd/
+.SH AUTHOR
+Gerrit Pape <pape@smarden.org>

@@ -10,6 +10,8 @@
 <hr>
 <a href="install.html">How to install ipsvd</a><br>
 <a href="upgrade.html">Upgrading from previous versions of ipsvd</a><br>
+<p>
+<a href="benefits.html">Benefits</a><br>
 <a href="usedietlibc.html">How to use dietlibc</a>
 <p>
 <a href="examples.html">Examples</a>
@@ -17,9 +19,11 @@
 <a href="ipsvd.7.html">The <tt>ipsvd</tt> interface</a><br>
 <a href="tcpsvd.8.html">The <tt>tcpsvd</tt> program</a><br>
 <a href="udpsvd.8.html">The <tt>udpsvd</tt> program</a><br>
+<p>
+<a href="ipsvd-instruct.5.html">The ipsvd instructions</a><br>
 <a href="ipsvd-cdb.8.html">The <tt>ipsvd-cdb</tt> program</a>
 <p>
-<a href="ipsvd-instruct.5.html">ipsvd instructions</a>
+<a href="sslio.8.html">The <tt>sslio</tt> program</a> (Linux only)
 <hr>
 <i>ipsvd</i> is a set of internet protocol service daemons for Unix.
 It currently includes a TCP/IP service daemon, and a UDP/IP service daemon.
@@ -36,6 +40,8 @@ on how to handle incoming connections.
 It's possible to run different programs, or to set a different environment,
 or to deny a connection, or to set a per host concurrency limit, depending
 on the client's address or hostname.
+<p>
+On Linux the network connection optionally can be encrypted using SSLv3.
 <p>
 Normally the <i>ipsv</i> daemons are run by a supervisor process, such as
 <a href="http://smarden.org/runit/runsv.8.html">runsv</a> from the

@@ -4,6 +4,8 @@ udpsvd
 udpsvd.o
 ipsvd-cdb
 ipsvd-cdb.o
+sslio
+sslio.o
 check-tcpsvd
 check-tcpsvd.o
 check-udpsvd
@@ -20,6 +22,8 @@ uidgid.o
 socket.lib
 trysocketlib
 trysocketlib.o
+command.linux
+matrixssl.a
 cdb_hash.o
 cdb_make.o
 cdb.a

@@ -1,5 +1,14 @@
+ipsvd 0.9.0
   * src/print-cc.sh, src/print-ld.sh: head -1 -> head -n1 (thx Richard A
-    Downing FBCS).
+    Downing).
+  * sslio.c, man/sslio.8: new sslio program for Linux.
+  * Makefile.matrixssl: new; conditionally build static library.
+  * doc/benefits.html: new; some ipsvd's benefits.
+  * package/check: run program testing process.
+  * doc/examples.html: add sslio bincimaps, sslio fnord.
+  * doc/index.html, doc/install.html: adapt.
+  * package/compile, package/upgrade: conditionally build, install sslio.
+  * package/install: run package/check.
 
 ipsvd 0.8.2
 Mon, 23 Feb 2004 20:15:29 +0000
