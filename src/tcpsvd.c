@@ -24,7 +24,7 @@
 #include "pathexec.h"
 #include "ndelay.h"
 
-#define USAGE " [-Ehpv] [-u user] [-c n] [-C n] [-b n] [-l name] [-i dir|-x cdb] [-t sec] host port prog"
+#define USAGE " [-Ehpv] [-u user] [-c n] [-C n:msg] [-b n] [-l name] [-i dir|-x cdb] [-t sec] host port prog"
 #define VERSION "$Id$"
 
 #define FATAL "tcpsvd: fatal: "
@@ -166,7 +166,14 @@ void connection_accept(int c) {
   else ac =IPSVD_DEFAULT;
 
   if (phcc > 0) {
-    if (phcc > phccmax) ac =IPSVD_DENY;
+    if (phcc > phccmax) {
+      ac =IPSVD_DENY;
+      if (phccmsg.s) {
+	ndelay_on(c);
+	if (write(c, phccmsg.s, phccmsg.len) == -1)
+	  warn("unable to write concurrency message");
+      }
+    }
     if (verbose) {
       bufnum[fmt_ulong(bufnum, getpid())] =0;
       out(INFO); out("concurrency "); out(bufnum); out(" ");
@@ -202,7 +209,10 @@ void connection_accept(int c) {
     flush("\n");
   }
 
-  if (ac == IPSVD_DENY) _exit(100);
+  if (ac == IPSVD_DENY) {
+    close(c);
+    _exit(100);
+  }
   if (ac == IPSVD_EXEC) {
     args[0] ="/bin/sh"; args[1] ="-c"; args[2] =inst.s; args[3] =0;
     run =args;
@@ -229,6 +239,7 @@ int main(int argc, const char **argv) {
   int pid;
   int s;
   int conn;
+  int delim;
 
   progname =*argv;
   phccmax =0;
@@ -240,8 +251,10 @@ int main(int argc, const char **argv) {
       if (cmax < 1) usage();
       break;
     case 'C':
-      scan_ulong(optarg, &phccmax);
+      delim =scan_ulong(optarg, &phccmax);
       if (phccmax < 1) usage();
+      if (optarg[delim] == ':')
+	if (ipsvd_fmt_msg(&phccmsg, optarg +delim +1) == -1) die_nomem();
       break;
     case 'i':
       if (instructs) usage();

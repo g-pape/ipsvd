@@ -4,6 +4,7 @@
 #include "stralloc.h"
 
 extern unsigned long phccmax;
+extern stralloc phccmsg;
 
 #define IPSVD_ERR 0
 #define IPSVD_DENY 1

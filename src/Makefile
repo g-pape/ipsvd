@@ -14,8 +14,8 @@ udpsvd: load udpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o \
 	./load udpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o \
 	  ipsvd_hostname.o cdb.a byte.a unix.a time.a -ldjbdns
 
-ipsvd-cdb: load ipsvd-cdb.o ipsvd_check.o cdb.a byte.a unix.a
-	./load ipsvd-cdb ipsvd_check.o cdb.a byte.a unix.a -ldjbdns
+ipsvd-cdb: load ipsvd-cdb.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a
+	./load ipsvd-cdb ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a -ldjbdns
 
 tcpsvd.o: compile sysdeps tcpsvd.c ipsvd_log.h
 	./compile tcpsvd.c

@@ -5,7 +5,7 @@ tcpsvd \- TCP/IP service daemon
 .B tcpsvd
 [\-hpEvv] [\-c
 .I n\fR] [\-C
-.I n\fR] [\-b
+.I n\fR:\fImsg\fR] [\-b
 .I n\fR] [\-u
 .I user\fR] [\-l
 .I name\fR] [\-i
@@ -116,7 +116,7 @@ connections active,
 .B tcpsvd
 defers acceptance of a new connection until an active connection is closed.
 .TP
-.B \-C \fIn
+.B \-C \fIn\fR[:\fImsg\fR]
 per host concurrency.
 Allow only up to
 .I n
@@ -124,11 +124,28 @@ connections from the same IP address simultaneously.
 If there are
 .I n
 active connections from one IP address, new incoming connections from this IP
-address are silently closed.
+address are closed immediately.
+If
+.I n
+is followed by
+.RI : msg\fR,
+the message
+.I msg
+is written to the client if possible, before closing the connection.
+By default
+.I msg
+is empty.
+See
+.BR ipsvd-instruct (7)
+for supported escape sequences in
+.IR msg .
+
 For each accepted connection, the current per host concurrency is available
 through the environment variable
 .IR TCPCONCURRENCY .
 .I n
+and
+.I msg
 can be overwritten by
 .BR ipsvd (7)
 instructions, see

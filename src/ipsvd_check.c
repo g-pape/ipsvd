@@ -4,6 +4,7 @@
 #include <time.h>
 #include "ipsvd_check.h"
 #include "ipsvd_log.h"
+#include "ipsvd_fmt.h"
 #include "error.h"
 #include "stralloc.h"
 #include "strerr.h"
@@ -17,6 +18,7 @@
 
 extern const char *progname;
 unsigned long phccmax;
+stralloc phccmsg ={0};
 
 int ipsvd_instruct(stralloc *inst, stralloc *match) {
   char *insts;
@@ -39,7 +41,11 @@ int ipsvd_instruct(stralloc *inst, stralloc *match) {
 	else if (! pathexec_env(insts +1, 0)) return(-1);
 	break;
       case 'C':
-	if (! ccmax) scan_ulong(insts +1, &ccmax);
+	if (! ccmax) {
+	  delim =scan_ulong(insts +1, &ccmax);
+	  if (insts[delim +1] == ':')
+	    if (ipsvd_fmt_msg(&phccmsg, insts +delim +2) == -1) return(-1);
+	}
 	break;
       case 0: /* skip empty line */
 	break;
