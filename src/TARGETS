@@ -6,6 +6,7 @@ ipsvd-cdb
 ipsvd-cdb.o
 ipsvd_check.o
 ipsvd_fmt.o
+ipsvd_log.o
 cdb_hash.o
 cdb_make.o
 cdb.a

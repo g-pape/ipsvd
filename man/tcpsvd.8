@@ -12,6 +12,23 @@ tcpsvd \- TCP/IP service daemon
 .I port
 .I prog
 .SH DESCRIPTION
+.B tcpsvd
+creates a TCP/IP socket, binds it to the address
+.IR host :\fIprog\fR,
+and listens on the socket for incoming connections.
+.P
+On each incoming connection,
+.B tcpsvd
+conditionally runs a program, with standard input reading from the socket,
+and standard output writing to the socket, to handle this connection.
+.B tcpsvd
+keeps listening on the socket for new connections, and can handle multiple
+connections simultaneously.
+.P
+.B tcpsvd
+optionally checks for special intructions depending on the IP address of the
+client that initiated the connection, see
+.BR ipsvd-instruct (5).
 .SH OPTIONS
 .TP
 .I host
@@ -33,10 +50,10 @@ accepts connections to
 consists of one or more arguments.
 For each connection,
 .B tcpsvd
-runs
+normally runs
 .IR prog ,
-with descriptor 0 reading from the network and descriptor 1 writing to the
-network.
+with file descriptor 0 reading from the network, and file descriptor 1
+writing to the network.
 By default it also sets up TCP-related environment variables, see
 .BR tcp-environ (5)
 .TP
@@ -44,8 +61,13 @@ By default it also sets up TCP-related environment variables, see
 concurrency.
 Handle up to
 .I num
-concurrent connections.
+connections simultaneously.
 Default is 30.
+If there are
+.I num
+connections active,
+.B tcpsvd
+defers acceptance of a new connection until an active connection is closed.
 .TP
 .B \-u \fIuser
 drop permissions.
@@ -55,30 +77,41 @@ UID, and group ID to
 .IR user 's
 primary GID after creating and binding to the socket.
 .TP
-.B \-H
-Do not look up client's hostname in DNS.
-.TP
 .B \-r \fIdir
-rules directory.
+read instructions for handling new connections from the instructions
+directory
+.IR dir .
+See
+.BR ipsvd-instruct (5)
+for details.
 .TP
 .B \-x \fIcdb
-rules cdb.
+read instructions for handling new connections from the constant database
+.IR cdb .
+The constant database normally is created from a instructions directory by
+using
+.BR ipsvd-cdb (8).
 .TP
 .B \-n
-deny.
+Deny a new connection instead of starting
+.I prog
+to handle it, if there are no special intructions for the client that
+initiated the connection.
 .TP
 .B \-E
 no ucspi environment.
 Do not set up TCP-related environment variables.
 .TP
 .B \-H
-no remote hostname lookup.
+Do not look up client's hostname in DNS.
 .TP
 .B \-v
 verbose.
-Print verbose messsages to standard out.
+Print verbose messsages to standard output.
 .SH SEE ALSO
+ipsvd(7),
 udpsvd(8),
+ipsvd-instruct(5),
 ipsvd-cdb(8)
 .P
 http://smarden.org/ipsvd/

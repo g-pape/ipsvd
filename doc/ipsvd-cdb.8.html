@@ -9,14 +9,21 @@
 <a href="http://smarden.org/pape/">G. Pape</a><br><A HREF="index.html">ipsvd</A><hr><P>
 
 <H2><A NAME="sect0">Name</A></H2>
-ipsvd-cdb - create constant database from ipsvd rules directory 
-<H2><A NAME="sect1">Synopsis</A></H2>
-<B>ipsvd-cdb</B>
-<I>rules.cdb</I> <I>rules.tmp</I> <I>rules</I> 
-<H2><A NAME="sect2">Description</A></H2>
+ipsvd-cdb - create constant database from ipsvd instructions directory
 
-<H2><A NAME="sect3">See Also</A></H2>
-<I>tcpsvd(8)</I>, <I>udpsvd(8)</I> <P>
+<H2><A NAME="sect1">Synopsis</A></H2>
+<B>ipsvd-cdb</B> <I>cdb</I> <I>cdb.tmp</I> <I>dir</I> 
+<H2><A NAME="sect2">Description</A></H2>
+<B>ipsvd-cdb</B> scans the directory
+<I>dir</I>, and compiles all relevant information for an internet protocol service
+daemon, <B><I>ipsvd</B>(7)</I>, into the newly created constant database <I>cdb.tmp</I>. If <I>cdb.tmp</I>
+exists, it will be destroyed. <B>ipsvd-cdb</B> then renames <I>cdb.tmp</I> to <I>cdb</I>. If <I>cdb</I>
+exists, it will be destroyed. <P>
+If <B>ipsvd-cdb</B> has trouble building the constant
+database, it exits with an error message, and leaves <I>cdb</I> unchanged. 
+<H2><A NAME="sect3">See
+Also</A></H2>
+<I>ipsvd(7)</I>, <I>tcpsvd(8)</I>, <I>udpsvd(8)</I>, <I>ipsvd-instruct(5)</I> <P>
 <I>http://smarden.org/ipsvd/</I>
 
 <H2><A NAME="sect4">Author</A></H2>

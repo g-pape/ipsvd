@@ -9,16 +9,22 @@
 <hr>
 <h1>ipsvd - installation</h1>
 <hr>
-Download <a href="ipsvd-0.1.3.tar.gz">ipsvd-0.1.3.tar.gz</a> and unpack the
-archive
+<i>ipsvd</i> install into
+<a href="http://cr.yp.to/slashpackage.html">/package</a>.
+<p>
+Download <a href="ipsvd-0.1.4.tar.gz">ipsvd-0.1.4.tar.gz</a> into
+<tt>/package</tt> and unpack the archive
 <pre>
-  # gunzip ipsvd-0.1.3.tar
-  # tar -xpf ipsvd-0.1.3.tar
-  # cd ipsvd-0.1.3
+  # cd /package
+  # gunzip ipsvd-0.1.4.tar
+  # tar -xpf ipsvd-0.1.4.tar
+  # rm ipsvd-0.1.4.tar
+  # cd net/ipsvd-0.1.4
 </pre>
 Download the
 <a href="http://smarden.org/pape/djb/manpages/djbdns-pd-1.05.tar.gz">
-dibdns client library</a>, unpack the archive, and build the library
+dibdns client library</a> into the current directory, unpack the archive,
+and build the library
 <pre>
   # gunzip djbdns-pd-1.05.tar
   # tar -xpf djbdns-pd-1.05.tar
@@ -29,19 +35,16 @@ dibdns client library</a>, unpack the archive, and build the library
 </pre>
 Compile and install the <i>ipsvd</i> programs
 <pre>
-  # cd src
-  # make
-  ...
-  # install -m0755 tcpsvd /usr/local/bin/tcpsvd
-  # install -m0755 udpsvd /usr/local/bin/udpsvd
-  # install -m0755 ipsvd-cdb /usr/local/bin/ipsvd-cdb
-  # cd ..
+  # package/install
 </pre>
 If you want to make the man pages available in the <tt>/usr/local/man/</tt>
 hierarchy, do
 <pre>
-  # gzip man/*.8
-  # install -m0644 man/*.8.gz /usr/local/man/man8/
+  # package/install-man
+</pre>
+To report success:
+<pre>
+  # mail pape-ipsvd-0.1.4@smarden.org < compile/sysdeps
 </pre>
 <hr>
 <address><a href="mailto:pape@smarden.org">

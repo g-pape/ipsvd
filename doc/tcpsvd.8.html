@@ -12,64 +12,82 @@
 tcpsvd - TCP/IP service daemon 
 <H2><A NAME="sect1">Synopsis</A></H2>
 <B>tcpsvd</B> [-nEHv] [-c <I>num]</I> [-u <I>user]</I>
-[-r <I>dir</I> | -x <I>cdb]</I> <I>host</I> <I>port</I> <I>prog</I> 
+[-r <I>dir</I>|-x <I>cdb]</I> <I>host</I> <I>port</I> <I>prog</I> 
 <H2><A NAME="sect2">Description</A></H2>
-
+<B>tcpsvd</B> creates a TCP/IP socket,
+binds it to the address <I>host</I>:<I>prog</I>, and listens on the socket for incoming
+connections. <P>
+On each incoming connection, <B>tcpsvd</B> conditionally runs a program,
+with standard input reading from the socket, and standard output writing
+to the socket, to handle this connection. <B>tcpsvd</B> keeps listening on the
+socket for new connections, and can handle multiple connections simultaneously.
+<P>
+<B>tcpsvd</B> optionally checks for special intructions depending on the IP address
+of the client that initiated the connection, see <B><I>ipsvd-instruct</B>(5)</I>. 
 <H2><A NAME="sect3">Options</A></H2>
 
 <DL>
 
-<DT><I>host</I> </DT>
-<DD><I>host</I> either is a hostname,
-or a dotted-decimal IP address, or 0. If <I>host</I> is 0, <B>tcpsvd</B> accepts connections
-to any local IP address. </DD>
+<DT><I>host</I>
+</DT>
+<DD><I>host</I> either is a hostname, or a dotted-decimal IP address, or 0. If <I>host</I>
+is 0, <B>tcpsvd</B> accepts connections to any local IP address. </DD>
 
 <DT><I>port</I> </DT>
-<DD><B>tcpsvd</B> accepts connections to <I>host</I>:<I>port</I>. </DD>
+<DD><B>tcpsvd</B> accepts
+connections to <I>host</I>:<I>port</I>. </DD>
 
-<DT><I>prog</I>
-</DT>
-<DD><I>prog</I> consists of one or more arguments. For each connection, <B>tcpsvd</B> runs
-<I>prog</I>, with descriptor 0 reading from the network and descriptor 1 writing
-to the network. By default it also sets up TCP-related environment variables,
-see <B><I>tcp-environ</B>(5)</I> </DD>
+<DT><I>prog</I> </DT>
+<DD><I>prog</I> consists of one or more arguments. For
+each connection, <B>tcpsvd</B> normally runs <I>prog</I>, with file descriptor 0 reading
+from the network, and file descriptor 1 writing to the network. By default
+it also sets up TCP-related environment variables, see <B><I>tcp-environ</B>(5)</I> </DD>
 
-<DT><B>-c <I>num</B> </I></DT>
-<DD>concurrency. Handle up to <I>num</I> concurrent connections.
-Default is 30. </DD>
+<DT><B>-c <I>num</B>
+</I></DT>
+<DD>concurrency. Handle up to <I>num</I> connections simultaneously. Default is 30. If
+there are <I>num</I> connections active, <B>tcpsvd</B> defers acceptance of a new connection
+until an active connection is closed. </DD>
 
 <DT><B>-u <I>user</B> </I></DT>
-<DD>drop permissions. Switch user ID to <I>user</I>'s UID, and
-group ID to <I>user</I>'s primary GID, before starting <I>prog</I> to handle the connection.
-</DD>
+<DD>drop permissions. Switch user
+ID to <I>user</I>'s UID, and group ID to <I>user</I>'s primary GID after creating and binding
+to the socket. </DD>
 
 <DT><B>-r <I>dir</B> </I></DT>
-<DD>rules directory. </DD>
+<DD>read instructions for handling new connections from
+the instructions directory <I>dir</I>. See <B><I>ipsvd-instruct</B>(5)</I> for details. </DD>
 
 <DT><B>-x <I>cdb</B> </I></DT>
-<DD>rules cdb. </DD>
+<DD>read
+instructions for handling new connections from the constant database <I>cdb</I>.
+The constant database normally is created from a instructions directory
+by using <B><I>ipsvd-cdb</B>(8)</I>. </DD>
 
 <DT><B>-n</B> </DT>
-<DD>deny. </DD>
+<DD>Deny a new connection instead of starting <I>prog</I> to
+handle it, if there are no special intructions for the client that initiated
+the connection. </DD>
 
 <DT><B>-E</B> </DT>
-<DD>no ucspi environment. Do
-not set up TCP-related environment variables. </DD>
+<DD>no ucspi environment. Do not set up TCP-related environment
+variables. </DD>
 
 <DT><B>-H</B> </DT>
-<DD>no remote hostname lookup.
-</DD>
+<DD>Do not look up client's hostname in DNS. </DD>
 
 <DT><B>-v</B> </DT>
-<DD>verbose. Print verbose messsages to standard out. </DD>
+<DD>verbose. Print verbose
+messsages to standard output. </DD>
 </DL>
 
 <H2><A NAME="sect4">See Also</A></H2>
-<I>ipsvd-cdb(8)</I>,
-udpsvd8) <P>
+<I>ipsvd(7)</I>, <I>udpsvd(8)</I>, <I>ipsvd-instruct(5)</I>,
+<I>ipsvd-cdb(8)</I> <P>
 <I>http://smarden.org/ipsvd/</I> 
 <H2><A NAME="sect5">Author</A></H2>
-Gerrit Pape &lt;pape@smarden.org&gt; <P>
+Gerrit Pape &lt;pape@smarden.org&gt;
+<P>
 
 <HR><P>
 <A NAME="toc"><B>Table of Contents</B></A><P>

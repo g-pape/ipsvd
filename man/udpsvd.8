@@ -11,6 +11,29 @@ udpsvd \- UDP/IP service daemon
 .I port
 .I prog
 .SH DESCRIPTION
+.B udpsvd
+creates an UDP/IP socket, binds it to the address
+.IR host :\fIprog\fR,
+and listens on the socket for incoming datagrams.
+.P
+If a datagram is available on the socket,
+.B udpsvd
+conditionally starts a program, with standard input reading from the socket,
+and standard output writing to the socket, to handle this, and possibly more,
+datagrams.
+.B udpsvd
+does not start the program if another program that it has started before
+still is running.
+If the program exits,
+.B udpsvd
+again listens to the socket until a new datagram is available.
+.P
+.B udpsvd
+optionally checks for special intructions depending on the IP address of the
+client sending the datagram which not yet was handled by a running program,
+see
+.BR ipsvd-instruct (5)
+for details.
 .SH OPTIONS
 .TP
 .I host
@@ -20,16 +43,23 @@ If
 .I host
 is 0,
 .B udpsvd
-accepts connections to any local IP address.
+accepts datagrams to any local IP address.
 .TP
 .I port
 .B udpsvd
-accepts connections to
+accepts datagrams to
 .IR host :\fIport\fR.
 .TP
 .I prog
 .I prog
 consists of one or more arguments.
+.B udpsvd
+normally runs
+.I prog
+to handle a datagram, and possibly more, that is sent to
+the socket, if there is no program that was started before by
+.B udpsvd
+still running and handling datagrams.
 .TP
 .B \-u \fIuser
 drop permissions.
@@ -39,23 +69,37 @@ UID, and group ID to
 .IR user 's
 primary GID after creating and binding to the socket.
 .TP
-.B \-h
-Lookup client's hostname in DNS.
-.TP
 .B \-r \fIdir
-rules directory.
+read instructions for handling new connections from the instructions
+directory
+.IR dir .
+See
+.BR ipsvd-instruct (5)
+for details.
 .TP
 .B \-x \fIcdb
-rules cdb.
+read instructions for handling new connections from the constant database
+.IR cdb .
+The constant database normally is created from a instructions directory by
+using
+.BR ipsvd-cdb (8).
 .TP
 .B \-n
-deny.
+Discard a datagram instead of starting
+.I prog
+to handle it, if there is no program still running handling datagrams, and if
+there are no special intructions for the client that initiated the connection.
+.TP
+.B \-h
+Look up client's hostname in DNS.
 .TP
 .B -v
 verbose.
-Print verbose messaged to standard out.
+Print verbose messages to standard output.
 .SH SEE ALSO
+ipsvd(7),
 tcpsvd(8),
+ipsvd-instruct(5),
 ipsvd-cdb(8)
 .P
 http://smarden.org/ipsvd/

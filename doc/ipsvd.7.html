@@ -1,0 +1,63 @@
+
+
+
+<HTML>
+<HEAD>
+<TITLE>ipsvd(7) manual page</TITLE>
+</HEAD>
+<BODY bgcolor=white>
+<a href="http://smarden.org/pape/">G. Pape</a><br><A HREF="index.html">ipsvd</A><hr><P>
+
+<H2><A NAME="sect0">Name</A></H2>
+ipsvd - Internet protocol service daemon 
+<H2><A NAME="sect1">Synopsis</A></H2>
+<I>ipsvd</I> [-r <I>dir</I>|-x <I>cdb]</I>
+<I>host</I> <I>port</I> <I>prog</I> 
+<H2><A NAME="sect2">Description</A></H2>
+An implementation of an internet protocol service
+daemon provides the command line interface as shown in SYNOPSIS above (additional
+options are possible), and supports pre-defined instructions for handling
+connections through files in a instructions directory, and through a constant
+database as described in <B><I>ipsvd-instruct</B>(5)</I>. <P>
+Currently there are two implementations
+of an internet protocol service daemon: a TCP/IP service daemon, <B><I>tcpsvd</B>(8)</I>,
+and an UDP/IP service daemon, <B><I>udpsvd</B>(8)</I>. More internet protocol service
+daemons may appear in the future. 
+<H2><A NAME="sect3">Options</A></H2>
+
+<DL>
+
+<DT><B>-r <I>dir</B> </I></DT>
+<DD>read instructions for handling
+new connections from the instructions directory <I>dir</I>. See <B><I>ipsvd-instruct</B>(5)</I>
+for details. </DD>
+
+<DT><B>-x <I>cdb</B> </I></DT>
+<DD>read instructions for handling new connections from the
+constant database <I>cdb</I>. The constant database normally is created from a
+instructions directory by using <B><I>ipsvd-cdb</B>(8)</I>. </DD>
+</DL>
+
+<H2><A NAME="sect4">Signals</A></H2>
+If an <B>ipsvd</B> receives
+a TERM signal, it exists with 0. 
+<H2><A NAME="sect5">See Also</A></H2>
+<I>tcpsvd(8)</I>, <I>udpsvd(8)</I>, <I>ipsvd-instruct(5)</I>,
+<I>ipsvd-cdb(8)</I> <P>
+<I>http://smarden.org/ipsvd/</I> 
+<H2><A NAME="sect6">Author</A></H2>
+Gerrit Pape &lt;pape@smarden.org&gt;
+<P>
+
+<HR><P>
+<A NAME="toc"><B>Table of Contents</B></A><P>
+<UL>
+<LI><A NAME="toc0" HREF="#sect0">Name</A></LI>
+<LI><A NAME="toc1" HREF="#sect1">Synopsis</A></LI>
+<LI><A NAME="toc2" HREF="#sect2">Description</A></LI>
+<LI><A NAME="toc3" HREF="#sect3">Options</A></LI>
+<LI><A NAME="toc4" HREF="#sect4">Signals</A></LI>
+<LI><A NAME="toc5" HREF="#sect5">See Also</A></LI>
+<LI><A NAME="toc6" HREF="#sect6">Author</A></LI>
+</UL>
+</BODY></HTML>

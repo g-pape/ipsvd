@@ -1,0 +1,55 @@
+.TH ipsvd 7
+.SH NAME
+ipsvd \- Internet protocol service daemon
+.SH SYNOPSIS
+.I ipsvd
+[\-r
+.IR dir |\-x
+.I cdb\fR]
+.I host
+.I port
+.I prog
+.SH DESCRIPTION
+An implementation of an internet protocol service daemon provides
+the command line interface as shown in SYNOPSIS above (additional options are
+possible), and supports pre-defined instructions for handling connections
+through files in a instructions directory, and through a constant database as
+described in
+.BR ipsvd-instruct (5).
+.P
+Currently there are two implementations of an internet protocol service
+daemon:
+a TCP/IP service daemon,
+.BR tcpsvd (8),
+and an UDP/IP service daemon,
+.BR udpsvd (8).
+More internet protocol service daemons may appear in the future.
+.SH OPTIONS
+.TP
+.B \-r \fIdir
+read instructions for handling new connections from the instructions
+directory
+.IR dir .
+See
+.BR ipsvd-instruct (5)
+for details.
+.TP
+.B \-x \fIcdb
+read instructions for handling new connections from the constant database
+.IR cdb .
+The constant database normally is created from a instructions directory by
+using
+.BR ipsvd-cdb (8).
+.SH SIGNALS
+If an
+.B ipsvd
+receives a TERM signal, it exists with 0.
+.SH SEE ALSO
+tcpsvd(8),
+udpsvd(8),
+ipsvd-instruct(5),
+ipsvd-cdb(8)
+.P
+http://smarden.org/ipsvd/
+.SH AUTHOR
+Gerrit Pape <pape@smarden.org>

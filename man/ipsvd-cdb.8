@@ -1,15 +1,43 @@
 .TH ipsvd-cdb 8
 .SH NAME
-ipsvd-cdb \- create constant database from ipsvd rules directory
+ipsvd-cdb \- create constant database from ipsvd instructions directory
 .SH SYNOPSIS
 .B ipsvd-cdb
-.I rules.cdb
-.I rules.tmp
-.I rules
+.I cdb
+.I cdb.tmp
+.I dir
 .SH DESCRIPTION
+.B ipsvd-cdb
+scans the directory
+.IR dir ,
+and compiles all relevant information for an internet protocol service
+daemon,
+.BR ipsvd (7),
+into the newly created constant database
+.IR cdb.tmp .
+If
+.I cdb.tmp
+exists, it will be destroyed.
+.B ipsvd-cdb
+then renames
+.I cdb.tmp
+to
+.IR cdb .
+If
+.I cdb
+exists, it will be destroyed.
+.P
+If
+.B ipsvd-cdb
+has trouble building the constant database, it exits with an error message,
+and leaves
+.I cdb
+unchanged.
 .SH SEE ALSO
+ipsvd(7),
 tcpsvd(8),
-udpsvd(8)
+udpsvd(8),
+ipsvd-instruct(5)
 .P
 http://smarden.org/ipsvd/
 .SH AUTHOR

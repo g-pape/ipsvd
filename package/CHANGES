@@ -1,3 +1,11 @@
+ipsd 0.1.4
+Thu, 20 Mar 2003 09:36:34 +0100
+  * installs into /package.
+  * man/ipsvd.7, man/ipsvd-instruct.5: new.
+  * adapt manpages
+  * adapt documentation.
+  * tcpsvd.c, udpsvd.c: code cleanup.
+
 ipsvd 0.1.3
 Tue, 18 Mar 2003 22:27:36 +0100
   * initial version.
