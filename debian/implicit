@@ -26,11 +26,14 @@ deb-checkuid:
 	  debian/$*/usr/share/doc/$*/changelog.Debian
 	test ! -r changelog || \
 	  install -m0644 changelog debian/$*/usr/share/doc/$*/
+	test -r debian/$*/usr/share/doc/$*/changelog || \
+	  mv debian/$*/usr/share/doc/$*/changelog.Debian \
+	    debian/$*/usr/share/doc/$*/changelog
 	gzip -9 debian/$*/usr/share/doc/$*/changelog*
 %.deb-docs-examples:
 	rm -rf debian/$*/usr/share/doc/$*/examples
 	test ! -r debian/$*.examples || \
-	  install -d -m0755 debian/$*/usr/share/doc/$*/examples; \
+	  install -d -m0755 debian/$*/usr/share/doc/$*/examples
 	for i in `cat debian/$*.examples 2>/dev/null || :`; do \
 	  install -m0644 $$i debian/$*/usr/share/doc/$*/examples/ || exit 1; \
 	done
@@ -38,6 +41,13 @@ deb-checkuid:
 	for i in `cat debian/$*.docs 2>/dev/null || :`; do \
 	  install -m0644 $$i debian/$*/usr/share/doc/$*/ || exit 1; \
 	done
+	test ! -r debian/$*.README.Debian || \
+	  install -m0644 debian/$*.README.Debian \
+	    debian/$*/usr/share/doc/$*/README.Debian
+	test ! -r debian/$*.NEWS.Debian || \
+	  install -m0644 debian/$*.NEWS.Debian \
+	    debian/$*/usr/share/doc/$*/NEWS.Debian
+	gzip -9 debian/$*/usr/share/doc/$*/NEWS.Debian || :
 	: debian/$*/usr/share/doc/$*/ created
 
 %.deb-DEBIAN-base:

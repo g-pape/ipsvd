@@ -2,7 +2,6 @@ Source: ipsvd
 Section: net
 Priority: optional
 Maintainer: Gerrit Pape <pape@smarden.org>
-Build-Depends: libdjbdns-dev
 Standards-Version: 3.6.1.0
 
 Package: ipsvd

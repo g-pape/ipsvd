@@ -10,10 +10,10 @@ DIR =`pwd`/debian/ipsvd
 
 build: deb-checkdir build-stamp
 build-stamp:
-	tar xzpf ipsvd-0.7.1.tar.gz
+	tar xzpf ipsvd-0.8.0.tar.gz
 	( \
-	cd net/ipsvd-0.7.1/src && \
-	ln -s ipsvd-0.7.1 ipsvd && mv ipsvd ../.. && \
+	cd net/ipsvd-0.8.0/src && \
+	ln -s ipsvd-0.8.0 ipsvd && mv ipsvd ../.. && \
 	echo '/usr/include/djbdns' >conf-djbdnsinc && \
 	$(MAKE); \
 	)
