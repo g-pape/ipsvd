@@ -4,23 +4,26 @@ IT=tcpsvd udpsvd ipsvd-cdb
 
 default: $(IT)
 
-tcpsvd: load tcpsvd.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a
-	./load tcpsvd ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a -ldjbdns
+tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a
+	./load tcpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a -ldjbdns
 
-udpsvd: load udpsvd.o ipsvd_fmt.o byte.a unix.a time.a
-	./load udpsvd ipsvd_fmt.o byte.a unix.a time.a -ldjbdns
+udpsvd: load udpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a time.a
+	./load udpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a time.a -ldjbdns
 
-ipsvd-cdb: load ipsvd-cdb.o cdb.a byte.a unix.a
-	./load ipsvd-cdb cdb.a byte.a unix.a -ldjbdns
+ipsvd-cdb: load ipsvd-cdb.o ipsvd_check.o cdb.a byte.a unix.a
+	./load ipsvd-cdb ipsvd_check.o cdb.a byte.a unix.a -ldjbdns
 
 tcpsvd.o: compile sysdeps tcpsvd.c ipsvd_log.h
 	./compile tcpsvd.c
 
-udpsvd.o: compile sysdeps udpsvd.c
+udpsvd.o: compile sysdeps udpsvd.c ipsvd_log.h
 	./compile udpsvd.c
 
 ipsvd-cdb.o: compile sysdeps ipsvd-cdb.c
 	./compile ipsvd-cdb.c
+
+ipsvd_log.o: compile ipsvd_log.c
+	./compile ipsvd_log.c
 
 ipsvd_fmt.o: compile ipsvd_fmt.c
 	./compile ipsvd_fmt.c

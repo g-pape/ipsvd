@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <dirent.h>
+#include "ipsvd_check.h"
 #include "sgetopt.h"
 #include "error.h"
 #include "open.h"
@@ -12,14 +13,7 @@
 #include "direntry.h"
 #include "cdb.h"
 #include "cdb_make.h"
-#include "openreadclose.h"
-#include "scan.h"
 #include "str.h"
-#include "fmt.h"
-#include "env.h"
-#include "buffer.h"
-#include "tai.h"
-#include "uint32.h"
 
 #define USAGE " ipsvd-cdb rules.cdb rules.tmp rules"
 #define VERSION "$Id$"
@@ -36,6 +30,7 @@ struct cdb cdb;
 int fdcdb;
 int fdtmp;
 stralloc sa ={0};
+stralloc tmp ={0};
 
 void usage() { strerr_die4x(111, "usage: ", progname, USAGE, "\n"); }
 void die_nomem() { strerr_die2x(111, FATAL, "out of memory."); }
@@ -43,15 +38,14 @@ void fatal(char *m0) { strerr_die3sys(111, FATAL, m0, ": "); }
 void fatal2(char *m0, char *m1) {
   strerr_die5sys(111, FATAL, m0, ": ", m1, ": ");
 }
-void warn(char *m0, char *m1) {
-  strerr_warn4(WARNING, m0, ": ", m1, 0);
-}
+void warn(char *m0, char *m1) { strerr_warn4(WARNING, m0, ": ", m1, 0); }
 
 int main(int argc, char **argv) {
   int mydir;
-DIR *dir;
+  DIR *dir;
   direntry *d;
   struct stat s;
+  int ac;
   int i;
 
   progname =*argv++;
@@ -80,30 +74,26 @@ DIR *dir;
       errno =0;
       continue;
     }
-    if ((s.st_mode & S_IRWXU) == 0) { /* drop */
+    ac =ipsvd_check(0, &sa, &tmp, ".", d->d_name);
+    if (ac == -1) fatal2("unable to read rule", d->d_name);
+    if (ac == IPSVD_ERR) fatal2("unable to read", "."); /* impossible? */
+
+    switch(ac) {
+    case IPSVD_DENY:
       if (cdb_make_add(&c, d->d_name, str_len(d->d_name), "D", 1) == -1)
 	fatal2("unable to add entry", rules);
-      continue;
-    }
-    if (s.st_mode & S_IXUSR) { /* exec */
-      if (! openreadclose(d->d_name, &sa, 256))
-	fatal2("unable to read", d->d_name);
-      if (sa.s[sa.len -1] != '\n') if (! stralloc_0(&sa)) die_nomem();
+      break;
+    case IPSVD_EXEC:
       sa.s[sa.len -1] ='X';
       if (cdb_make_add(&c, d->d_name, str_len(d->d_name), sa.s, sa.len) == -1)
 	fatal2("unable to add entry", rules);
-      continue;
-    }
-    if (s.st_mode & S_IRUSR) { /* env */
-      if (! openreadclose(d->d_name, &sa, 256))
-	fatal2("unable to read", d->d_name);
+      break;
+    case IPSVD_INSTRUCT:
       for (i =0; i < sa.len; i++) if (sa.s[i] == '\n') sa.s[i] =0;
-      if (! sa.len || (sa.s[sa.len -1] != 0))
-	if (! stralloc_0(&sa)) die_nomem();
-      sa.s[sa.len -1] ='A';
+      sa.s[sa.len -1] ='I';
       if (cdb_make_add(&c, d->d_name, str_len(d->d_name), sa.s, sa.len) == -1)
 	fatal2("unable to add entry", rules);
-      continue;
+      break;
     }
     warn("ignore", d->d_name);
   }

@@ -1,0 +1,39 @@
+#include "buffer.h"
+#include "ipsvd_log.h"
+
+void out(char *m) { buffer_puts(buffer_1, m); }
+void outfix(char *m) { 
+  char ch;
+  int i;
+
+  if (! m) return;
+  for (i =0; i < 100; ++i) {
+    ch =m[i];
+    if (!ch) return;
+    if (ch < 33) ch ='?';
+    else if (ch > 126) ch ='?';
+    else if (ch == '%') ch ='?'; /* logger stupidity */
+    else if (ch == ':') ch ='?';
+    buffer_put(buffer_1, &ch, 1);
+  }
+  out("...(truncate)");
+}
+void outrule(stralloc *sa) {
+  char ch;
+  int len, i;
+
+  if (! sa->s || ! sa->len) return;
+  for (len =sa->len; sa->s[len -1] == 0; --len);
+  for (i =0; i < 100; ++i) {
+    if (i >= len) return;
+    ch =sa->s[i];
+    if (ch == 0) ch =',';
+    if (ch < 32) ch ='?';
+    else if (ch > 126) ch ='?';
+    else if (ch == '%') ch ='?';
+    else if (ch == ':') ch ='?';
+    buffer_put(buffer_1, &ch, 1);
+  }
+  out("...(truncate)");
+}
+void flush(char *m) { buffer_putsflush(buffer_1, m); }

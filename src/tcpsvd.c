@@ -43,8 +43,8 @@ unsigned int svnum =0;
 unsigned long svmax =30;
 unsigned long deny =0;
 unsigned long ucspi =1;
-const char *rulesdir =0;
-const char *rulescdb =0;
+const char *rules =0;
+unsigned int cdbrules =0;
 char local_ip[IP4_FMT];
 char local_hostname[] ="";
 char *local_port;
@@ -74,7 +74,7 @@ void drop2(char *m0, char *m1) {
 }
 
 void ucspi_env() {
-  /* setup cuspi env */
+  /* setup ucspi env */
   if (! pathexec_env("PROTO", "TCP")) drop_nomem();
   if (! pathexec_env("TCPLOCALIP", local_ip)) drop_nomem();
   if (! pathexec_env("TCPLOCALPORT", local_port)) drop_nomem();
@@ -91,144 +91,6 @@ void connection_status() {
   out(INFO); out("status "); out(bufnum); out("/");
   bufnum[fmt_ulong(bufnum, svmax)] =0;
   out(bufnum); flush("\n");
-}
-
-void connection_accept(int c) {
-  stralloc rule ={0};
-  stralloc match ={0};
-  char *envs;
-  unsigned int envlen;
-  int delim;
-  int i;
-  int fd;
-  const char *run[4];
-
-  remote_ip[ipsvd_fmt_ip(remote_ip, (char*)&socka.sin_addr)] =0;
-  remote_port[ipsvd_fmt_port(remote_port, (char*)&socka.sin_port)] =0;
-  if (lookuphost) {
-    if (dns_name4(&remote_hostname, (char *)&socka.sin_addr) == -1) {
-      warn2("temporarily unable to reverse look up IP address", remote_ip);
-      if (! stralloc_copys(&remote_hostname, "(unknown)")) drop_nomem();
-      if (! stralloc_0(&remote_hostname)) drop_nomem();
-    }
-    if (! stralloc_0(&remote_hostname))
-      drop2("unable to reverse look up IP address", remote_ip);
-  }
-
-  if (rulesdir) {
-    if ((i =ipsv_check_dirip(&rule, &match, "./rules", remote_ip)) == -1)
-      drop2("unable to check rule", remote_ip);
-    if(! stralloc_0(&match)) drop_nomem();
-  }
-  else if (rulescdb) {
-    if ((fd =open_read(rulescdb)) == -1)
-      drop2("unable to open", (char*)rulescdb);
-    if ((i =ipsv_check_cdbip(&rule, &match, fd, remote_ip)) == -1) {
-      close(fd);
-      drop2("unable to check cdb", remote_ip);
-    }
-    close(fd);
-    if(! stralloc_0(&match)) drop_nomem();
-  }
-  else i =1;
- 
-  if (verbose) {
-    connection_status();
-    out(INFO);
-    switch(i) {
-    case 0: /* deny */
-      out("deny ");
-      break;
-    case 1: /* default */
-      if (deny) {
-	out("deny ");
-	i =0;
-	break;
-      }
-    case 2: /* env */
-      out("start ");
-      break;
-    case 3: /* custom */
-      out("exec ");
-      break;
-    }
-    bufnum[fmt_ulong(bufnum, getpid())] =0;
-    out(bufnum); out(" :"); outfix(remote_hostname.s); out(":");
-    outfix(remote_ip); out(":"); out(remote_port);
-  }
-
-  switch(i) {
-  case 0:
-    if (verbose) {
-      out(" ");
-      if (rulesdir || rulescdb) {
-	if (rulescdb) {
-	  out((char*)rulescdb); out(":");
-	}
-	outfix(match.s);
-      }
-      flush("\n");
-    }
-    _exit(100);
-  case 2:
-    if (rulesdir || rulescdb) {
-      if (verbose) {
-	out(" ");
-	if (rulescdb) {
-	  out((char*)rulescdb); out(":");
-	}
-	outfix(match.s);
-      }
-      if (rule.len) {
-	envs =rule.s; envlen =rule.len;
-	while ((i =byte_chr(envs, envlen, 0)) < envlen) {
-	  delim =str_chr(envs, '=');
-	  if (envs[delim] == '=') {
-	    if (verbose) {
-	      out(":"); outfix(envs);
-	    }
-	    envs[delim] =0;
-	    if (! pathexec_env(envs, envs +delim +1)) drop_nomem();
-	  }
-	  envs += i +1;
-	  envlen -= i +1;
-	}
-      }
-    }
-    else out(":");
-  case 1:
-    if (verbose) flush("\n");
-    if (ucspi) ucspi_env();
-    if ((fd_move(0, c) == -1) || (fd_copy(1, 0) == -1))
-      drop("unable to set filedescriptor");
-    sig_uncatch(sig_child);
-    sig_unblock(sig_child);
-    sig_uncatch(sig_term);
-    sig_uncatch(sig_pipe);
-    pathexec(prog);
-    break;
-  case 3:
-    run[0] ="/bin/sh";
-    run[1] ="-c";
-    run[2] =rule.s;
-    run[3] =0;
-    if (rule.s[rule.len -1] == '\n') rule.s[rule.len -1] =0;
-    if (verbose) {
-      out(" "); outfix(match.s);
-      out(":sh -c "); outfix(rule.s); flush("\n");
-    }
-    if (ucspi) ucspi_env();
-    if ((fd_move(0, c) == -1) || (fd_copy(1, 0) == -1))
-      drop("unable to set filedescriptor");
-    sig_uncatch(sig_child);
-    sig_unblock(sig_child);
-    sig_uncatch(sig_term);
-    sig_uncatch(sig_pipe);
-    pathexec(run);
-    break;
-  }
-  if (svnum) svnum--;
-  drop2("unable to run", (char*)*prog);
 }
 
 void sig_term_handler() {
@@ -253,6 +115,73 @@ void sig_child_handler() {
   if (verbose) connection_status();
 }
 
+void connection_accept(int c) {
+  stralloc rule ={0};
+  stralloc match ={0};
+  int ac;
+  const char **run;
+  const char *args[4];
+
+  remote_ip[ipsvd_fmt_ip(remote_ip, (char*)&socka.sin_addr)] =0;
+  remote_port[ipsvd_fmt_port(remote_port, (char*)&socka.sin_port)] =0;
+
+  if (lookuphost) {
+    if (dns_name4(&remote_hostname, (char *)&socka.sin_addr) == -1) {
+      warn2("temporarily unable to reverse look up IP address", remote_ip);
+      if (! stralloc_copys(&remote_hostname, "(unknown)")) drop_nomem();
+    }
+    if (! stralloc_0(&remote_hostname)) drop_nomem();
+  }
+
+  if (rules) {
+    ac =ipsvd_check(cdbrules, &rule, &match, (char*)rules, remote_ip);
+    if (ac == -1) drop2("unable to check rule", remote_ip);
+    if (ac == IPSVD_ERR) drop2("unable to read", (char*)rules);
+  }
+  else ac =IPSVD_DEFAULT;
+
+  if (deny && (ac == IPSVD_DEFAULT)) ac =IPSVD_DENY;
+
+  if (verbose) {
+    out(INFO);
+    switch(ac) {
+    case IPSVD_DENY: out("deny "); break;
+    case IPSVD_DEFAULT: case IPSVD_INSTRUCT: out("start "); break;
+    case IPSVD_EXEC: out("exec "); break;
+    }
+    bufnum[fmt_ulong(bufnum, getpid())] =0;
+    out(bufnum); out(" :"); outfix(remote_hostname.s); out(":");
+    outfix(remote_ip); out(":"); outfix(remote_port);
+    if (rules) {
+      out(" ");
+      if (cdbrules) {
+	out((char*)rules); out("/");
+      }
+      outfix(match.s);
+      if(rule.s && rule.len) {
+	out(": "); outrule(&rule);
+      }
+    }
+    flush("\n");
+  }
+
+  if (ac == IPSVD_DENY) {
+    _exit(100);
+  }
+  if (ac == IPSVD_EXEC) {
+    args[0] ="/bin/sh"; args[1] ="-c"; args[2] =rule.s; args[3] =0;
+    run =args;
+  }
+  else run =prog;
+  if ((fd_move(0, c) == -1) || (fd_copy(1, 0) == -1))
+    drop("unable to set filedescriptor");
+  sig_uncatch(sig_term);
+  sig_uncatch(sig_pipe);
+  pathexec(run);
+
+  drop2("unable to run", (char*)*prog);
+}
+
 int main(int argc, const char **argv) {
   int opt;
   char *host;
@@ -273,10 +202,13 @@ int main(int argc, const char **argv) {
       if (svmax < 1) usage();
       break;
     case 'r':
-      rulesdir =optarg;
+      if (rules) usage();
+      rules =optarg;
       break;
     case 'x':
-      rulescdb =optarg;
+      if (rules) usage();    
+      rules =optarg;
+      cdbrules =1;
       break;
     case 'u':
       if (! (pwd =getpwnam(optarg)))
@@ -302,7 +234,6 @@ int main(int argc, const char **argv) {
   }
   argv +=optind;
 
-  if (rulesdir && rulescdb) usage();
   if (! argv || ! *argv) usage();
   host =(char*)*argv++;
   if (! argv || ! *argv) usage();
@@ -325,7 +256,8 @@ int main(int argc, const char **argv) {
   if ((dns_ip4(&ips, &sa) == -1) || (ips.len < 4))
     if (dns_ip4_qualify(&ips, &fqdn, &sa) == -1)
       fatal2("temporarily unable to look up IP address", host);
-  if (ips.len < 4) fatal2("unable to look up IP address", host);
+  if (ips.len < 4) 
+    strerr_die3x(100, FATAL, "unable to look up IP address: ", host);
   ips.len =4;
   ips.s[4] =0;
   local_ip[ipsvd_fmt_ip(local_ip, ips.s)] =0;
@@ -354,7 +286,7 @@ int main(int argc, const char **argv) {
       bufnum[fmt_ulong(bufnum, pwd->pw_uid)] =0;
       out(", uid "); out(bufnum);
       bufnum[fmt_ulong(bufnum, pwd->pw_gid)] =0;
-      out(" gid "); out(bufnum);
+      out(", gid "); out(bufnum);
     }
     flush(", starting.\n");
   }

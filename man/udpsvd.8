@@ -3,7 +3,8 @@
 udpsvd \- UDP/IP service daemon
 .SH SYNOPSIS
 .B udpsvd
-[\-v]
+[\-vh] [\-u
+.I user\fR]
 .I host
 .I port
 .I prog
@@ -28,9 +29,20 @@ accepts connections to
 .I prog
 consists of one or more arguments.
 .TP
+.B \-u \fIuser
+drop permissions.
+Switch user ID to
+.IR user 's
+UID, and group ID to
+.IR user 's
+primary GID after creating and binding to the socket.
+.TP
 .B -v
 verbose.
 Print verbose messaged to standard out.
+.TP
+.B \-h
+lookup hostname.
 .SH SEE ALSO
 tcpsvd(8),
 ipsvd-cdb(8)
