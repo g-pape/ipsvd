@@ -101,7 +101,7 @@ void connection_accept(int c) {
   remote_port[ipsvd_fmt_port(remote_port, (char*)&socka.sin_port)] =0;
   if (lookuphost) {
     if (ipsvd_hostname(&remote_hostname, ip, paranoid) == -1)
-      warn2("temporarily unable to look up in DNS", remote_ip);
+      warn2("unable to look up hostname", remote_ip);
     if (! stralloc_0(&remote_hostname)) drop_nomem();
   }
 
@@ -233,11 +233,10 @@ int main(int argc, const char **argv, const char *const *envp) {
   if (! stralloc_copys(&sa, host)) die_nomem();
   if ((dns_ip4(&ips, &sa) == -1) || (ips.len < 4))
     if (dns_ip4_qualify(&ips, &fqdn, &sa) == -1)
-      fatal2("temporarily unable to look up IP address", host);
+      fatal2("unable to look up ip address", host);
   if (ips.len < 4)
-    strerr_die3x(100, FATAL, "unable to look up IP address: ", host);
+    strerr_die3x(100, FATAL, "unable to look up ip address: ", host);
   ips.len =4;
-  //  ips.s[4] =0;
   if (! stralloc_0(&ips)) die_nomem();
   local_ip[ipsvd_fmt_ip(local_ip, ips.s)] =0;
   if (! local_hostname.len) {

@@ -77,15 +77,15 @@ int ipsvd_instruct(stralloc *inst, stralloc *match, char *ip) {
 	  if ((dns_ip4(&ips, &sa) == -1) || (ips.len < 4))
 	    if (dns_ip4_qualify(&ips, &fqdn, &sa) == -1) {
 	      if (! stralloc_0(&sa)) return(-1);
-	      strerr_warn4(progname, ": warning: ",
-			   "temporarily unable to look up IP address: ",
-			   sa.s, 0);
+	      strerr_warn5(progname, ": warning: ",
+			   "unable to look up ip address: ", sa.s,
+			   ": ", &strerr_sys);
 	      break;
 	    }
 	  if (ips.len < 4) {
 	    if (! stralloc_0(&sa)) return(-1);
 	    strerr_warn4(progname, ": warning: ",
-			 "unable to look up IP address: ", sa.s, 0);
+			 unable to look up ip address: ", sa.s, 0);
 	    break;
 	  }
 	  for (j =0; j +4 <= ips.len; j +=4) {
@@ -126,7 +126,7 @@ int ipsvd_check_direntry(stralloc *d, stralloc *m, char *ip,
     if (t && (s.st_mode & S_IWUSR) && (now >= s.st_atime))
       if ((now -s.st_atime) >= t) {
 	if (unlink(m->s) == -1)
-	  strerr_warn4(progname, ": unable to unlink ", m->s, ": ",
+	  strerr_warn4(progname, ": warning: unable to unlink: ", m->s, ": ",
 		       &strerr_sys);
 	return(0);
       }

@@ -12,6 +12,7 @@ Mon, 20 Oct 2003 14:26:18 +0000
   * Makefile: minor.
   * doc/upgrade.html: new.
   * doc/index.html adapt.
+  * tcpsvd.c, udpsvd.c: minor changes in warning output.
 
 ipsvd 0.6.1
 Tue, 14 Oct 2003 11:17:29 +0000
