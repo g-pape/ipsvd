@@ -1,5 +1,5 @@
 ipsvd 0.3.4
-Tue, 29 Apr 2003 14:24:05 +0200
+Tue, 29 Apr 2003 14:56:43 +0200
   * ipsvd_check.c, ipsvd_check.h: support -t option: timeout for last
     access of files in an instructions directory; code cleanup.
   * tcpsvd.c, udpsvd.c: support -t option.
