@@ -12,14 +12,14 @@ ifneq (,$(findstring diet,$(DEB_BUILD_OPTIONS)))
   CC =diet -v -Os gcc -nostdinc
 endif
 
-DIR =`pwd`/debian/ipsvd
+DIR =$(shell pwd)/debian/ipsvd
 
 unpack: deb-checkdir unpack-stamp
 unpack-stamp:
-	tar xzf ipsvd-0.9.5.tar.gz
-	ln -s ipsvd-0.9.5 net/ipsvd
-	echo "$(CC) $(CFLAGS)" >net/ipsvd/src/conf-cc
-	echo "$(CC) $(LDFLAGS)" >net/ipsvd/src/conf-ld
+	tar xzf ipsvd-0.9.6.tar.gz
+	ln -s ipsvd-0.9.6 net/ipsvd
+	echo '$(CC) $(CFLAGS)' >net/ipsvd/src/conf-cc
+	echo '$(CC) $(LDFLAGS)' >net/ipsvd/src/conf-ld
 	touch unpack-stamp
 
 build: deb-checkdir build-stamp
@@ -36,36 +36,36 @@ build-stamp: unpack-stamp
 clean: deb-checkdir deb-checkuid
 	rm -rf net
 	rm -f unpack-stamp build-stamp
-	rm -rf "$(DIR)"
+	rm -rf '$(DIR)'
 	rm -f debian/files debian/substvars changelog
 
 install: deb-checkdir deb-checkuid build-stamp
-	rm -rf "$(DIR)"
+	rm -rf '$(DIR)'
 	# programs
-	install -d -m0755 "$(DIR)"/usr/bin
+	install -d -m0755 '$(DIR)'/usr/bin
 	for i in tcpsvd udpsvd ipsvd-cdb; do \
-	  install -m0755 net/ipsvd/src/$$i "$(DIR)"/usr/bin/ || exit 1; \
+	  install -m0755 net/ipsvd/src/$$i '$(DIR)'/usr/bin/ || exit 1; \
 	done
 	test ! -x net/ipsvd/src/sslio || \
-	  install -m0755 net/ipsvd/src/sslio "$(DIR)"/usr/bin/
-	$(STRIP) -R .comment -R .note "$(DIR)"/usr/bin/*
+	  install -m0755 net/ipsvd/src/sslio '$(DIR)'/usr/bin/
+	$(STRIP) -R .comment -R .note '$(DIR)'/usr/bin/*
 	# man pages
 	for i in 5 7 8; do \
-	  install -d -m0755 "$(DIR)"/usr/share/man/man$$i && \
+	  install -d -m0755 '$(DIR)'/usr/share/man/man$$i && \
 	  for j in net/ipsvd/man/*.$$i; do \
-	    install -m0644 $$j "$(DIR)"/usr/share/man/man$$i/ || exit 1; \
+	    install -m0644 $$j '$(DIR)'/usr/share/man/man$$i/ || exit 1; \
 	  done || exit 1; \
 	done
-	gzip -9 "$(DIR)"/usr/share/man/man?/*.?
+	gzip -9 '$(DIR)'/usr/share/man/man?/*.?
 	# changelog
 	rm -f changelog && ln -s net/ipsvd/package/CHANGES changelog
 
 binary-indep:
 
 binary-arch: install ipsvd.deb
-	test "$(CC)" != 'gcc' || dpkg-shlibdeps "$(DIR)"/usr/bin/*
-	dpkg-gencontrol -isp -pipsvd -P"$(DIR)"
-	dpkg -b "$(DIR)" ..
+	test '$(CC)' != 'gcc' || dpkg-shlibdeps '$(DIR)'/usr/bin/*
+	dpkg-gencontrol -isp -pipsvd -P'$(DIR)'
+	dpkg -b '$(DIR)' ..
 
 binary: binary-indep binary-arch
 .PHONY: unpack build clean install binary-indep binary-arch binary
