@@ -1,4 +1,5 @@
-  * doc/index.html, doc/examples.html: typos.
+  * doc/index.html, doc/examples.html, man/ipsvd-instruct.5: typos.
+  * doc/install.html: typo (thx Charlie Brady).
 
 ipsvd 0.7.1
 Wed, 26 Nov 2003 09:14:35 +0000
