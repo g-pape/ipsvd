@@ -15,10 +15,11 @@ Description: Internet protocol service daemons
  (ipsv) daemon waits for incoming connections on a socket, and for new
  connections, it conditionally runs an arbitrary program to handle the
  connection.  ipsv daemons can be told to read and follow pre-defined
- instructions on how to handle incoming connections.  Based on the
- client's IP address or hostname, it's possible to run different
+ instructions on how to handle incoming connections, based on the
+ client's IP address or hostname it's possible to run different
  programs, set a different environment, deny a connection, or set a per
- host concurrency limit.
+ host concurrency limit.  The network connection optionally can be
+ encrypted using SSLv3.
  .
  ipsvd can be used to run services usually run by inetd, xinetd, or
  tcpserver.  Normally the ipsv daemons are run by a supervisor process,

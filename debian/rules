@@ -5,8 +5,8 @@ ifneq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
   STRIP =: nostrip
 endif
 
-CFLAGS =-O2 -Wall
-LDFLAGS =-s -Os -pipe
+CFLAGS =-g -O2 -Wall
+LDFLAGS =-Os
 CC =gcc
 ifneq (,$(findstring diet,$(DEB_BUILD_OPTIONS)))
   CC =diet -v -Os gcc
@@ -18,6 +18,7 @@ unpack: deb-checkdir unpack-stamp
 unpack-stamp:
 	tar xzf ipsvd-0.9.4.tar.gz
 	ln -s ipsvd-0.9.4 net/ipsvd
+	(cd net/ipsvd && patch -p0) <debian/diff/sslio-man.diff
 	echo "$(CC) $(CFLAGS)" >net/ipsvd/src/conf-cc
 	echo "$(CC) $(LDFLAGS)" >net/ipsvd/src/conf-ld
 	touch unpack-stamp
@@ -27,9 +28,9 @@ build-stamp: unpack-stamp
 	-gcc -v
 	$(MAKE) -Cnet/ipsvd/src default check
 	if test -r /usr/include/matrixSsl.h; then \
-	  ( cd net/ipsvd/src && \
+	  (cd net/ipsvd/src && \
 	  ./compile sslio.c && \
-	  ./load sslio uidgid.o unix.a byte.a time.a -lmatrixssl ); \
+	  ./load sslio uidgid.o unix.a byte.a time.a -lmatrixssl); \
 	fi
 	touch build-stamp
 
