@@ -3,8 +3,10 @@
 udpsvd \- UDP/IP service daemon
 .SH SYNOPSIS
 .B udpsvd
-[\-vh] [\-u
-.I user\fR]
+[\-nhv] [\-u
+.I user\fR] [\-r
+.IR dir |\-x
+.I cdb\fR]
 .I host
 .I port
 .I prog
@@ -37,12 +39,21 @@ UID, and group ID to
 .IR user 's
 primary GID after creating and binding to the socket.
 .TP
+.B \-h
+Lookup client's hostname in DNS.
+.TP
+.B \-r \fIdir
+rules directory.
+.TP
+.B \-x \fIcdb
+rules cdb.
+.TP
+.B \-n
+deny.
+.TP
 .B -v
 verbose.
 Print verbose messaged to standard out.
-.TP
-.B \-h
-lookup hostname.
 .SH SEE ALSO
 tcpsvd(8),
 ipsvd-cdb(8)

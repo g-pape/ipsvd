@@ -27,7 +27,7 @@
 #include "wait.h"
 #include "pathexec.h"
 
-#define USAGE " [-vh] [-u user] host port prog"
+#define USAGE " [-nhv] [-u user] [-r dir|-x cdb] host port prog"
 #define VERSION "$Id$"
 
 #define FATAL "udpsvd: fatal: "

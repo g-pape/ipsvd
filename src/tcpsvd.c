@@ -25,7 +25,7 @@
 #include "pathexec.h"
 #include "ndelay.h"
 
-#define USAGE " [-dEHv] [-c num] [-u user] [-r dir | -x cdb] host port prog"
+#define USAGE " [-nEHv] [-u user] [-c num] [-r dir|-x cdb] host port prog"
 #define VERSION "$Id$"
 
 #define FATAL "tcpsvd: fatal: "

@@ -6,8 +6,7 @@ tcpsvd \- TCP/IP service daemon
 [\-nEHv] [\-c
 .I num\fR] [\-u
 .I user\fR] [\-r
-.I dir
-| \-x
+.IR dir |\-x
 .I cdb\fR]
 .I host
 .I port
@@ -54,9 +53,10 @@ Switch user ID to
 .IR user 's
 UID, and group ID to
 .IR user 's
-primary GID, before starting
-.I prog
-to handle the connection.
+primary GID after creating and binding to the socket.
+.TP
+.B \-H
+Do not look up client's hostname in DNS.
 .TP
 .B \-r \fIdir
 rules directory.
@@ -78,8 +78,8 @@ no remote hostname lookup.
 verbose.
 Print verbose messsages to standard out.
 .SH SEE ALSO
-ipsvd-cdb(8),
-udpsvd8)
+udpsvd(8),
+ipsvd-cdb(8)
 .P
 http://smarden.org/ipsvd/
 .SH AUTHOR
