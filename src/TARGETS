@@ -18,11 +18,12 @@ ipsvd_log.o
 ipsvd_hostname.o
 ipsvd_phcc.o
 ipsvd_scan.o
+sslerror_str.o
 uidgid.o
 socket.lib
 trysocketlib
 trysocketlib.o
-command.linux
+command.ssl
 matrixSsl.h
 matrixssl.a
 cdb_hash.o
@@ -158,3 +159,4 @@ dns.a
 ipsvd-cdb.local
 tcpsvd.local
 udpsvd.local
+sslio.local

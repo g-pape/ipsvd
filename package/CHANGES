@@ -1,4 +1,10 @@
   * man/tcpsvd.8: typo (thx Bastian Kleineidam).
+  * sslio.check, sslio.dist, sslio.pem: new; ssl program check.
+  * Makefile: don't limit sslio program to linux systype; run ssl program
+    check; minor
+  * package/compile, package/upgrade: adapt.
+  * doc/benefits.html, doc/index.html, doc/install.html: sslio works on
+    MacOSX; adapt.
 
 ipsvd 0.10.1
 Sun, 16 Jan 2005 10:34:19 +0000

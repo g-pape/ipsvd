@@ -19,7 +19,7 @@ echo 'Compiling everything in ./compile...'
 sh -cx 'cd compile && exec make'
 
 echo 'Copying commands into ./command...'
-for i in `cat package/commands` `grep sslio <compile/command.linux || :`; do
+for i in `cat package/commands` `grep -v nossl <compile/command.ssl || :`; do
   sh -cx ": $i"
   rm -f command/$i'{new}'
   cp -p compile/$i command/$i'{new}'

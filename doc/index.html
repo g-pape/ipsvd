@@ -23,7 +23,7 @@
 <a href="ipsvd-instruct.5.html">The ipsvd instructions</a><br>
 <a href="ipsvd-cdb.8.html">The <tt>ipsvd-cdb</tt> program</a>
 <p>
-<a href="sslio.8.html">The <tt>sslio</tt> program</a> (Linux only)
+<a href="sslio.8.html">The <tt>sslio</tt> program</a> (on Linux and MacOSX)
 <hr>
 <i>ipsvd</i> is a set of internet protocol service daemons for Unix.
 It currently includes a TCP/IP service daemon, and a UDP/IP service daemon.
@@ -39,7 +39,8 @@ on how to handle incoming connections; based on the client's IP address or
 hostname, they can run different programs, set a different environment, deny
 a connection, or set a per host concurrency limit.
 <p>
-On Linux the network connection optionally can be encrypted using SSLv3.
+On Linux and MacOSX the network connection optionally can be encrypted using
+SSLv3.
 <p>
 Normally the <i>ipsv</i> daemons are run by a supervisor process, such as
 <a href="http://smarden.org/runit/runsv.8.html">runsv</a> from the

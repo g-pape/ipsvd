@@ -1,10 +1,10 @@
 IT=tcpsvd udpsvd ipsvd-cdb
 
-default: command.linux $(IT)
-	$(MAKE) `cat command.linux`
+default: command.ssl $(IT)
+	$(MAKE) `cat command.ssl`
 
-check: default check-tcpsvd check-udpsvd check-ipsvd-cdb
-	./check-local $(IT)
+check: check-tcpsvd check-udpsvd check-ipsvd-cdb
+	./check-local $(IT) `grep -v nossl <command.ssl || :`
 
 tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
 	  ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a dns.a unix.a byte.a \
@@ -29,12 +29,13 @@ sslio: load sslio.o uidgid.o sslerror_str.o unix.a byte.a time.a matrixssl.a
 
 matrixssl.a: makelib matrixssl
 	install -m0644 Makefile.matrixssl matrixssl/src/Makefile.matrixssl
-	( cd matrixssl/src && $(MAKE) -fMakefile.matrixssl matrixssl.a )
+	(cd matrixssl/src && $(MAKE) -fMakefile.matrixssl matrixssl.a)
 	install -m0644 matrixssl/src/matrixssl.a matrixssl.a
 
 matrixSsl.h: matrixssl
 	rm -f matrixSsl.h
 	ln -s matrixssl/matrixSsl.h matrixSsl.h
+	touch matrixSsl.h
 
 matrixssl: matrixssl.tar.gz compile load
 	gzip -dc matrixssl.tar.gz |tar xf -
@@ -99,22 +100,20 @@ sslerror_str.o: compile matrixSsl.h sslerror_str.c sslerror_str.h
 
 socket.lib: compile load trysocketlib.c
 	./compile trysocketlib.c
-	( ./load trysocketlib >/dev/null 2>&1 || \
-	  ( ./load trysocketlib -lxnet >/dev/null 2>&1 && echo '-lxnet' ) || \
-	  ( ./load trysocketlib -lsocket -lnsl >/dev/null 2>&1 && \
-	    echo '-lsocket -lnsl' ) \
-	) >socket.lib
+	(./load trysocketlib >/dev/null 2>&1 || \
+	  (./load trysocketlib -lxnet >/dev/null 2>&1 && echo '-lxnet') || \
+	  (./load trysocketlib -lsocket -lnsl >/dev/null 2>&1 && \
+	    echo '-lsocket -lnsl') ) >socket.lib
 	rm -f trysocketlib.o trysocketlib
 
-command.linux: sysdeps
-	( ( test "`cut -c1-5 <systype`" != 'linux' && echo nolinux ) || \
-	  ( test ! -r matrixssl.tar.gz && echo nomatrixssl ) || \
-	  echo sslio ) >command.linux
+command.ssl: command.sslcheck
+command.sslcheck:
+	( (test ! -r matrixssl.tar.gz && echo nossl) || \
+	  echo sslio) >command.sslcheck
+	mv -f command.sslcheck command.ssl
 
-nolinux:
-	: no linux system, not making sslio
-nomatrixssl:
-	: no matrixssl library, not making sslio
+nossl:
+	: no ssl library, not making sslio
 
 clean:
 	rm -f `cat TARGETS` *~
@@ -318,7 +317,7 @@ hassgprm.h: choose compile hassgprm.h1 hassgprm.h2 load trysgprm.c
 
 hasshsgr.h: chkshsgr choose compile hasshsgr.h1 hasshsgr.h2 load tryshsgr.c \
 	  warn-shsgr
-	./chkshsgr || ( cat warn-shsgr; exit 1 )
+	./chkshsgr || (cat warn-shsgr; exit 1)
 	./choose clr tryshsgr hasshsgr.h1 hasshsgr.h2 >hasshsgr.h
 
 haswaitp.h: choose compile haswaitp.h1 haswaitp.h2 load trywaitp.c
@@ -538,9 +537,9 @@ uint16_unpack.o: compile uint16_unpack.c uint16.h
 	./compile uint16_unpack.c
 
 uint32.h: tryulong32.c compile load uint32.h1 uint32.h2
-	( ( ./compile tryulong32.c && ./load tryulong32 && \
-	./tryulong32 ) >/dev/null 2>&1 \
-	&& cat uint32.h2 || cat uint32.h1 ) >uint32.h
+	( (./compile tryulong32.c && ./load tryulong32 && \
+	./tryulong32) >/dev/null 2>&1 \
+	&& cat uint32.h2 || cat uint32.h1) >uint32.h
 	rm -f tryulong32.o tryulong32
 
 uint32_pack.o: compile uint32.h uint32_pack.c
