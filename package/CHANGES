@@ -1,3 +1,5 @@
+  * man/tcpsvd.8: typo (thx Bastian Kleineidam).
+
 ipsvd 0.10.1
 Sun, 16 Jan 2005 10:34:19 +0000
   * sslerror_str.c: fix build failure due to broken header include (thx
