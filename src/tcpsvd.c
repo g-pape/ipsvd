@@ -211,6 +211,8 @@ void connection_accept(int c) {
     drop("unable to set filedescriptor");
   sig_uncatch(sig_term);
   sig_uncatch(sig_pipe);
+  sig_uncatch(sig_child);
+  sig_unblock(sig_child);
   pathexec(run);
   
   drop2("unable to run", (char*)*prog);
