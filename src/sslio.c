@@ -42,8 +42,7 @@ void fatal(char *m0) {
   finish();
   _exit(111);
 }
-void warn(char *m0) { strerr_warn4(NAME, id, WARNING, m0, &strerr_sys); }
-void warnx(char *m0) { strerr_warn4(NAME, id, WARNING, m0, 0); }
+void warn(char *m0) { strerr_warn5(NAME, id, WARNING, m0, ": ", &strerr_sys); }
 void info(char *m0) { strerr_warn4(NAME, id, INFO, m0, 0); }
 void infou(char *m0, unsigned long u) {
   ul[fmt_ulong(ul, u)] =0;
@@ -111,11 +110,11 @@ void finish(void) {
 	continue;
       }
       if (rc == SSL_ERROR)
-	if (verbose) info("matrixSslEncodeClosureAlert returns ssl error");
+	if (verbose) warn("matrixSslEncodeClosureAlert returns ssl error");
       if (rc == 0) {
 	if (write(fdstdou, decou.start, decou.end -decou.start)
 	    != (decou.end -decou.start)) {
-	  warn("unable to send ssl closure alert");
+	  if (verbose) warn("unable to send ssl closure alert");
 	  break;
 	}
 	if (verbose > 2) info("sending ssl closure alert");
@@ -178,7 +177,7 @@ void decode(void) {
     }
     for (;;) {
       rc =matrixSslDecode(ssl, &decin, &decou, &error, &alvl, &adesc);
-      if (rc == SSL_SUCCESS) { handshake =0; break; }
+      if (rc == SSL_SUCCESS) break;
       if (rc == SSL_ERROR) fatal("matrixSslDecode returns ssl error");
       if (rc == SSL_PROCESS_DATA) {
 	if (write(decpipe[1], decou.start, decou.end -decou.start)
@@ -203,7 +202,7 @@ void decode(void) {
       }
       if (rc == SSL_ALERT) {
 	if (adesc != SSL_ALERT_CLOSE_NOTIFY) fatal("ssl alert from peer");
-	if (verbose > 1) info("ssl alert from peer");
+	if (verbose > 2) info("ssl alert from peer");
 	finish();
 	_exit(0);
       }
@@ -226,6 +225,11 @@ void decode(void) {
       getdec =1;
     }
   } while (getdec == 0);
+  if (handshake)
+    if (matrixSslHandshakeIsComplete(ssl)) {
+      handshake =0;
+      if (verbose > 2) info("ssl handshake complete");
+    }
 }
 
 void doio(void) {

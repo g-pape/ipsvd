@@ -1,3 +1,8 @@
+ipsvd 0.9.6
+Mon, 02 Aug 2004 18:53:56 +0000
+  * sslio.c: minor cleanup; adapt few verbose log messages; detect
+    successful handshake through matrixSslHandshakeIsComplete().
+
 ipsvd 0.9.5
 Wed, 14 Jul 2004 19:43:48 +0000
   * man/sslio.8: notations.
