@@ -1,3 +1,4 @@
+#include <sys/types.h>
 #include <unistd.h>
 #include "matrixSsl.h"
 #include "uidgid.h"
@@ -15,6 +16,7 @@
 #include "scan.h"
 #include "sgetopt.h"
 #include "env.h"
+#include "sig.h"
 
 #define USAGEROOT " -u user [-U user] [-/ root] [-C cert] [-K key] [-v] prog"
 #define USAGE " [-C cert] [-K key] [-v] prog"
@@ -28,12 +30,18 @@ const char *progname;
 char id[FMT_ULONG];
 char ul[FMT_ULONG];
 
+void finish(void);
 void usage() {
   if (getuid() == 0) strerr_die4x(111, "usage: ", progname, USAGEROOT, "\n");
   strerr_die4x(111, "usage: ", progname, USAGE, "\n");
 }
 void die_nomem() { strerr_die4x(111, NAME, id, FATAL, "out of memory."); }
-void fatal(char *m0) { strerr_die5sys(111, NAME, id, FATAL, m0, ": "); }
+void fatalm(char *m0) { strerr_die5sys(111, NAME, id, FATAL, m0, ": "); }
+void fatal(char *m0) {
+  strerr_warn5(NAME, id, FATAL, m0, ": ", &strerr_sys);
+  finish();
+  _exit(111);
+}
 void warn(char *m0) { strerr_warn4(NAME, id, WARNING, m0, &strerr_sys); }
 void warnx(char *m0) { strerr_warn4(NAME, id, WARNING, m0, 0); }
 void info(char *m0) { strerr_warn4(NAME, id, INFO, m0, 0); }
@@ -78,6 +86,11 @@ unsigned long bytesou =0;
 
 unsigned char error, alvl, adesc;
 
+void sig_term_handler(void) {
+  if (verbose) info("sigterm received, exit.");
+  finish();
+  _exit(0);
+}
 unsigned int blowup(sslBuf_t *buf, stralloc *sa, unsigned int len) {
   sa->len =buf->end -buf->buf;
   buf->size +=len;
@@ -88,40 +101,46 @@ unsigned int blowup(sslBuf_t *buf, stralloc *sa, unsigned int len) {
   return(1);
 }
 void finish(void) {
-  for (;;) {
-    decou.start =decou.end =decou.buf;
-    rc =matrixSslEncodeClosureAlert(ssl, &decou);
-    if (rc == SSL_ERROR)
-      if (verbose) info("matrixSslEncodeClosureAlert returns ssl error");
-    if (rc == SSL_FULL) {
-      if (! blowup(&decou, &decoubuf, bufsizeou)) die_nomem();
-      if (verbose > 1) infou("decode output buffer size: ", decou.size);
-      continue;
-    }
-    if (rc == 0) {
-      if (write(fdstdou, decou.start, decou.end -decou.start)
-	  != (decou.end -decou.start)) {
-	warn("unable to send ssl closure alert");
-	return;
+  if (fdstdou != -1)
+    for (;;) {
+      decou.start =decou.end =decou.buf;
+      rc =matrixSslEncodeClosureAlert(ssl, &decou);
+      if (rc == SSL_FULL) {
+	if (! blowup(&decou, &decoubuf, bufsizeou)) die_nomem();
+	if (verbose > 1) infou("decode output buffer size: ", decou.size);
+	continue;
       }
-      if (verbose > 2) info("sending ssl closure alert");
-      bytesou +=decou.end -decou.start;
+      if (rc == SSL_ERROR)
+	if (verbose) info("matrixSslEncodeClosureAlert returns ssl error");
+      if (rc == 0) {
+	if (write(fdstdou, decou.start, decou.end -decou.start)
+	    != (decou.end -decou.start)) {
+	  warn("unable to send ssl closure alert");
+	  break;
+	}
+	if (verbose > 2) info("sending ssl closure alert");
+	bytesou +=decou.end -decou.start;
+      }
+      break;
     }
-    /* bummer */
-    matrixSslDeleteSession(ssl);
-    close(fdstdou); close(encpipe[0]);
-    if (fdstdin != -1) close(fdstdin);
-    if (decpipe[1] != -1) close(decpipe[1]);
-    fdstdou =fdstdin =decpipe[1] =encpipe[0] =-1;
-    return;
+  /* bummer */
+  matrixSslDeleteSession(ssl);
+  matrixSslClose();
+  if (fdstdou != -1) close(fdstdou);
+  if (encpipe[0] != -1) close(encpipe[0]);
+  if (fdstdin != -1) close(fdstdin);
+  if (decpipe[1] != -1) close(decpipe[1]);
+  if (verbose) {
+    infou("bytes in: ", bytesin); infou("bytes ou: ", bytesou);
   }
 }
 void encode(void) {
   if ((len =read(encpipe[0], encinbuf.s, encin.size)) < 0)
     fatal("unable to read from prog");
   if (len == 0) {
-    if (verbose > 2) info("prog: eof");
-    finish();
+    if (verbose > 2) info("eof reading from proc");
+    close(encpipe[0]); close(fdstdou);
+    encpipe[0] =fdstdou =-1;
     return;
   }
   for (;;) {
@@ -140,7 +159,6 @@ void encode(void) {
     return;
   }
 }
-
 void decode(void) {
   do {
     if (getdec) {
@@ -148,7 +166,7 @@ void decode(void) {
       if ((len =read(fdstdin, decin.end, len)) < 0)
 	fatal("unable to read from stdin");
       if (len == 0) {
-	if (verbose > 2) info("stdin: eof");
+	if (verbose > 2) info("eof reading from stdin");
 	close(fdstdin); close(decpipe[1]);
 	fdstdin =decpipe[1] =-1;
 	return;
@@ -179,6 +197,7 @@ void decode(void) {
 	  fatal("unable to send ssl response");
 	bytesou +=decou.end -decou.start;
 	if (verbose > 2) info("ssl handshake response");
+	if (verbose > 2) infou("write bytes: ", decou.end -decou.start);
 	decou.start =decou.end =decou.buf;
 	break;
       }
@@ -186,7 +205,7 @@ void decode(void) {
 	if (adesc != SSL_ALERT_CLOSE_NOTIFY) fatal("ssl alert from peer");
 	if (verbose > 1) info("ssl alert from peer");
 	finish();
-	return;
+	_exit(0);
       }
       if (rc == SSL_PARTIAL) {
 	getdec =1;
@@ -283,34 +302,34 @@ int main(int argc, const char **argv) {
   if (bufsizein < 64) bufsizein =64;
   if (bufsizeou < 64) bufsizeou =64;
 
-  if (pipe(encpipe) == -1) fatal("unable to create pipe for encoding");
-  if (pipe(decpipe) == -1) fatal("unable to create pipe for decoding");
-  if ((pid =fork()) == -1) fatal("unable to fork");
+  if (pipe(encpipe) == -1) fatalm("unable to create pipe for encoding");
+  if (pipe(decpipe) == -1) fatalm("unable to create pipe for decoding");
+  if ((pid =fork()) == -1) fatalm("unable to fork");
   if (pid == 0) {
     if (close(encpipe[1]) == -1)
-      fatal("unable to close encoding pipe output");
+      fatalm("unable to close encoding pipe output");
     if (close(decpipe[0]) == -1)
-      fatal("unable to close decoding pipe input");
+      fatalm("unable to close decoding pipe input");
     matrixSslOpen();
     if (root) {
-      if (chdir(root) == -1) fatal("unable to change to new root directory");
-      if (chroot(".") == -1) fatal("unable to chroot");
+      if (chdir(root) == -1) fatalm("unable to change to new root directory");
+      if (chroot(".") == -1) fatalm("unable to chroot");
     }
     if (user) {
       /* drop permissions */
-      if (prot_gid(ugid.gid) == -1) fatal("unable to set gid");
-      if (prot_uid(ugid.uid) == -1) fatal("unable to set uid");
+      if (prot_gid(ugid.gid) == -1) fatalm("unable to set gid");
+      if (prot_uid(ugid.uid) == -1) fatalm("unable to set uid");
     }
     if (! key) key =cert;
     if (matrixSslReadKeys(&keys, cert, key, 0, 0) < 0)
-      fatal("unable to read certfile or keyfile");
+      fatalm("unable to read certfile or keyfile");
     if (matrixSslNewSession(&ssl, keys, 0, SSL_FLAGS_SERVER) < 0)
-      fatal("unable to create ssl session");
+      fatalm("unable to create ssl session");
+
+    sig_catch(sig_term, sig_term_handler);
+    sig_ignore(sig_pipe);
     doio();
-    matrixSslDeleteSession(ssl);
-    if (verbose) {
-      infou("bytes in: ", bytesin); infou("bytes ou: ", bytesou);
-    }
+    finish();
     _exit(0);
   }
   if (close(encpipe[0]) == -1) fatal("unable to close encoding pipe input");
@@ -324,6 +343,6 @@ int main(int argc, const char **argv) {
     if (prot_uid(svugid.uid) == -1) fatal("unable to set uid for prog");
   }
   pathexec(argv);
-  fatal("unable to run child");
+  fatal("unable to run prog");
   return(111);
 }

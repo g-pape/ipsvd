@@ -26,7 +26,7 @@ This <tt>run</tt> script provides a
 database <tt>./peers.cdb</tt>.
 <pre>
  #!/bin/sh
- exec 2>&1
+ exec 2&gt;&amp;1
  MAXSMTPD="`cat /var/qmail/control/concurrencyincoming`"
  exec softlimit -m2000000 \
    env SMTPGREETING=smarden.org \
@@ -40,7 +40,7 @@ This <tt>run</tt> script provides a
 instructions through the directory <tt>./peers</tt>.
 <pre>
  #!/bin/sh
- exec 2>&1
+ exec 2&gt;&amp;1
  exec tcpsvd -vvp -c40 -C10 -l0 -i./peers 10.0.0.14 993 \
    bincimap-up --logtype=multilog --conf=/etc/bincimap/bincimap.conf --ssl -- \
      /usr/bin/checkpw /usr/sbin/bincimapd
@@ -52,7 +52,7 @@ program, and so the <a href="http://www.matrixssl.org/">matrixssl</a>
 library, instead of <tt>bincimap</tt>'s builtin <tt>OpenSSL</tt> support.
 <pre>
  #!/bin/sh
- exec 2>&1
+ exec 2&gt;&amp;1
  exec tcpsvd -v -c40 -l0 10.0.0.14 993 \
    sslio -vv -C/imapd.pem -unobody -//etc/bincimap/bincimaps/jail \
      bincimap-up --conf=/etc/bincimap/bincimap.conf -a -- \
@@ -64,7 +64,7 @@ This <tt>run</tt> script provides a
 instructions through the directory <tt>./peers</tt>.
 <pre>
  #!/bin/sh
- exec 2>&1
+ exec 2&gt;&amp;1
  exec softlimit -m2000000 \
   tcpsvd -vvh -i./peers -uqmaild \
     -c40 -C'10:421 per host concurrency limit reached\r\n' \
@@ -75,10 +75,10 @@ This <tt>run</tt> script provides a
 <tt>10.0.5.4</tt>.
 <pre>
  #!/bin/sh
- exec 2>&1
+ exec 2&gt;&amp;1
  cd /public/10.0.5.4
  exec chpst -m300000 -Uwwwuser tcpsvd -v 10.0.5.4 443 \
-   sslio -v -unobody -//etc/fnord/jail -C./cert.pem fnord 2>&1
+   sslio -v -unobody -//etc/fnord/jail -C./cert.pem fnord
 </pre>
 <hr>
 <h3><a name="udp">UDP/IP service examples</a></h3>
@@ -94,7 +94,7 @@ This <tt>run</tt> script provides a <i>tftpd</i> service on
 <pre>
  #!/bin/sh
  cd /
- exec 2>&1
+ exec 2&gt;&amp;1
  exec udpsvd -v -lbootserver -unobody -i/etc/tftpd/peers 0 69 \
    in.tftpd -s /boot/tftpboot/
 </pre>

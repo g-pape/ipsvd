@@ -61,47 +61,50 @@ started by root, and cannot be set otherwise. </dd>
 
 <dt><b>-C <i>cert</b> </i></dt>
 <dd>cert file. read the
-certificate from the file <i>cert</i> (default is &lsquo;&lsquo;./cert.pem&rsquo;&rsquo;). </dd>
+certificate from the file <i>cert</i> (default is &lsquo;&lsquo;./cert.pem&rsquo;&rsquo;). If the -/ option is
+given, first the root directory is changed, then the cert file is read.
+</dd>
 
 <dt><b>-K <i>key</b> </i></dt>
-<dd>private key.
-Read the private key from the file <i>key</i> (default is <i>cert</i>) </dd>
+<dd>private key. Read the private key from the file <i>key</i> (default is <i>cert</i>).
+If the -/ option is given, first the root directory is changed, then the
+private key is read. </dd>
 
 <dt><b>-v</b> </dt>
-<dd>verbose. Print
-verbose messages to standard error. </dd>
+<dd>verbose. Print verbose messages to standard error.
+</dd>
 
 <dt><b>-vv</b> </dt>
-<dd>more verbose. Print more verbose messages
-to standard error. </dd>
+<dd>more verbose. Print more verbose messages to standard error. </dd>
 
 <dt><b>-vvv</b> </dt>
-<dd>even more verbose. Print even more verbose messages
-to standard error. </dd>
+<dd>even
+more verbose. Print even more verbose messages to standard error. </dd>
 </dl>
 
 <h2><a name='sect4'>Environment</a></h2>
 
 <dl>
 
-<dt>SSLIO_BUFIN </dt>
-<dd>The environment variable <i>SSLIO_BUFIN</i>
-overrides the default input buffer size for <b>sslio</b> (8192). </dd>
+<dt>SSLIO_BUFIN
+</dt>
+<dd>The environment variable <i>SSLIO_BUFIN</i> overrides the default input buffer
+size for <b>sslio</b> (8192). </dd>
 
 <dt>SSLIO_BUFOU </dt>
-<dd>The
-environment variable <i>SSLIO_BUFOU</i> overrides the default output buffer size
-for <b>sslio</b> (12288). If the output buffer is too small to hold encrypted or
-decrypted data, <b>sslio</b> automatically blows up the buffer to <i>SSLIO_BUFOU</i>
-more bytes. </dd>
+<dd>The environment variable <i>SSLIO_BUFOU</i>
+overrides the default output buffer size for <b>sslio</b> (12288). If the output
+buffer is too small to hold encrypted or decrypted data, <b>sslio</b> automatically
+blows up the buffer to <i>SSLIO_BUFOU</i> more bytes. </dd>
 </dl>
 
 <h2><a name='sect5'>See Also</a></h2>
-<i>tcpsvd(8)</i>, <i>udpsvd(8)</i>, <i>ipsvd(7)</i>, <i>ipsvd-instruct(5)</i>, <i>ipsvd-cdb(8)</i>
-<p>
+<i>tcpsvd(8)</i>, <i>udpsvd(8)</i>,
+<i>ipsvd(7)</i>, <i>ipsvd-instruct(5)</i>, <i>ipsvd-cdb(8)</i> <p>
 <i>http://smarden.org/ipsvd/</i> 
 <h2><a name='sect6'>Author</a></h2>
-Gerrit Pape &lt;pape@smarden.org&gt; <p>
+Gerrit
+Pape &lt;pape@smarden.org&gt; <p>
 
 <hr><p>
 <a name='toc'><b>Table of Contents</b></a><p>

@@ -110,13 +110,17 @@ cert file.
 read the certificate from the file
 .I cert
 (default is ``./cert.pem'').
+If the -/ option is given, first the root directory is changed, then the
+cert file is read.
 .TP
 .B \-K \fIkey
 private key.
 Read the private key from the file
 .I key
 (default is
-.IR cert )
+.IR cert ).
+If the -/ option is given, first the root directory is changed, then the
+private key is read.
 .TP
 .B \-v
 verbose.
