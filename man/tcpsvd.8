@@ -19,7 +19,7 @@ tcpsvd \- TCP/IP service daemon
 .SH DESCRIPTION
 .B tcpsvd
 creates a TCP/IP socket, binds it to the address
-.IR host :\fIprog\fR,
+.IR host :\fIport\fR,
 and listens on the socket for incoming connections.
 .P
 On each incoming connection,
@@ -79,12 +79,15 @@ running
 .TP
 .B \-t \fIsec
 timeout.
-While checking the instructions directory, check the time of last access of
-the file that matches the clients address or hostname if any, and discard
-and remove the file if it wasn't accessed within the last
-.I sec
-seconds.
 This option only takes effect if the \-i option is given.
+While checking the instructions directory, check the time of last access of
+the file that matches the clients address or hostname if any, discard and
+remove the file if it wasn't accessed within the last
+.I sec
+seconds;
+.B tcpsvd
+does not discard or remove a file if the user's write permission is not set,
+for those files the timeout is disabled.
 Default is 0, which means that the timeout is disabled.
 .TP
 .B \-l \fIname
@@ -109,6 +112,7 @@ is followed by a colon and a group name, the group ID is switched to
 the GID of
 .I group
 instead.
+All supplementary groups are removed.
 .TP
 .B \-c \fIn
 concurrency.

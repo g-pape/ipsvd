@@ -1,8 +1,9 @@
 #include <dns.h>
 #include "byte.h"
 
+static stralloc sa;
+
 int ipsvd_hostname(stralloc *host, char *ip, unsigned int paranoid) {
-  stralloc sa ={0};
   int i;
 
   host->len =0;

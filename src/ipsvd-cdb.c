@@ -29,8 +29,8 @@ struct cdb_make c;
 struct cdb cdb;
 int fdcdb;
 int fdtmp;
-stralloc sa ={0};
-stralloc tmp ={0};
+static stralloc sa ={0};
+static stralloc tmp ={0};
 
 void usage() { strerr_die4x(111, "usage: ", progname, USAGE, "\n"); }
 void die_nomem() { strerr_die2x(111, FATAL, "out of memory."); }

@@ -16,7 +16,7 @@ udpsvd \- UDP/IP service daemon
 .SH DESCRIPTION
 .B udpsvd
 creates an UDP/IP socket, binds it to the address
-.IR host :\fIprog\fR,
+.IR host :\fIport\fR,
 and listens on the socket for incoming datagrams.
 .P
 If a datagram is available on the socket,
@@ -31,7 +31,7 @@ If the program exits,
 .B udpsvd
 again listens to the socket until a new datagram is available.
 If there are still datagrams available on the socket, the program is
-restarted immediatly.
+restarted immediately.
 .P
 .B udpsvd
 optionally checks for special intructions depending on the IP address or
@@ -103,12 +103,15 @@ running
 .TP
 .B \-t \fIsec
 timeout.
-While checking the instructions directory, check the time of last access of
-the file that matches the clients address or hostname if any, and discard
-and remove the file if it wasn't accessed within the last
-.I sec
-seconds.
 This option only takes effect if the \-i option is given.
+While checking the instructions directory, check the time of last access of
+the file that matches the clients address or hostname if any, discard and
+remove the file if it wasn't accessed within the last
+.I sec
+seconds;
+.B udpsvd
+does not discard or remove a file if the user's write permission is not set,
+for those files the timeout is disabled.
 Default is 0, which means that the timeout is disabled.
 .TP
 .B \-l \fIname
@@ -133,6 +136,7 @@ is followed by a colon and a group name, the group ID is switched to
 the GID of
 .I group
 instead.
+All supplementary groups are removed.
 .TP
 .B \-h
 Look up the client's hostname in DNS.

@@ -2,8 +2,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include <pwd.h>
-#include <grp.h>
 #include <dns.h>
 #include <socket.h>
 #include <ip4.h>
@@ -12,6 +10,7 @@
 #include "ipsvd_fmt.h"
 #include "ipsvd_hostname.h"
 #include "ipsvd_phcc.h"
+#include "uidgid.h"
 #include "str.h"
 #include "byte.h"
 #include "error.h"
@@ -48,20 +47,26 @@ unsigned long timeout =0;
 unsigned int ucspi =1;
 const char *instructs =0;
 unsigned int iscdb =0;
-stralloc local_hostname ={0};
+static stralloc local_hostname ={0};
 char local_ip[IP4_FMT];
 char *local_port;
-stralloc remote_hostname ={0};
+static stralloc remote_hostname ={0};
 char remote_ip[IP4_FMT];
 char remote_port[FMT_ULONG];
-struct passwd *pwd =0;
-struct group *gr;
+struct uidgid ugid;
 
 static char seed[128];
 char bufnum[FMT_ULONG];
 struct sockaddr_in socka;
 int socka_size =sizeof(socka);
 unsigned int phcc =0;
+
+static stralloc sa ={0};
+static stralloc ips ={0};
+static stralloc fqdn ={0};
+static stralloc inst ={0};
+static stralloc match ={0};
+static stralloc msg ={0};
 
 void usage() { strerr_die4x(111, "usage: ", progname, USAGE, "\n"); }
 void die_nomem() { strerr_die2x(111, FATAL, "out of memory."); }
@@ -131,8 +136,6 @@ void sig_child_handler() {
 }
 
 void connection_accept(int c) {
-  stralloc inst ={0};
-  stralloc match ={0};
   int ac;
   const char **run;
   const char *args[4];
@@ -171,9 +174,9 @@ void connection_accept(int c) {
   if (phcc > 0) {
     if (phcc > phccmax) {
       ac =IPSVD_DENY;
-      if (phccmsg.s) {
+      if (phccmsg) {
 	ndelay_on(c);
-	if (write(c, phccmsg.s, phccmsg.len) == -1)
+	if (write(c, phccmsg, str_len(phccmsg)) == -1)
 	  warn("unable to write concurrency message");
       }
     }
@@ -237,9 +240,6 @@ int main(int argc, const char **argv) {
   char *user =0;
   char *host;
   unsigned long port;
-  stralloc sa ={0};
-  stralloc ips ={0};
-  stralloc fqdn ={0};
   int pid;
   int s;
   int conn;
@@ -257,8 +257,11 @@ int main(int argc, const char **argv) {
     case 'C':
       delim =scan_ulong(optarg, &phccmax);
       if (phccmax < 1) usage();
-      if (optarg[delim] == ':')
-	if (ipsvd_fmt_msg(&phccmsg, optarg +delim +1) == -1) die_nomem();
+      if (optarg[delim] == ':') {
+	if (ipsvd_fmt_msg(&msg, optarg +delim +1) == -1) die_nomem();
+	if (! stralloc_0(&msg)) die_nomem();
+	phccmsg =msg.s;
+      }
       break;
     case 'i':
       if (instructs) usage();
@@ -311,23 +314,10 @@ int main(int argc, const char **argv) {
   prog =argv;
   if (phccmax > cmax) phccmax =cmax;
 
-  if (user) {
-    char *group =0;
+  if (user)
+    if (! uidgid_get(&ugid, user, 1))
+      strerr_die3x(100, FATAL, "unknown user/group: ", user);
 
-    if (user[(delim =str_chr(user, ':'))] == ':') {
-      user[delim] =0;
-      group =user +delim +1;
-    }
-    if (! (pwd =getpwnam(user)))
-      strerr_die3x(100, FATAL, "unknown user: ", user);
-    if (group) {
-      if (! (gr =getgrnam(group)))
-	strerr_die3x(100, FATAL, "unknown group: ", group);
-      pwd->pw_gid =gr->gr_gid;
-      user[delim] =':';
-    }
-  }
-  
   dns_random_init(seed);
   sig_block(sig_child);
   sig_catch(sig_child, sig_child_handler);
@@ -349,7 +339,8 @@ int main(int argc, const char **argv) {
   if (ips.len < 4)
     strerr_die3x(100, FATAL, "unable to look up IP address: ", host);
   ips.len =4;
-  ips.s[4] =0;
+  //  ips.s[4] =0;
+  if (! stralloc_0(&ips)) die_nomem();
   local_ip[ipsvd_fmt_ip(local_ip, ips.s)] =0;
 
   if (! lookuphost) {
@@ -362,20 +353,21 @@ int main(int argc, const char **argv) {
     fatal("unable to bind socket");
   if (listen(s, backlog) == -1) fatal("unable to listen");
   ndelay_off(s);
-  if (pwd) {
+
+  if (user) {
     /* drop permissions */
-    if (prot_gid(pwd->pw_gid) == -1) fatal("unable to set gid");
-    if (prot_uid(pwd->pw_uid) == -1) fatal("unable to set uid");
+    if (prot_gid(ugid.gid) == -1) fatal("unable to set gid");
+    if (prot_uid(ugid.uid) == -1) fatal("unable to set uid");
   }
   close(0);
 
   if (verbose) {
     out(INFO); out("listening on "); outfix(local_ip); out(":");
     outfix(local_port);
-    if (pwd) {
-      bufnum[fmt_ulong(bufnum, pwd->pw_uid)] =0;
+    if (user) {
+      bufnum[fmt_ulong(bufnum, (unsigned long)ugid.uid)] =0;
       out(", uid "); out(bufnum);
-      bufnum[fmt_ulong(bufnum, pwd->pw_gid)] =0;
+      bufnum[fmt_ulong(bufnum, (unsigned long)ugid.gid)] =0;
       out(", gid "); out(bufnum);
     }
     flush(", starting.\n");

@@ -18,7 +18,8 @@
 
 extern const char *progname;
 unsigned long phccmax;
-stralloc phccmsg ={0};
+static stralloc msg ={0};
+char *phccmsg;
 
 int ipsvd_instruct(stralloc *inst, stralloc *match) {
   char *insts;
@@ -43,8 +44,11 @@ int ipsvd_instruct(stralloc *inst, stralloc *match) {
       case 'C':
 	if (! ccmax) {
 	  delim =scan_ulong(insts +1, &ccmax);
-	  if (insts[delim +1] == ':')
-	    if (ipsvd_fmt_msg(&phccmsg, insts +delim +2) == -1) return(-1);
+	  if (insts[delim +1] == ':') {
+	    if (ipsvd_fmt_msg(&msg, insts +delim +2) == -1) return(-1);
+	    if (! stralloc_0(&msg)) return(-1);
+	    phccmsg =msg.s;
+	  }
 	}
 	break;
       case 0: /* skip empty line */

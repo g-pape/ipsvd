@@ -2,8 +2,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include <pwd.h>
-#include <grp.h>
 #include <dns.h>
 #include <socket.h>
 #include <ip4.h>
@@ -11,6 +9,7 @@
 #include "ipsvd_check.h"
 #include "ipsvd_fmt.h"
 #include "ipsvd_hostname.h"
+#include "uidgid.h"
 #include "sgetopt.h"
 #include "sig.h"
 #include "str.h"
@@ -42,17 +41,25 @@ unsigned int lookuphost =0;
 unsigned int paranoid =0;
 unsigned long timeout =0;
 
-static char seed[128];
-int s;
-stralloc local_hostname ={0};
+static stralloc local_hostname ={0};
 char local_ip[IP4_FMT];
 char *local_port;
-stralloc remote_hostname ={0};
+static stralloc remote_hostname ={0};
 char remote_ip[IP4_FMT];
 char remote_port[FMT_ULONG];
+struct uidgid ugid;
+
+static char seed[128];
 struct sockaddr_in socka;
 int socka_size =sizeof(socka);
 char bufnum[FMT_ULONG];
+int s;
+
+static stralloc sa ={0};
+static stralloc ips ={0};
+static stralloc fqdn ={0};
+static stralloc inst ={0};
+static stralloc match ={0};
 
 void usage() { strerr_die4x(111, "usage: ", progname, USAGE, "\n"); }
 void die_nomem() { strerr_die2x(111, FATAL, "out of memory."); }
@@ -79,8 +86,6 @@ void sig_term_handler() {
 }
 
 void connection_accept(int c) {
-  stralloc inst ={0};
-  stralloc match ={0};
   int ac;
   const char **run;
   const char *args[4];
@@ -156,16 +161,11 @@ int main(int argc, const char **argv, const char *const *envp) {
   char *user =0;
   char *host;
   unsigned long port;
-  stralloc sa ={0};
-  stralloc ips ={0};
-  stralloc fqdn ={0};
   int pid;
   int wstat;
   iopause_fd io[1];
   struct taia now;
   struct taia deadline;
-  struct passwd *pwd =0;
-  struct group *gr;
 
   progname =*argv;
 
@@ -215,23 +215,9 @@ int main(int argc, const char **argv, const char *const *envp) {
   if (! argv || ! *argv) usage();
   prog =argv;
 
-  if (user) {
-    char *group =0;
-    int delim;
-
-    if (user[(delim =str_chr(user, ':'))] == ':') {
-      user[delim] =0;
-      group =user +delim +1;
-    }
-    if (! (pwd =getpwnam(user)))
-      strerr_die3x(100, FATAL, "unknown user: ", user);
-    if (group) {
-      if (! (gr =getgrnam(group)))
-	strerr_die3x(100, FATAL, "unknown group: ", group);
-      pwd->pw_gid =gr->gr_gid;
-      user[delim] =':';
-    }
-  }
+  if (user)
+    if (! uidgid_get(&ugid, user, 1))
+      strerr_die3x(100, FATAL, "unknown user/group: ", user);
 
   dns_random_init(seed);
   sig_catch(sig_term, sig_term_handler);
@@ -250,7 +236,8 @@ int main(int argc, const char **argv, const char *const *envp) {
   if (ips.len < 4)
     strerr_die3x(100, FATAL, "unable to look up IP address: ", host);
   ips.len =4;
-  ips.s[4] =0;
+  //  ips.s[4] =0;
+  if (! stralloc_0(&ips)) die_nomem();
   local_ip[ipsvd_fmt_ip(local_ip, ips.s)] =0;
   if (! local_hostname.len) {
     if (dns_name4(&local_hostname, ips.s) == -1)
@@ -268,19 +255,19 @@ int main(int argc, const char **argv, const char *const *envp) {
     fatal("unable to bind socket");
   ndelay_off(s);
 
-  if (pwd) { /* drop permissions */
-    if (prot_gid(pwd->pw_gid) == -1) fatal("unable to set gid");
-    if (prot_uid(pwd->pw_uid) == -1) fatal("unable to set uid");
+  if (user) { /* drop permissions */
+    if (prot_gid(ugid.gid) == -1) fatal("unable to set gid");
+    if (prot_uid(ugid.uid) == -1) fatal("unable to set uid");
   }
   close(0);
 
   if (verbose) {
     out(INFO); out("listening on "); outfix(local_ip); out(":");
     outfix(local_port);
-    if (pwd) {
-      bufnum[fmt_ulong(bufnum, pwd->pw_uid)] =0;
+    if (user) {
+      bufnum[fmt_ulong(bufnum, ugid.uid)] =0;
       out(", uid "); out(bufnum);
-      bufnum[fmt_ulong(bufnum, pwd->pw_gid)] =0;
+      bufnum[fmt_ulong(bufnum, ugid.gid)] =0;
       out(", gid "); out(bufnum);
     }
     flush(", starting.\n");

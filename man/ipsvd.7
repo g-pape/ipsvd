@@ -47,13 +47,15 @@ running
 .TP
 .B \-t \fIsec
 timeout.
+This option only takes effect if the \-i option is given.
 While checking the instructions directory, check the time of last access of
-the file that matches the clients address or hostname if any, and discard
-the file if it wasn't accessed within the last
+the file that matches the clients address or hostname if any, discard and
+remove the file if it wasn't accessed within the last
 .I sec
 seconds;
-the file additionally is removed unless the user's write permission is unset.
-This option only takes effect if the \-i option is given.
+.B ipsvd
+does not discard or remove a file if the user's write permission is not set,
+for those files the timeout is disabled.
 Default is 0, which means that the timeout is disabled.
 .TP
 .B \-l \fIname
