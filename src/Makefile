@@ -32,6 +32,10 @@ matrixssl.a: makelib matrixssl
 	( cd matrixssl/src && $(MAKE) -fMakefile.matrixssl matrixssl.a )
 	install -m0644 matrixssl/src/matrixssl.a matrixssl.a
 
+matrixSsl.h: matrixssl
+	rm -f matrixSsl.h
+	ln -s matrixssl/matrixSsl.h matrixSsl.h
+
 matrixssl: matrixssl-1-0-1.tar.gz compile load
 	gzip -dc matrixssl-1-0-1.tar.gz |tar xf -
 	sed -e 's/#define USE_MULTITHREADING/#undef USE_MULTITHREADING/' \
@@ -57,7 +61,7 @@ udpsvd.o: compile sysdeps udpsvd.c ipsvd_log.h
 ipsvd-cdb.o: compile sysdeps ipsvd-cdb.c
 	./compile ipsvd-cdb.c
 
-sslio.o: compile sysdeps sslio.c
+sslio.o: compile sysdeps matrixSsl.h sslio.c
 	./compile sslio.c
 
 check-tcpsvd.o: compile check-tcpsvd.c

@@ -23,6 +23,7 @@ socket.lib
 trysocketlib
 trysocketlib.o
 command.linux
+matrixSsl.h
 matrixssl.a
 cdb_hash.o
 cdb_make.o
