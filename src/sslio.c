@@ -119,6 +119,7 @@ void finish(void) {
 	  break;
 	}
 	if (verbose > 2) info("sending ssl closure alert");
+	if (verbose > 2) infou("write bytes: ", decou.end -decou.start);
 	bytesou +=decou.end -decou.start;
       }
       break;
@@ -139,9 +140,8 @@ void encode(void) {
     fatal("unable to read from prog");
   if (len == 0) {
     if (verbose > 2) info("eof reading from proc");
-    close(encpipe[0]); close(fdstdou);
-    encpipe[0] =fdstdou =-1;
-    return;
+    finish();
+    _exit(0);
   }
   for (;;) {
     rc =matrixSslEncode(ssl, encin.buf, len, &encou);
@@ -179,7 +179,7 @@ void decode(void) {
     for (;;) {
       rc =matrixSslDecode(ssl, &decin, &decou, &error, &alvl, &adesc);
       if (rc == SSL_SUCCESS) { handshake =0; break; }
-      if (rc == SSL_ERROR) fatal("ssl dec error");
+      if (rc == SSL_ERROR) fatal("matrixSslDecode returns ssl error");
       if (rc == SSL_PROCESS_DATA) {
 	if (write(decpipe[1], decou.start, decou.end -decou.start)
 	    != decou.end -decou.start) fatal("unable to write to prog");
@@ -196,7 +196,7 @@ void decode(void) {
 	    != (decou.end -decou.start))
 	  fatal("unable to send ssl response");
 	bytesou +=decou.end -decou.start;
-	if (verbose > 2) info("ssl handshake response");
+	if (verbose > 2) info("sending ssl handshake response");
 	if (verbose > 2) infou("write bytes: ", decou.end -decou.start);
 	decou.start =decou.end =decou.buf;
 	break;
