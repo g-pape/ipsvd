@@ -1,25 +1,22 @@
 #!/bin/sh -e
 
 umask 022
-test -d package || ( echo 'Wrong working directory.'; exit 1 )
-test -d man || ( echo 'Wrong working directory.'; exit 1 )
+test -d package || ( echo 'Wrong working directory.'; exit 1 ) || exit 1
+test -d man || ( echo 'Wrong working directory.'; exit 1 ) || exit 1
 
 here=`env - PATH=$PATH pwd`
 parent=`dirname $here`
 
 echo 'Compressing manpages...'
-for i in man/*.[1-8]
-do
+for i in man/*.[1-8]; do
   gzip -c $i >${i}.gz
 done
 
 echo 'Making manpage links in /usr/local/man...'
 cd man
-for k in 5 7 8
-do
+for k in 5 7 8; do
   mkdir -p /usr/local/man/man$k
-  for i in *.$k
-  do
+  for i in *.$k; do
     rm -f /usr/local/man/man$k/$i.gz'{new}'
     ln -s $parent/ipsvd/man/$i.gz /usr/local/man/man$k/$i.gz'{new}'
     mv -f /usr/local/man/man$k/$i.gz'{new}' /usr/local/man/man$k/$i.gz

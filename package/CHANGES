@@ -1,5 +1,5 @@
-ipsvd 0.7.2
-
+ipsvd 0.8.0
+Fri, 13 Feb 2004 19:27:25 +0000
   * doc/index.html: typo; related links; minor.
   * doc/examples.html, man/ipsvd-instruct.5: typos.
   * doc/install.html: typo (thx Charlie Brady).
@@ -15,6 +15,8 @@ ipsvd 0.7.2
     requires djbdns-pd-1.05.
   * ipsvd_hostname.c, ipsvd_hostname.h, print-cc.sh, print-ld.sh, tcpsvd.c,
     udpsvd.c: adapt includes; minor.
+  * package/COPYING, package/README: 2004.
+  * package/compile, package/install-man, package/upgrade: minor cleanup.
 
 ipsvd 0.7.1
 Wed, 26 Nov 2003 09:14:35 +0000
