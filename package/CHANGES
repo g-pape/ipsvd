@@ -1,5 +1,5 @@
 ipsvd 0.7.0
-Tue, 21 Oct 2003 15:55:10 +0000
+Tue, 21 Oct 2003 15:59:30 +0000
   * doc/examples.html: update bincimaps example; add check hostname
     instruction sample.
   * ipsvd_check.c, ipsvd_check.h: support check host instructions; change
