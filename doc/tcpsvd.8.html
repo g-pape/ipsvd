@@ -12,7 +12,7 @@
 tcpsvd - TCP/IP service daemon 
 <H2><A NAME="sect1">Synopsis</A></H2>
 <B>tcpsvd</B> [-nEHv] [-c <I>n]</I> [-b <I>n]</I> [-u
-<I>user]</I> [-r <I>dir</I>|-x <I>cdb]</I> <I>host</I> <I>port</I> <I>prog</I> 
+<I>user]</I> [-i <I>dir</I>|-x <I>cdb]</I> <I>host</I> <I>port</I> <I>prog</I> 
 <H2><A NAME="sect2">Description</A></H2>
 <B>tcpsvd</B> creates a TCP/IP socket,
 binds it to the address <I>host</I>:<I>prog</I>, and listens on the socket for incoming
@@ -54,7 +54,7 @@ until an active connection is closed. </DD>
 ID to <I>user</I>'s UID, and group ID to <I>user</I>'s primary GID after creating and binding
 to the socket. </DD>
 
-<DT><B>-r <I>dir</B> </I></DT>
+<DT><B>-i <I>dir</B> </I></DT>
 <DD>read instructions for handling new connections from
 the instructions directory <I>dir</I>. See <B><I>ipsvd-instruct</B>(5)</I> for details. </DD>
 

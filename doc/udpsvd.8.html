@@ -11,7 +11,7 @@
 <H2><A NAME="sect0">Name</A></H2>
 udpsvd - UDP/IP service daemon 
 <H2><A NAME="sect1">Synopsis</A></H2>
-<B>udpsvd</B> [-nhv] [-u <I>user]</I> [-r <I>dir</I>|-x
+<B>udpsvd</B> [-nhv] [-u <I>user]</I> [-i <I>dir</I>|-x
 <I>cdb]</I> <I>host</I> <I>port</I> <I>prog</I> 
 <H2><A NAME="sect2">Description</A></H2>
 <B>udpsvd</B> creates an UDP/IP socket, binds it
@@ -64,7 +64,7 @@ still running and handling datagrams. </DD>
 ID to <I>user</I>'s UID, and group ID to <I>user</I>'s primary GID after creating and binding
 to the socket. </DD>
 
-<DT><B>-r <I>dir</B> </I></DT>
+<DT><B>-i <I>dir</B> </I></DT>
 <DD>read instructions for handling new connections from
 the instructions directory <I>dir</I>. See <B><I>ipsvd-instruct</B>(5)</I> for details. </DD>
 
