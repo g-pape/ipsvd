@@ -109,9 +109,10 @@ void finish(void) {
     }
     /* bummer */
     matrixSslDeleteSession(ssl);
-    close(fdstdou); close(decpipe[1]); close(encpipe[0]);
+    close(fdstdou); close(encpipe[0]);
     if (fdstdin != -1) close(fdstdin);
-    fdstdou = fdstdin = decpipe[1] =encpipe[0] =-1;
+    if (decpipe[1] != -1) close(decpipe[1]);
+    fdstdou =fdstdin =decpipe[1] =encpipe[0] =-1;
     return;
   }
 }
