@@ -1,3 +1,16 @@
+ipsvd 0.9.5
+Wed, 14 Jul 2004 19:43:48 +0000
+  * man/sslio.8: notations.
+  * ipsvd_check.c: only parse concurrency instruction if phcc is enabled.
+  * tcpsvd.c: bug: concurrency instruction C0 denied connection, fix: C0
+    correctly disables phcc (thx Torne).
+  * package/compile, package/install-man, package/upgrade: mkdir -p dir ->
+    mkdir -p dir/.; ignore grep's return code (fixes build failure on
+    solaris, thx Uffe Jakobsen).
+  * Makefile: target check-tcpsvd, check-udpsvd: add libraries needed for
+    socket() (fixes testing failure on solaris, thx Uffe Jakobsen); use
+    matrixssl-1.1.2 with sslio.
+
 ipsvd 0.9.4
 Sat, 19 Jun 2004 14:47:09 +0000
   * doc/benefits.html, man/tcpsvd.8: typos (thx David Thiel).

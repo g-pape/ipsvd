@@ -54,6 +54,7 @@ int ipsvd_instruct(stralloc *inst, stralloc *match, char *ip) {
 	else if (! pathexec_env(insts +1, 0)) return(-1);
 	break;
       case 'C':
+	if (! phccmax) break;
 	delim =scan_ulong(insts +1, &phccmax);
 	if (insts[delim +1] == ':') {
 	  if (ipsvd_fmt_msg(&msg, insts +delim +2) == -1) return(-1);

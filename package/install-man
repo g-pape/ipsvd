@@ -15,7 +15,7 @@ done
 echo 'Making manpage links in /usr/local/man...'
 cd man
 for k in 5 7 8; do
-  mkdir -p /usr/local/man/man$k
+  mkdir -p /usr/local/man/man$k/.
   for i in *.$k; do
     rm -f /usr/local/man/man$k/$i.gz'{new}'
     ln -s $parent/ipsvd/man/$i.gz /usr/local/man/man$k/$i.gz'{new}'

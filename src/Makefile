@@ -36,18 +36,18 @@ matrixSsl.h: matrixssl
 	rm -f matrixSsl.h
 	ln -s matrixssl/matrixSsl.h matrixSsl.h
 
-matrixssl: matrixssl-1-1-1.tar.gz compile load
-	gzip -dc matrixssl-1-1-1.tar.gz |tar xf -
+matrixssl: matrixssl-1-1-2.tar.gz compile load
+	gzip -dc matrixssl-1-1-2.tar.gz |tar xf -
 	sed -e 's/#define USE_MULTITHREADING/#undef USE_MULTITHREADING/' \
 	  <matrixssl/src/matrixConfig.h >matrixConfig.h && \
 	    mv -f matrixConfig.h matrixssl/src/matrixConfig.h
 	touch matrixssl
 
-check-tcpsvd: load check-tcpsvd.o unix.a byte.a
-	./load check-tcpsvd unix.a byte.a
+check-tcpsvd: load check-tcpsvd.o unix.a byte.a socket.lib
+	./load check-tcpsvd unix.a byte.a `cat socket.lib`
 
-check-udpsvd: load check-udpsvd.o unix.a byte.a
-	./load check-udpsvd unix.a byte.a
+check-udpsvd: load check-udpsvd.o unix.a byte.a socket.lib
+	./load check-udpsvd unix.a byte.a `cat socket.lib`
 
 check-ipsvd-cdb: load check-ipsvd-cdb.o uint32_unpack.o unix.a byte.a
 	./load check-ipsvd-cdb uint32_unpack.o unix.a byte.a
@@ -105,7 +105,7 @@ socket.lib: compile load trysocketlib.c
 
 command.linux: sysdeps
 	( ( test "`cut -c1-5 <systype`" != 'linux' && echo nolinux ) || \
-	  ( test ! -r matrixssl-1-1-1.tar.gz && echo nomatrixssl ) || \
+	  ( test ! -r matrixssl-1-1-2.tar.gz && echo nomatrixssl ) || \
 	  echo sslio ) >command.linux
 
 nolinux:

@@ -7,21 +7,21 @@ test -d src || sh -cx '! : Wrong working directory.'
 here=`env - PATH=$PATH pwd`
 parent=`dirname $here`
 
-echo 'Creating symlink ipsvd -> ipsvd-0.9.4...'
+echo 'Creating symlink ipsvd -> ipsvd-0.9.5...'
 rm -f ipsvd
-ln -s ipsvd-0.9.4 ipsvd
+ln -s ipsvd-0.9.5 ipsvd
 mv -f ipsvd ..
 
 echo 'Making command links in /command...'
-mkdir -p /command
-for i in `cat package/commands` `grep sslio <compile/command.linux`; do
+mkdir -p /command/.
+for i in `cat package/commands` `grep sslio <compile/command.linux || :`; do
   rm -f /command/$i'{new}'
   ln -s $parent/ipsvd/command/$i /command/$i'{new}'
   mv -f /command/$i'{new}' /command/$i
 done
 echo 'Making compatibility links in /usr/local/bin...'
-mkdir -p /usr/local/bin
-for i in `cat package/commands` `grep sslio <compile/command.linux`; do
+mkdir -p /usr/local/bin/.
+for i in `cat package/commands` `grep sslio <compile/command.linux || :`; do
   rm -f /usr/local/bin/$i'{new}'
   ln -s /command/$i /usr/local/bin/$i'{new}'
   mv -f /usr/local/bin/$i'{new}' /usr/local/bin/$i

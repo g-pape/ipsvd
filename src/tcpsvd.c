@@ -172,7 +172,7 @@ void connection_accept(int c) {
   }
   else ac =IPSVD_DEFAULT;
 
-  if (phcc > 0) {
+  if (phccmax) {
     if (phcc > phccmax) {
       ac =IPSVD_DENY;
       if (phccmsg) {
