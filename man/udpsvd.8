@@ -34,6 +34,25 @@ client sending the datagram which not yet was handled by a running program,
 see
 .BR ipsvd-instruct (5)
 for details.
+.P
+.SS ATTENTION:
+UDP is a connectionless protocol.
+Most programs that handle user datagrams, such as
+.BR talkd (8),
+keep running after receiving a datagram, and process subsequent datagrams
+sent to the socket until a timeout is reached.
+.B udpsvd
+only checks special instructions for a datagram that causes a startup of
+the program; not if a program handling datagrams already is running.
+It doesn't make much sense to restrict access through special instructions
+when using such a program.
+.P
+On the other hand, it makes perfectly sense with programs like
+.BR tftpd (8),
+that fork to establish a separate connection to the client when receiving
+the datagram.
+In general it's adequate to set up special instructions for programs that
+should be run by tcpwrapper.
 .SH OPTIONS
 .TP
 .I host
@@ -80,15 +99,15 @@ for details.
 .B \-x \fIcdb
 read instructions for handling new connections from the constant database
 .IR cdb .
-The constant database normally is created from a instructions directory by
-using
+The constant database normally is created from an instructions directory by
+running
 .BR ipsvd-cdb (8).
 .TP
 .B \-n
 Discard a datagram instead of starting
 .I prog
 to handle it, if there is no program still running handling datagrams, and if
-there are no special intructions for the client that initiated the connection.
+there are no special intructions for the client that sent the datagram.
 .TP
 .B \-h
 Look up client's hostname in DNS.

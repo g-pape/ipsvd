@@ -26,44 +26,58 @@ until a new datagram is available. <P>
 <B>udpsvd</B> optionally checks for special
 intructions depending on the IP address of the client sending the datagram
 which not yet was handled by a running program, see <B><I>ipsvd-instruct</B>(5)</I> for
-details. 
-<H2><A NAME="sect3">Options</A></H2>
+details. <P>
+
+<H3><A NAME="sect3">Attention:</A></H3>
+UDP is a connectionless protocol. Most programs that handle
+user datagrams, such as <B><I>talkd</B>(8)</I>, keep running after receiving a datagram,
+and process subsequent datagrams sent to the socket until a timeout is
+reached. <B>udpsvd</B> only checks special instructions for a datagram that causes
+a startup of the program; not if a program handling datagrams already is
+running. It doesn't make much sense to restrict access through special instructions
+when using such a program. <P>
+On the other hand, it makes perfectly sense with
+programs like <B><I>tftpd</B>(8)</I>, that fork to establish a separate connection to
+the client when receiving the datagram. In general it's adequate to set up
+special instructions for programs that should be run by tcpwrapper. 
+<H2><A NAME="sect4">Options</A></H2>
 
 <DL>
 
-<DT><I>host</I> </DT>
-<DD><I>host</I> either is a hostname, or a dotted-decimal IP address,
-or 0. If <I>host</I> is 0, <B>udpsvd</B> accepts datagrams to any local IP address. </DD>
-
-<DT><I>port</I>
+<DT><I>host</I>
 </DT>
-<DD><B>udpsvd</B> accepts datagrams to <I>host</I>:<I>port</I>. </DD>
+<DD><I>host</I> either is a hostname, or a dotted-decimal IP address, or 0. If <I>host</I>
+is 0, <B>udpsvd</B> accepts datagrams to any local IP address. </DD>
+
+<DT><I>port</I> </DT>
+<DD><B>udpsvd</B> accepts
+datagrams to <I>host</I>:<I>port</I>. </DD>
 
 <DT><I>prog</I> </DT>
-<DD><I>prog</I> consists of one or more
-arguments. <B>udpsvd</B> normally runs <I>prog</I> to handle a datagram, and possibly
-more, that is sent to the socket, if there is no program that was started
-before by <B>udpsvd</B> still running and handling datagrams. </DD>
+<DD><I>prog</I> consists of one or more arguments. <B>udpsvd</B>
+normally runs <I>prog</I> to handle a datagram, and possibly more, that is sent
+to the socket, if there is no program that was started before by <B>udpsvd</B>
+still running and handling datagrams. </DD>
 
 <DT><B>-u <I>user</B> </I></DT>
-<DD>drop permissions.
-Switch user ID to <I>user</I>'s UID, and group ID to <I>user</I>'s primary GID after creating
-and binding to the socket. </DD>
+<DD>drop permissions. Switch user
+ID to <I>user</I>'s UID, and group ID to <I>user</I>'s primary GID after creating and binding
+to the socket. </DD>
 
 <DT><B>-r <I>dir</B> </I></DT>
-<DD>read instructions for handling new connections
-from the instructions directory <I>dir</I>. See <B><I>ipsvd-instruct</B>(5)</I> for details. </DD>
+<DD>read instructions for handling new connections from
+the instructions directory <I>dir</I>. See <B><I>ipsvd-instruct</B>(5)</I> for details. </DD>
 
-<DT><B>-x
-<I>cdb</B> </I></DT>
-<DD>read instructions for handling new connections from the constant database
-<I>cdb</I>. The constant database normally is created from a instructions directory
-by using <B><I>ipsvd-cdb</B>(8)</I>. </DD>
+<DT><B>-x <I>cdb</B> </I></DT>
+<DD>read
+instructions for handling new connections from the constant database <I>cdb</I>.
+The constant database normally is created from an instructions directory
+by running <B><I>ipsvd-cdb</B>(8)</I>. </DD>
 
 <DT><B>-n</B> </DT>
-<DD>Discard a datagram instead of starting <I>prog</I> to handle
-it, if there is no program still running handling datagrams, and if there
-are no special intructions for the client that initiated the connection.
+<DD>Discard a datagram instead of starting <I>prog</I> to
+handle it, if there is no program still running handling datagrams, and
+if there are no special intructions for the client that sent the datagram.
 </DD>
 
 <DT><B>-h</B> </DT>
@@ -74,11 +88,11 @@ are no special intructions for the client that initiated the connection.
 output. </DD>
 </DL>
 
-<H2><A NAME="sect4">See Also</A></H2>
+<H2><A NAME="sect5">See Also</A></H2>
 <I>ipsvd(7)</I>, <I>tcpsvd(8)</I>, <I>ipsvd-instruct(5)</I>, <I>ipsvd-cdb(8)</I> <P>
 <I>http://smarden.org/ipsvd/</I>
 
-<H2><A NAME="sect5">Author</A></H2>
+<H2><A NAME="sect6">Author</A></H2>
 Gerrit Pape &lt;pape@smarden.org&gt; <P>
 
 <HR><P>
@@ -87,8 +101,11 @@ Gerrit Pape &lt;pape@smarden.org&gt; <P>
 <LI><A NAME="toc0" HREF="#sect0">Name</A></LI>
 <LI><A NAME="toc1" HREF="#sect1">Synopsis</A></LI>
 <LI><A NAME="toc2" HREF="#sect2">Description</A></LI>
-<LI><A NAME="toc3" HREF="#sect3">Options</A></LI>
-<LI><A NAME="toc4" HREF="#sect4">See Also</A></LI>
-<LI><A NAME="toc5" HREF="#sect5">Author</A></LI>
+<UL>
+<LI><A NAME="toc3" HREF="#sect3">Attention:</A></LI>
+</UL>
+<LI><A NAME="toc4" HREF="#sect4">Options</A></LI>
+<LI><A NAME="toc5" HREF="#sect5">See Also</A></LI>
+<LI><A NAME="toc6" HREF="#sect6">Author</A></LI>
 </UL>
 </BODY></HTML>

@@ -15,14 +15,14 @@
 
 extern const char *progname;
 
-int ipsvd_instruct(stralloc *rule, stralloc *match) {
+int ipsvd_instruct(stralloc *inst, stralloc *match) {
   char *envs;
   unsigned int envlen;
   int delim;
   int i;
 
-  if (rule->s && rule->len) {
-    envs =rule->s; envlen =rule->len;
+  if (inst->s && inst->len) {
+    envs =inst->s; envlen =inst->len;
     while ((i =byte_chr(envs, envlen, 0)) < envlen) {
       switch(*envs) {
       case '+':
@@ -78,12 +78,9 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir, char *ip) {
 	if (! stralloc_0(match)) return(-1);
 	return(ipsvd_instruct(data, match));
       }
-      /*
-hmmmm
       if (! stralloc_copys(match, "")) return(-1);
       if (! stralloc_0(match)) return(-1);
-      return(IPSVD_DENY);
-      */
+      return(IPSVD_DEFAULT);
     }
     else if (errno != error_noent) return(-1);
     if ((i =byte_rchr(tmp.s, tmp.len, '.')) == tmp.len) break;
@@ -112,27 +109,28 @@ int ipsvd_check_cdb(stralloc *data, stralloc *match, char *cdb, char *ip) {
       if (! stralloc_ready(data, dlen)) return(-1);
       if (cdb_read(&c, data->s, dlen, cdb_datapos(&c)) == -1) return(-1);
 
-      if (data->s[dlen -1] == 'D') {
+      switch(data->s[dlen -1]) {
+      case 'D':
 	if (! stralloc_copyb(match, tmp.s, tmp.len)) return(-1);
 	if (! stralloc_0(match)) return(-1);
 	close(fd);
 	return(IPSVD_DENY);
-      }
-      if (data->s[dlen -1] == 'X') {
+      case 'X':
 	data->s[dlen -1] =0;
 	data->len =dlen;
 	if (! stralloc_copyb(match, tmp.s, tmp.len)) return(-1);
 	if (! stralloc_0(match)) return(-1);
 	close(fd);
 	return(IPSVD_EXEC);
-      }
-      if (data->s[dlen -1] == 'I') {
+      case 'I':
 	data->s[dlen -1] =0;
 	data->len =dlen;
 	if (! stralloc_copyb(match, tmp.s, tmp.len)) return(-1);
 	if (! stralloc_0(match)) return(-1);
 	close(fd);
 	return(ipsvd_instruct(data, match));
+      default:
+	/* could not happen */
       }
     }
     if ((i =byte_rchr(tmp.s, tmp.len, '.')) == tmp.len) break;

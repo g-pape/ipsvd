@@ -4,13 +4,13 @@ unsigned int ipsvd_fmt_ip(char *s, char ip[4]) {
   char *p =s;
   int i;
 
-  i =fmt_ulong(p,(unsigned long)(unsigned char)ip[0]);
+  i =fmt_ulong(p, (unsigned long)(unsigned char)ip[0]);
   if (p) p +=i; if (p) *p++ ='.';
-  i =fmt_ulong(p,(unsigned long)(unsigned char)ip[1]);
+  i =fmt_ulong(p, (unsigned long)(unsigned char)ip[1]);
   if (p) p +=i; if (p) *p++ ='.';
-  i =fmt_ulong(p,(unsigned long)(unsigned char)ip[2]);
+  i =fmt_ulong(p, (unsigned long)(unsigned char)ip[2]);
   if (p) p +=i; if (p) *p++ ='.';
-  i =fmt_ulong(p,(unsigned long)(unsigned char)ip[3]);
+  i =fmt_ulong(p, (unsigned long)(unsigned char)ip[3]);
   if (p) p +=i;
   return(p -s);
 }

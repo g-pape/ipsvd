@@ -4,7 +4,8 @@ tcpsvd \- TCP/IP service daemon
 .SH SYNOPSIS
 .B tcpsvd
 [\-nEHv] [\-c
-.I num\fR] [\-u
+.I n\fR] [\-b
+.I n\fR] [\-u
 .I user\fR] [\-r
 .IR dir |\-x
 .I cdb\fR]
@@ -57,14 +58,14 @@ writing to the network.
 By default it also sets up TCP-related environment variables, see
 .BR tcp-environ (5)
 .TP
-.B \-c \fInum
+.B \-c \fIn
 concurrency.
 Handle up to
-.I num
+.I n
 connections simultaneously.
 Default is 30.
 If there are
-.I num
+.I n
 connections active,
 .B tcpsvd
 defers acceptance of a new connection until an active connection is closed.
@@ -88,8 +89,8 @@ for details.
 .B \-x \fIcdb
 read instructions for handling new connections from the constant database
 .IR cdb .
-The constant database normally is created from a instructions directory by
-using
+The constant database normally is created from an instructions directory by
+running
 .BR ipsvd-cdb (8).
 .TP
 .B \-n
@@ -101,6 +102,16 @@ initiated the connection.
 .B \-E
 no ucspi environment.
 Do not set up TCP-related environment variables.
+.TP
+.B \-b \fIn
+backlog.
+Allow a backlog of approximately
+.I n
+TCP SYNs.
+On some systems
+.I n
+is silently limited.
+Default is 20.
 .TP
 .B \-H
 Do not look up client's hostname in DNS.

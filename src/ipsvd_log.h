@@ -5,7 +5,7 @@
 
 extern void out(char *);
 extern void outfix(char *);
-extern void outrule(stralloc *sa);
+extern void outinst(stralloc *);
 extern void flush(char *);
 
 #endif

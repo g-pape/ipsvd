@@ -13,8 +13,8 @@ ipsvd \- Internet protocol service daemon
 An implementation of an internet protocol service daemon provides
 the command line interface as shown in SYNOPSIS above (additional options are
 possible), and supports pre-defined instructions for handling connections
-through files in a instructions directory, and through a constant database as
-described in
+through files in a instructions directory, and through a constant database,
+as described in
 .BR ipsvd-instruct (5).
 .P
 Currently there are two implementations of an internet protocol service
@@ -37,8 +37,8 @@ for details.
 .B \-x \fIcdb
 read instructions for handling new connections from the constant database
 .IR cdb .
-The constant database normally is created from a instructions directory by
-using
+The constant database normally is created from an instructions directory by
+running
 .BR ipsvd-cdb (8).
 .SH SIGNALS
 If an

@@ -38,8 +38,8 @@
 const char *progname;
 
 const char **prog;
-const char *rules =0;
-unsigned int cdbrules =0;
+const char *instructs =0;
+unsigned int iscdb =0;
 unsigned long verbose =0;
 unsigned int deny =0;
 unsigned int lookuphost =0;
@@ -81,7 +81,7 @@ void sig_term_handler() {
 }
 
 void connection_accept(int c) {
-  stralloc rule ={0};
+  stralloc inst ={0};
   stralloc match ={0};
   int ac;
   const char **run;
@@ -97,10 +97,10 @@ void connection_accept(int c) {
     if (! stralloc_0(&remote_hostname)) drop_nomem();
   }
 
-  if (rules) {
-    ac =ipsvd_check(cdbrules, &rule, &match, (char*)rules, remote_ip);
-    if (ac == -1) discard("unable to check rule", remote_ip);
-    if (ac == IPSVD_ERR) discard("unable to read", (char*)rules);
+  if (instructs) {
+    ac =ipsvd_check(iscdb, &inst, &match, (char*)instructs, remote_ip);
+    if (ac == -1) discard("unable to check inst", remote_ip);
+    if (ac == IPSVD_ERR) discard("unable to read", (char*)instructs);
   }
   else ac =IPSVD_DEFAULT;
   if (deny && (ac == IPSVD_DEFAULT)) ac =IPSVD_DENY;
@@ -115,14 +115,14 @@ void connection_accept(int c) {
     bufnum[fmt_ulong(bufnum, getpid())] =0;
     out(bufnum); out(" :"); outfix(remote_hostname.s); out(":");
     outfix(remote_ip); out(":"); outfix(remote_port);
-    if (rules) {
+    if (instructs) {
       out(" ");
-      if (cdbrules) {
-	out((char*)rules); out("/");
+      if (iscdb) {
+	out((char*)instructs); out("/");
       }
       outfix(match.s);
-      if(rule.s && rule.len) {
-	out(": "); outrule(&rule);
+      if(inst.s && inst.len) {
+	out(": "); outinst(&inst);
       }
     }
     flush("\n");
@@ -133,7 +133,7 @@ void connection_accept(int c) {
     _exit(100);
   }
   if (ac == IPSVD_EXEC) {
-    args[0] ="/bin/sh"; args[1] ="-c"; args[2] =rule.s; args[3] =0;
+    args[0] ="/bin/sh"; args[1] ="-c"; args[2] =inst.s; args[3] =0;
     run =args;
   }
   else run =prog;
@@ -176,13 +176,13 @@ int main(int argc, const char **argv, const char *const *envp) {
       lookuphost =1;
       break;
     case 'r':
-      if (rules) usage();
-      rules =optarg;
+      if (instructs) usage();
+      instructs =optarg;
       break;
     case 'x':
-      if (rules) usage();
-      rules =optarg;
-      cdbrules =1;
+      if (instructs) usage();
+      instructs =optarg;
+      iscdb =1;
       break;
     case 'V':
       strerr_warn1(VERSION, 0);

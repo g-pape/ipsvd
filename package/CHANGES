@@ -1,5 +1,5 @@
-ipsd 0.1.4
-Thu, 20 Mar 2003 09:36:34 +0100
+ipsvd 0.1.5
+Thu, 20 Mar 2003 14:51:17 +0100
   * installs into /package.
   * man/ipsvd.7, man/ipsvd-instruct.5: new.
   * adapt manpages

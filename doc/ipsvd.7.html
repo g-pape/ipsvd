@@ -18,7 +18,7 @@ An implementation of an internet protocol service
 daemon provides the command line interface as shown in SYNOPSIS above (additional
 options are possible), and supports pre-defined instructions for handling
 connections through files in a instructions directory, and through a constant
-database as described in <B><I>ipsvd-instruct</B>(5)</I>. <P>
+database, as described in <B><I>ipsvd-instruct</B>(5)</I>. <P>
 Currently there are two implementations
 of an internet protocol service daemon: a TCP/IP service daemon, <B><I>tcpsvd</B>(8)</I>,
 and an UDP/IP service daemon, <B><I>udpsvd</B>(8)</I>. More internet protocol service
@@ -34,8 +34,8 @@ for details. </DD>
 
 <DT><B>-x <I>cdb</B> </I></DT>
 <DD>read instructions for handling new connections from the
-constant database <I>cdb</I>. The constant database normally is created from a
-instructions directory by using <B><I>ipsvd-cdb</B>(8)</I>. </DD>
+constant database <I>cdb</I>. The constant database normally is created from an
+instructions directory by running <B><I>ipsvd-cdb</B>(8)</I>. </DD>
 </DL>
 
 <H2><A NAME="sect4">Signals</A></H2>
