@@ -1,0 +1,10 @@
+usage: udpsvd [-nhpv] [-u user] [-l name] [-i dir|-x cdb] [-t sec] host port prog
+
+111
+$Id$
+usage: udpsvd [-nhpv] [-u user] [-l name] [-i dir|-x cdb] [-t sec] host port prog
+
+111
+udpsvd: info: listening on 127.0.0.1:12614, starting.
+udpsvd: info: sigterm received, exit.
+0

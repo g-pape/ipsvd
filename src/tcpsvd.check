@@ -1,0 +1,13 @@
+#!/bin/sh
+
+tcpsvd
+echo $?
+tcpsvd -V
+echo $?
+
+tcpsvd -v 127.0.0.1 12614 echo foo &
+pid=$!
+sleep 1
+kill -TERM $pid
+wait
+echo $?

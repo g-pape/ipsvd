@@ -21,6 +21,7 @@ cdb.o
 uint32_pack.o
 uint32_unpack.o
 sysdeps
+check
 alloc.o
 alloc_re.o
 buffer.o
@@ -143,3 +144,6 @@ stralloc_copy.o
 uint16_pack.o
 uint16_unpack.o
 dns.a
+ipsvd-cdb.local
+tcpsvd.local
+udpsvd.local

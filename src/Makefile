@@ -2,7 +2,10 @@
 
 IT=tcpsvd udpsvd ipsvd-cdb
 
-default: $(IT)
+default: $(IT) check
+
+check:
+	./check-local $(IT)
 
 tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
 	  ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a dns.a unix.a byte.a \

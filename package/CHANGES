@@ -1,3 +1,12 @@
+ipsvd 0.8.1
+Sun, 22 Feb 2004 14:40:31 +0000
+  * udpsvd: fix usage information output.
+  * doc/upgrade.html: typo.
+  * check-diff, check-dist, check-local: new; run checks on programs.
+  * ipsvd-cdb.check, tcpsvd.check, udpsvd.check: new; check program.
+  * ipsvd-cdb.dist, tcpsvd.dist, udpsvd.dist: new; dist test program output.
+  * Makefile: run program checks by default.
+
 ipsvd 0.8.0
 Fri, 13 Feb 2004 19:42:17 +0000
   * doc/index.html: typo; related links; minor.
