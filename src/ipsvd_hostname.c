@@ -6,11 +6,11 @@ static stralloc sa;
 int ipsvd_hostname(stralloc *host, char *ip, unsigned int paranoid) {
   int i;
 
-  if ((dns_name4(host, ip) == -1) || (host->len == 0)) {
+  if (dns_name4(host, ip) == -1) {
     host->len =0;
     return(-1);
   }
-  if (paranoid) {
+  if (host->len && paranoid) {
     if (dns_ip4(&sa, host) == -1) {
       host->len =0;
       return(-1);
