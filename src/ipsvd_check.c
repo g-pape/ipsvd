@@ -90,13 +90,12 @@ int ipsvd_instruct(stralloc *inst, stralloc *match, char *ip) {
 	    
 	    tmp[ipsvd_fmt_ip(tmp, ips.s +j)] =0;
 	    if (str_equal(tmp, ip)) {
+	      inst->len =insts -inst->s +i +1;
 	      if (insts[next]) {
 		forward =insts +next;
-		inst->len =insts -inst->s +i +1;
 		return(IPSVD_FORWARD);
 	      }
-	      else rc =IPSVD_INSTRUCT;
-	      break;
+	      return(IPSVD_INSTRUCT);
 	    }
 	  }
 	}
