@@ -47,7 +47,7 @@ int ipsvd_fmt_msg(stralloc *sa, const char *msg) {
       if (! stralloc_append(sa, "\r")) return(-1);
       continue;
     default:
-      if (! stralloc_append(sa, p -1, 2)) return(-1);
+      if (! stralloc_catb(sa, p -1, 2)) return(-1);
     }
   }
   return(sa->len);
