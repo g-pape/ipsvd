@@ -1,6 +1,6 @@
 .TH sslio 8
 .SH NAME
-sslio \- SSL input/output for service daemons
+sslio \- SSL input/output for service programs
 .SH SYNOPSIS
 .B sslio
 [\-u
@@ -17,7 +17,7 @@ sslio \- SSL input/output for service daemons
 .I prog
 .SH DESCRIPTION
 .B sslio
-provides SSL encrypted network connections for service daemons started by
+provides SSL encrypted network connections for service programs started by
 .BR tcpsvd (8),
 or
 .BR tcpserver (1).
@@ -28,9 +28,9 @@ is started by
 .BR tcpsvd (8)
 or
 .BR tcpserver (1),
-in turn starts the service daemon
+in turn starts the service program
 .IR prog ,
-and runs as child process of the service daemon.
+and runs as child process of the service program.
 After performing the SSL handshake,
 .B sslio
 reads SSL encrypted data from standard input (the network), and writes
@@ -41,7 +41,7 @@ it reads data from the standard output of
 and writes SSL encrypted data to standard output (the network).
 .P
 .B sslio
-should run under a different user ID than the service daemon, and with a
+should run under a different user ID than the service program, and with a
 changed root directory.
 When started by root, the \-u option must be given, and the \-U and \-/
 options should be given.
@@ -53,7 +53,7 @@ program uses the SSLv3 implementation of the matrixssl library.
 .TP
 .I prog
 .I prog
-consists of one or more arguments, specifying the service daemon normally
+consists of one or more arguments, specifying the service program normally
 run directly by
 .BR tcpsvd (8),
 or
@@ -83,7 +83,7 @@ Switch user ID to
 .IR user 's
 UID, and group ID to
 .IR user 's
-primary GID before starting the service daemon
+primary GID before starting the service program
 .IR prog .
 If
 .I user

@@ -9,22 +9,22 @@
 <a href='http://smarden.org/pape/'>G. Pape</a><br><a href='index.html'>ipsvd</a><hr>
 
 <h2><a name='sect0'>Name</a></h2>
-sslio - SSL input/output for service daemons 
+sslio - SSL input/output for service programs 
 <h2><a name='sect1'>Synopsis</a></h2>
 <b>sslio</b> [-u <i>user</i>]
 [-U <i>user</i>] [-/ <i>root</i>] [-C <i>cert</i>] [-K <i>key</i>] [-v] <i>prog</i> 
 <h2><a name='sect2'>Description</a></h2>
 <b>sslio</b> provides SSL
-encrypted network connections for service daemons started by <i><b>tcpsvd</b>(8)</i>,
+encrypted network connections for service programs started by <i><b>tcpsvd</b>(8)</i>,
 or <i><b>tcpserver</b>(1)</i>. <p>
 Normally <b>sslio</b> is started by <i><b>tcpsvd</b>(8)</i> or <i><b>tcpserver</b>(1)</i>,
-in turn starts the service daemon <i>prog</i>, and runs as child process of the
-service daemon. After performing the SSL handshake, <b>sslio</b> reads SSL encrypted
+in turn starts the service program <i>prog</i>, and runs as child process of the
+service program. After performing the SSL handshake, <b>sslio</b> reads SSL encrypted
 data from standard input (the network), and writes decrypted data to the
 standard input of <i>prog</i>; it reads data from the standard output of <i>prog</i>,
 and writes SSL encrypted data to standard output (the network). <p>
 <b>sslio</b> should
-run under a different user ID than the service daemon, and with a changed
+run under a different user ID than the service program, and with a changed
 root directory. When started by root, the -u option must be given, and the
 -U and -/ options should be given. <p>
 The <b>sslio</b> program uses the SSLv3 implementation
@@ -35,7 +35,7 @@ of the matrixssl library.
 
 <dt><i>prog</i> </dt>
 <dd><i>prog</i> consists of one or more arguments,
-specifying the service daemon normally run directly by <i><b>tcpsvd</b>(8)</i>, or <i><b>tcpserver</b>(1)</i>.
+specifying the service program normally run directly by <i><b>tcpsvd</b>(8)</i>, or <i><b>tcpserver</b>(1)</i>.
 </dd>
 
 <dt><b>-u <i>user</i>[:<i>group</i>]</b> </dt>
@@ -48,7 +48,7 @@ otherwise. </dd>
 
 <dt><b>-U <i>user</i>[:<i>group</i>]</b> </dt>
 <dd>drop permissions. Switch user ID to <i>user</i>&rsquo;s UID,
-and group ID to <i>user</i>&rsquo;s primary GID before starting the service daemon <i>prog</i>.
+and group ID to <i>user</i>&rsquo;s primary GID before starting the service program <i>prog</i>.
 If <i>user</i> is followed by a colon and a group name, the group ID is switched
 to the GID of <i>group</i> instead. All supplementary groups are removed. This option
 should be set when <b>sslio</b> is started by root, and cannot be set otherwise.
