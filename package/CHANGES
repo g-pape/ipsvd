@@ -5,6 +5,10 @@ ipsvd 0.6.3
     some internals; last concurrency instruction wins.
   * man/ipsvd-instruct.5: document check host instructions; update
     concurrency instruction.
+  * ipsvd-cdb.c: consider filenames starting with a single dot; skip
+    filenames starting with two dots; minor.
+  * man/ipsvd-cdb.8: adapt.
+  * Makefile: minor.
 
 ipsvd 0.6.1
 Tue, 14 Oct 2003 11:17:29 +0000
