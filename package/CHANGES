@@ -1,3 +1,5 @@
+  * doc/install.html: typo.
+
 ipsvd 0.9.7
 Fri, 03 Dec 2004 10:15:37 +0000
   * ipsvd_check.c: catch all failures of openreadclose(); disregard
