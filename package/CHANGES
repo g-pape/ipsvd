@@ -1,3 +1,5 @@
+  * doc/benefits.html, man/tcpsvd.8: typos (thx David Thiel).
+
 ipsvd 0.9.3
 Wed, 02 Jun 2004 19:27:13 +0000
   * sslio.c: end network connection when seeing eof from prog; adapt some

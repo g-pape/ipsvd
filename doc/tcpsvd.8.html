@@ -87,7 +87,7 @@ defers acceptance of a new connection until an active connection is closed.
 same IP address simultaneously. If there are <i>n</i> active connections from one
 IP address, new incoming connections from this IP address are closed immediately.
 If <i>n</i> is followed by :<i>msg,</i> the message <i>msg</i> is written to the client if possible,
-before closing the connection. By default <i>msg</i> is empty. See <i><b>ipsvd-instruct</b>(7)</i>
+before closing the connection. By default <i>msg</i> is empty. See <i><b>ipsvd-instruct</b>(5)</i>
 for supported escape sequences in <i>msg</i>. 
 <p> For each accepted connection, the
 current per host concurrency is available through the environment variable
