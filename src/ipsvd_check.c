@@ -65,8 +65,7 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir, char *ip) {
       }
       if (s.st_mode & S_IXUSR) {
 	if (! openreadclose(tmp.s, data, 256)) return(-1);
-	if (! data->len) return(IPSVD_INSTRUCT);
-	if (data->s[data->len -1] == '\n') data->len--;
+	if (data->len && (data->s[data->len -1] == '\n')) data->len--;
 	if (! stralloc_0(data)) return(-1);
 	if (! stralloc_copyb(match, tmp.s, tmp.len)) return(-1);
 	if (! stralloc_0(match)) return(-1);
@@ -74,8 +73,7 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir, char *ip) {
       }
       if (s.st_mode & S_IRUSR) {
 	if (! openreadclose(tmp.s, data, 256)) return(-1);
-	if (! data->len) return(IPSVD_INSTRUCT);
-	if (data->s[data->len -1] == '\n') data->len--;
+	if (data->len && (data->s[data->len -1] == '\n')) data->len--;
 	for (i =0; i < data->len; i++) if (data->s[i] == '\n') data->s[i] =0;
 	if (! stralloc_0(data)) return(-1);
 	if (! stralloc_copyb(match, tmp.s, tmp.len)) return(-1);
