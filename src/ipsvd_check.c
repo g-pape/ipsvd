@@ -113,7 +113,6 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir,
   if (! stralloc_0(match)) return(-1);
   /* ip */
   for (;;) {
-    printf("%s\n", match->s);
     ok =ipsvd_check_direntry(data, match, now, timeout, &rc);
     if (ok == -1) return(-1);
     if (ok) return(rc);
