@@ -1,11 +1,12 @@
 ipsvd 0.10.0
-
+Fri, 14 Jan 2005 20:35:10 +0000
   * doc/install.html: typo.
   * sslerror_str.c, sslerror_str.h: new; ssl error strings.
   * sslio.c: improve logging, error messages, use sslerror_str; new option
     -c client support to run under tcpclient.
   * uidgid.c: improve error handling.
   * Makefile, man/sslio.8: adapt.
+  * package/versions: new.
 
 ipsvd 0.9.7
 Fri, 03 Dec 2004 10:15:37 +0000
