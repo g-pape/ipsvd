@@ -1,13 +1,14 @@
 ipsvd (0.9.4-1) unstable; urgency=low
 
   * new upstream version.
+  * debian/control: update description.
   * debian/rules: use -g -O2; target unpack: apply diff.
   * debian/diff/sslio-man.diff: new; typos.
   * debian/ipsvd.docs: add debian/README.Debian.diet.
   * debian/README.Debian.diet: new; how to build the package with the diet
     libc.
 
- -- Gerrit Pape <pape@smarden.org>  Mon, 21 Jun 2004 18:55:49 +0000
+ -- Gerrit Pape <pape@smarden.org>  Mon, 21 Jun 2004 19:02:03 +0000
 
 ipsvd (0.9.3-1) unstable; urgency=low
 
