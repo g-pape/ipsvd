@@ -103,6 +103,7 @@ void connection_status() {
 }
 
 void sig_term_handler() {
+  if (phccmax) ipsvd_phcc_free();
   if (verbose) {
     out(INFO); flush("sigterm received, exit.\n");
   }
@@ -145,7 +146,6 @@ void connection_accept(int c) {
       warn2("temporarily unable to look up in DNS", remote_ip);
     if (! stralloc_0(&remote_hostname)) drop_nomem();
   }
-  
   if (getsockname(c, (struct sockaddr*)&socka, &socka_size) == -1)
     drop("unable to get local address");
   if (! local_hostname.len) {
@@ -154,7 +154,8 @@ void connection_accept(int c) {
     if (! stralloc_0(&local_hostname)) die_nomem();
   }
   local_ip[ipsvd_fmt_ip(local_ip, (char*)&socka.sin_addr)] =0;
-  
+
+  if (ucspi) ucspi_env();
   if (instructs) {
     ac =ipsvd_check(iscdb, &inst, &match, (char*)instructs,
 		    remote_ip, remote_hostname.s);
@@ -206,7 +207,6 @@ void connection_accept(int c) {
     run =args;
   }
   else run =prog;
-  if (ucspi) ucspi_env();
   if ((fd_move(0, c) == -1) || (fd_copy(1, 0) == -1))
     drop("unable to set filedescriptor");
   sig_uncatch(sig_term);
@@ -317,7 +317,7 @@ int main(int argc, const char **argv) {
 
   if (! lookuphost) {
     if (! stralloc_copys(&remote_hostname, "")) die_nomem();
-    //    if (! stralloc_0(&remote_hostname)) die_nomem();
+    if (! stralloc_0(&remote_hostname)) die_nomem();
   }
 
   if ((s =socket_tcp()) == -1) fatal("unable to create socket");

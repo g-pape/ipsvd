@@ -4,20 +4,17 @@
 <title>ipsvd - internet protocol service daemons</title>
 </head>
 <body>
-<a href="http://smarden.org/pape/">G. Pape</a><br>
+<a href="http://smarden.org/pape/">G. Pape</a>
 <hr>
 <h1>ipsvd - internet protocol service daemons</h1>
 <hr>
 <a href="install.html">How to install ipsvd</a><br>
-<!--
-<p>
-<a href="protocols.html">Supported protocols</a>
--->
+<a href="usedietlibc.html">How to use dietlibc</a>
 <p>
 <a href="ipsvd.7.html">The <tt>ipsvd</tt> interface</a><br>
 <a href="tcpsvd.8.html">The <tt>tcpsvd</tt> program</a><br>
 <a href="udpsvd.8.html">The <tt>udpsvd</tt> program</a><br>
-<a href="ipsvd-cdb.8.html">The <tt>ipsvd-cdb</tt> program</a><br>
+<a href="ipsvd-cdb.8.html">The <tt>ipsvd-cdb</tt> program</a>
 <p>
 <a href="ipsvd-instruct.5.html">ipsvd instructions</a>
 <hr>
@@ -32,9 +29,10 @@ output writing to the socket, that handles the connection.
 Standard error is used for logging.
 <p>
 <i>ipsv</i> daemons can be told to read and follow pre-defined instructions
-on incoming connections.
+on how to handle incoming connections.
 It's possible to run different programs, or to set a different environment,
-or to deny a connection, depending on the client's address.
+or to deny a connection, or to set a per host concurrency limit, depending
+on the client's address or hostname.
 <p>
 Normally the <i>ipsv</i> daemons are run by a supervisor process, such as
 <a href="http://smarden.org/runit/runsv.1.html">runsv</a> from the
@@ -42,8 +40,8 @@ Normally the <i>ipsv</i> daemons are run by a supervisor process, such as
 <a href="http://cr.yp.to/daemontools/supervise.html">supervise</a> from the
 <a href="http://cr.yp.to/daemontools.html">daemontools</a> package.
 <p>
-<i>ipsvd</i> can be used to run services normally run by <i>inetd</i> or
-<i>xinetd</i>.
+<i>ipsvd</i> can be used to run services normally run by <i>inetd</i>,
+<i>xinetd</i>, or <i>tcpserver</i>.
 <hr>
 <i>ipsvd</i> is discussed on the
 <a href="mailto:misc@list.smarden.org">&lt;misc@list.smarden.org&gt;</a>

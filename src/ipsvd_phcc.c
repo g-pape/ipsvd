@@ -57,3 +57,7 @@ int ipsvd_phcc_rem(int pid) {
     }
   return(-1);
 }
+
+void ipsvd_phcc_free(void) {
+  if (cc) alloc_free(cc);
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<title>ipsvd - use dietlibc</title>
+</head>
+<body>
+<a href="http://smarden.org/pape/">G. Pape</a><br>
+<a href="index.html">ipsvd</a><br>
+<hr>
+<h1>ipsvd - use dietlibc</h1>
+<hr>
+To recompile the <i>ipsvd</i> programs with the
+<a href="http://www.fefe.de/dietlibc/">diet libc</a>, check that you have
+the recent version of
+<a href="http://www.fefe.de/dietlibc/">dietlibc</a> installed.
+<p>
+Change to the package directory of <i>ipsvd</i>:
+<pre>
+  # cd /package/net/ipsvd/
+</pre>
+Change the <tt>conf-cc</tt> and <tt>conf-ld</tt> to use <tt>diet</tt>:
+<pre>
+  # echo 'diet -Os gcc -O2 -Wall' &gt;src/conf-cc
+  # echo 'diet -Os gcc -s -Os -pipe' &gt;src/conf-ld
+</pre>
+Rebuild and install the <i>ipsvd</i> programs:
+<pre>
+  # package/install
+</pre>
+<hr>
+<address><a href="mailto:pape@smarden.org">
+Gerrit Pape &lt;pape@smarden.org&gt;
+</a></address>
+<small>$Id$</small>
+</body>
+</html>

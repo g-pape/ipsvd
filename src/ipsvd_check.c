@@ -22,22 +22,23 @@ int ipsvd_instruct(stralloc *inst, stralloc *match) {
   unsigned int instslen;
   int delim;
   int i;
+  unsigned long ccmax =0;
 
-  phccmax =0;
   if (inst->s && inst->len) {
     insts =inst->s; instslen =inst->len;
     while ((i =byte_chr(insts, instslen, 0)) < instslen) {
       switch(*insts) {
       case '+':
-	delim =str_chr(insts, '=');
+	if ((delim =str_chr(insts, '=')) <= 1) break; /* empty inst */
 	if (insts[delim] == '=') {
 	  insts[delim] =0;
 	  if (! pathexec_env(insts +1, insts +delim +1)) return(-1);
 	  insts[delim] ='=';
 	}
+	else if (! pathexec_env(insts +1, 0)) return(-1);
 	break;
       case 'C':
-	if (! phccmax) scan_ulong(insts +1, &phccmax);
+	if (! ccmax) scan_ulong(insts +1, &ccmax);
 	break;
       case 0: /* skip empty line */
 	break;
@@ -48,6 +49,7 @@ int ipsvd_instruct(stralloc *inst, stralloc *match) {
       insts +=i +1;
       instslen -=i +1;
     }
+    if (ccmax) phccmax =ccmax;
   }
   return(IPSVD_INSTRUCT);
 }

@@ -3,7 +3,7 @@
 ipsvd-instruct \- format of the ipsvd(8) instructions directory
 .SH DESCRIPTION
 The internet protocol service daemons,
-.BR ipsvd (8),
+.BR ipsvd (7),
 can be told to read and follow instructions from a directory on incoming
 connections to the socket they listen on.
 .P
@@ -11,11 +11,11 @@ For mostly static instructions or for performance reasons, it is possible to
 compile the instructions from a directory into a constant database (cdb) with
 .BR ipsvd-cdb (8)
 for faster lookup, and to tell
-.BR ipsvd (8)
+.BR ipsvd (7)
 to read the instructions from there.
 .SH MATCHING
 On each incoming connection, the
-.BR ipsvd (8)
+.BR ipsvd (7)
 matches the client's IP address against files in the instructions directory.
 For example, the IP address
 .I a.b.c.d
@@ -57,7 +57,7 @@ And finally the catchall file ``0'' (zero):
 .P
 After successfully matching a client's IP address or hostname against the
 instructions directory,
-.BR ipsvd (8)
+.BR ipsvd (7)
 examines the file that matched the IP address or hostname, and acts
 accordingly:
 .TP
@@ -67,7 +67,7 @@ the connection is closed immediately.
 .TP
 2.
 If the file has the user's execute permission set,
-.BR ipsvd (8)
+.BR ipsvd (7)
 reads the contents of the file and runs
 .I /bin/sh \-c '<contents>'
 instead of the default program
@@ -76,7 +76,7 @@ given at the command line for this connection.
 .TP
 3.
 If the file has the user's read permission set,
-.BR ipsvd (8)
+.BR ipsvd (7)
 reads the contents of the file and interprets each line as an instruction
 for this connection (see below).
 .P
@@ -86,7 +86,7 @@ instructions directory, the default action is taken (the program
 is run to handle the connection).
 .SH INSTRUCTIONS
 If
-.BR ipsvd (8)
+.BR ipsvd (7)
 is given instructions for an incoming connection, it reads the corresponding
 file and interprets each line as follows.
 The file may be empty, meaning that there is no special instruction.
@@ -95,13 +95,13 @@ The file may be empty, meaning that there is no special instruction.
 environment.
 If the line starts with a plus (``+''), and the string following the plus
 contains a ``='',
-.BR ipsvd (8)
+.BR ipsvd (7)
 puts the string following the plus into the environment before starting
 .IR prog
 to handle the connection.
 If the string following the plus doesn't contain a ``='',
-.BR ipsvd (8)
-prints a warning and discards this line.
+.BR ipsvd (7)
+makes sure that the environment variable with the name string is not set.
 .TP
 .BI C num
 concurrency.
@@ -114,20 +114,25 @@ Not all
 support per host concurrency.
 .P
 If
-.BR ipsvd (8)
+.BR ipsvd (7)
 cannot interpret a line, it prints a warning, discards the line, and
 continues with the next instruction if any.
 .SH EXAMPLE INSTRUCTIONS
 .TP
 +MEMORY=20000
 This instruction causes the environment variable ``MEMORY'' with the value
-``20000'' to be availbale to the program
+``20000'' to be available to the program
 .I prog
 that handles the connection.
 .TP
 +DEBUG=
 This instruction adds the variable ``DEBUG'' with an empty value to the
 environment.
+.TP
++LOGNAME
+This instructions makes sure that the environment variable ``LOGNAME'' is
+unset when running
+.IR prog .
 .TP
 C16
 Set the per host concurrency to 16.
