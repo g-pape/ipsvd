@@ -11,36 +11,45 @@
 <H2><A NAME="sect0">Name</A></H2>
 udpsvd - UDP/IP service daemon 
 <H2><A NAME="sect1">Synopsis</A></H2>
-<B>udpsvd</B> [-v] <I>host</I> <I>port</I> <I>prog</I> 
+<B>udpsvd</B> [-vh] [-u <I>user]</I> <I>host</I> <I>port</I>
+<I>prog</I> 
 <H2><A NAME="sect2">Description</A></H2>
 
 <H2><A NAME="sect3">Options</A></H2>
 
 <DL>
 
-<DT><I>host</I>
-</DT>
-<DD><I>host</I> either is a hostname, or a dotted-decimal IP address, or 0. If <I>host</I>
-is 0, <B>udpsvd</B> accepts connections to any local IP address. </DD>
+<DT><I>host</I> </DT>
+<DD><I>host</I> either is a hostname, or a dotted-decimal
+IP address, or 0. If <I>host</I> is 0, <B>udpsvd</B> accepts connections to any local
+IP address. </DD>
 
 <DT><I>port</I> </DT>
-<DD><B>udpsvd</B> accepts
-connections to <I>host</I>:<I>port</I>. </DD>
+<DD><B>udpsvd</B> accepts connections to <I>host</I>:<I>port</I>. </DD>
 
 <DT><I>prog</I> </DT>
-<DD><I>prog</I> consists of one or more arguments. </DD>
+<DD><I>prog</I> consists
+of one or more arguments. </DD>
 
-<DT><B>-v</B>
-</DT>
+<DT><B>-u <I>user</B> </I></DT>
+<DD>drop permissions. Switch user ID to <I>user</I>'s
+UID, and group ID to <I>user</I>'s primary GID after creating and binding to the
+socket. </DD>
+
+<DT><B>-v</B> </DT>
 <DD>verbose. Print verbose messaged to standard out. </DD>
+
+<DT><B>-h</B> </DT>
+<DD>lookup hostname.
+</DD>
 </DL>
 
 <H2><A NAME="sect4">See Also</A></H2>
-<I>tcpsvd(8)</I>, <I>ipsvd-cdb(8)</I>
-<P>
+<I>tcpsvd(8)</I>, <I>ipsvd-cdb(8)</I> <P>
 <I>http://smarden.org/ipsvd/</I> 
 <H2><A NAME="sect5">Author</A></H2>
-Gerrit Pape &lt;pape@smarden.org&gt; <P>
+Gerrit Pape
+&lt;pape@smarden.org&gt; <P>
 
 <HR><P>
 <A NAME="toc"><B>Table of Contents</B></A><P>
