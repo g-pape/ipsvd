@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <time.h>
 #include "ipsvd_check.h"
 #include "ipsvd_log.h"
 #include "error.h"
@@ -54,13 +55,57 @@ int ipsvd_instruct(stralloc *inst, stralloc *match) {
   return(IPSVD_INSTRUCT);
 }
 
+int ipsvd_check_direntry(stralloc *d, stralloc *m, time_t now,
+			 unsigned long t, int *rc) {
+  int i;
+  struct stat s;
+
+  if (stat(m->s, &s) != -1) {
+    if (t && (s.st_mode & S_IWUSR) && (now >= s.st_atime))
+      if ((now -s.st_atime) >= t) {
+	if (unlink(m->s) == -1)
+	  strerr_warn4(progname, ": unable to unlink ", m->s, ": ",
+		       &strerr_sys);
+	return(0);
+      }
+    if (! (s.st_mode & S_IXUSR) && ! (s.st_mode & S_IRUSR)) {
+      *rc =IPSVD_DENY; return(1);
+    }
+    if (s.st_mode & S_IXUSR) {
+      if (! openreadclose(m->s, d, 256)) return(-1);
+      if (d->len && (d->s[d->len -1] == '\n')) d->len--;
+      if (! stralloc_0(d)) return(-1);
+      *rc =IPSVD_EXEC;
+      return(1);
+    }
+    if (s.st_mode & S_IRUSR) {
+      if (! openreadclose(m->s, d, 256)) return(-1);
+      if (d->len && (d->s[d->len -1] == '\n')) d->len--;
+      for (i =0; i < d->len; i++) if (d->s[i] == '\n') d->s[i] =0;
+      if (! stralloc_0(d)) return(-1);
+      if ((*rc =ipsvd_instruct(d, m)) == -1) return(-1);
+      return(1);
+    }
+    if (! stralloc_copys(m, "")) return(-1);
+    if (! stralloc_0(m)) return(-1);
+    *rc =IPSVD_DEFAULT;
+    return(1);
+  }
+  else if (errno != error_noent) return(-1);
+  return(0);
+}
+
 int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir,
-		    char *ip, char *name) {
+		    char *ip, char *name, unsigned long timeout) {
   struct stat s;
   int i;
+  int rc;
+  int ok;
   int base;
+  time_t now =0;
 
   if (stat(dir, &s) == -1) return(IPSVD_ERR);
+  if (timeout) now =time((time_t*)0);
   if (! stralloc_copys(match, dir)) return(-1);
   if (! stralloc_cats(match, "/")) return(-1);
   base =match->len;
@@ -68,27 +113,13 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir,
   if (! stralloc_0(match)) return(-1);
   /* ip */
   for (;;) {
-    if (stat(match->s, &s) != -1) {
-      if ((s.st_mode & S_IRWXU) == 0) return(IPSVD_DENY);
-      if (s.st_mode & S_IXUSR) {
-	if (! openreadclose(match->s, data, 256)) return(-1);
-	if (data->len && (data->s[data->len -1] == '\n')) data->len--;
-	if (! stralloc_0(data)) return(-1);
-	return(IPSVD_EXEC);
-      }
-      if (s.st_mode & S_IRUSR) {
-	if (! openreadclose(match->s, data, 256)) return(-1);
-	if (data->len && (data->s[data->len -1] == '\n')) data->len--;
-	for (i =0; i < data->len; i++) if (data->s[i] == '\n') data->s[i] =0;
-	if (! stralloc_0(data)) return(-1);
-	return(ipsvd_instruct(data, match));
-      }
-      if (! stralloc_copys(match, "")) return(-1);
-      if (! stralloc_0(match)) return(-1);
-      return(IPSVD_DEFAULT);
-    }
-    else if (errno != error_noent) return(-1);
+    printf("%s\n", match->s);
+    ok =ipsvd_check_direntry(data, match, now, timeout, &rc);
+    if (ok == -1) return(-1);
+    if (ok) return(rc);
+
     if ((i =byte_rchr(match->s, match->len, '.')) == match->len) break;
+    if (i <= base) break;
     match->s[i] =0; match->len =i;
   }
   /* host */
@@ -98,26 +129,11 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir,
       match->len =base;
       if (! stralloc_cats(match, name)) return(-1);
       if (! stralloc_0(match)) return(-1);
-      if (stat(match->s, &s) != -1) {
-	if ((s.st_mode & S_IRWXU) == 0) return(IPSVD_DENY);
-	if (s.st_mode & S_IXUSR) {
-	  if (! openreadclose(match->s, data, 256)) return(-1);
-	  if (data->len && (data->s[data->len -1] == '\n')) data->len--;
-	  if (! stralloc_0(data)) return(-1);
-	  return(IPSVD_EXEC);
-	}
-	if (s.st_mode & S_IRUSR) {
-	  if (! openreadclose(match->s, data, 256)) return(-1);
-	  if (data->len && (data->s[data->len -1] == '\n')) data->len--;
-	  for (i =0; i < data->len; i++) if (data->s[i] == '\n') data->s[i] =0;
-	  if (! stralloc_0(data)) return(-1);
-	  return(ipsvd_instruct(data, match));
-	}
-	if (! stralloc_copys(match, "")) return(-1);
-	if (! stralloc_0(match)) return(-1);
-	return(IPSVD_DEFAULT);
-      }
-      else if (errno != error_noent) return(-1);
+
+      ok =ipsvd_check_direntry(data, match, now, timeout, &rc);
+      if (ok == -1) return(-1);
+      if (ok) return(rc);
+
       if ((i =byte_chr(name, str_len(name), '.')) == str_len(name)) break;
       name +=i +1;
     }
@@ -126,26 +142,10 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir,
   match->len =base;
   if (! stralloc_cats(match, "0")) return(-1);
   if (! stralloc_0(match)) return(-1);
-  if (stat(match->s, &s) != -1) {
-    if ((s.st_mode & S_IRWXU) == 0) return(IPSVD_DENY);
-    if (s.st_mode & S_IXUSR) {
-      if (! openreadclose(match->s, data, 256)) return(-1);
-      if (data->len && (data->s[data->len -1] == '\n')) data->len--;
-      if (! stralloc_0(data)) return(-1);
-      return(IPSVD_EXEC);
-    }
-    if (s.st_mode & S_IRUSR) {
-      if (! openreadclose(match->s, data, 256)) return(-1);
-      if (data->len && (data->s[data->len -1] == '\n')) data->len--;
-      for (i =0; i < data->len; i++) if (data->s[i] == '\n') data->s[i] =0;
-      if (! stralloc_0(data)) return(-1);
-      return(ipsvd_instruct(data, match));
-    }
-    if (! stralloc_copys(match, "")) return(-1);
-    if (! stralloc_0(match)) return(-1);
-    return(IPSVD_DEFAULT);
-  }
-  else if (errno != error_noent) return(-1);
+
+  ok =ipsvd_check_direntry(data, match, now, timeout, &rc);
+  if (ok == -1) return(-1);
+  if (ok) return(rc);
 
   if (! stralloc_copys(match, "")) return(-1);
   if (! stralloc_0(match)) return(-1);
@@ -153,7 +153,7 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir,
 }
 
 int ipsvd_check_cdb(stralloc *data, stralloc *match, char *cdb,
-		    char *ip, char *name) {
+		    char *ip, char *name, unsigned long unused) {
   struct cdb c;
   uint32 dlen;
   int fd;
@@ -252,9 +252,9 @@ int ipsvd_check_cdb(stralloc *data, stralloc *match, char *cdb,
 }
 
 int ipsvd_check(int c, stralloc *data, stralloc *match, char *db,
-		char *ip, char *name) {
+		char *ip, char *name, unsigned long timeout) {
   if (c)
-    return(ipsvd_check_cdb(data, match, db, ip, name));
+    return(ipsvd_check_cdb(data, match, db, ip, name, 0));
   else
-    return(ipsvd_check_dir(data, match, db, ip, name));
+    return(ipsvd_check_dir(data, match, db, ip, name, timeout));
 }

@@ -1,3 +1,13 @@
+ipsvd 0.3.4
+Tue, 29 Apr 2003 14:24:05 +0200
+  * ipsvd_check.c, ipsvd_check.h: support -t option: timeout for last
+    access of files in an instructions directory; code cleanup.
+  * tcpsvd.c, udpsvd.c: support -t option.
+  * man/ipsvd.7, man/tcpsvd.8, man/udpsvd.8: adapt.
+  * doc/install.html: build static djbdns client library only.
+  * doc/usedietlibc.html: add instructions on how to build the djbdns client
+    library with the diet libc.
+
 ipsvd 0.3.0
 Sat, 12 Apr 2003 16:40:02 +0200
   * doc/install.html: typo.

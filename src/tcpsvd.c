@@ -24,7 +24,7 @@
 #include "pathexec.h"
 #include "ndelay.h"
 
-#define USAGE " [-Ehpv] [-u user] [-c n] [-C n] [-b n] [-l name] [-i dir|-x cdb] host port prog"
+#define USAGE " [-Ehpv] [-u user] [-c n] [-C n] [-b n] [-l name] [-i dir|-x cdb] [-t sec] host port prog"
 #define VERSION "$Id$"
 
 #define FATAL "tcpsvd: fatal: "
@@ -41,6 +41,7 @@ unsigned int paranoid =0;
 const char **prog;
 unsigned long cnum =0;
 unsigned long cmax =30;
+unsigned long timeout =0;
 
 unsigned int ucspi =1;
 const char *instructs =0;
@@ -158,7 +159,7 @@ void connection_accept(int c) {
   if (ucspi) ucspi_env();
   if (instructs) {
     ac =ipsvd_check(iscdb, &inst, &match, (char*)instructs,
-		    remote_ip, remote_hostname.s);
+		    remote_ip, remote_hostname.s, timeout);
     if (ac == -1) drop2("unable to check inst", remote_ip);
     if (ac == IPSVD_ERR) drop2("unable to read", (char*)instructs);
   }
@@ -232,7 +233,7 @@ int main(int argc, const char **argv) {
   progname =*argv;
   phccmax =0;
 
-  while ((opt =getopt(argc, argv, "c:C:i:x:u:l:Eb:hpvV")) != opteof) {
+  while ((opt =getopt(argc, argv, "c:C:i:x:u:l:Eb:hpt:vV")) != opteof) {
     switch(opt) {
     case 'c':
       scan_ulong(optarg, &cmax);
@@ -271,6 +272,9 @@ int main(int argc, const char **argv) {
     case 'p':
       lookuphost =1;
       paranoid =1;
+      break;
+    case 't':
+      scan_ulong(optarg, &timeout);
       break;
     case 'v':
       ++verbose;

@@ -7,7 +7,9 @@ udpsvd \- UDP/IP service daemon
 .I user\fR] [\-l
 .I name\fR] [\-i
 .IR dir |\-x
-.I cdb\fR]
+.IR cdb ]
+[\-t
+.IR sec ]
 .I host
 .I port
 .I prog
@@ -98,6 +100,16 @@ read instructions for handling new connections from the constant database
 The constant database normally is created from an instructions directory by
 running
 .BR ipsvd-cdb (8).
+.TP
+.B \-t \fIsec
+timeout.
+While checking the instructions directory, check the time of last access of
+the file that matches the clients address or hostname if any, and discard
+and remove the file if it wasn't accessed within the last
+.I sec
+seconds.
+This option only takes effect if the \-i option is given.
+Default is 0, which means that the timeout is disabled.
 .TP
 .B \-l \fIname
 local hostname.

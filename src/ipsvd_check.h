@@ -11,6 +11,7 @@ extern unsigned long phccmax;
 #define IPSVD_INSTRUCT 3
 #define IPSVD_EXEC 4
 
-extern int ipsvd_check(int, stralloc *, stralloc *, char *, char *, char *);
+extern int ipsvd_check(int, stralloc *, stralloc *, char *, char *, char *,
+		       unsigned long);
 
 #endif

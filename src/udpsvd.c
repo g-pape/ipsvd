@@ -23,7 +23,7 @@
 #include "wait.h"
 #include "pathexec.h"
 
-#define USAGE " [-nhpv] [-u user] [-l name] [-i dir|-x cdb] host port prog"
+#define USAGE " [-nhpv] [-u user] [-l name] [-i dir|-x cdb] [-t sec] host port prog"
 #define VERSION "$Id$"
 
 #define FATAL "udpsvd: fatal: "
@@ -36,9 +36,10 @@ const char *progname;
 const char **prog;
 const char *instructs =0;
 unsigned int iscdb =0;
-unsigned long verbose =0;
+unsigned int verbose =0;
 unsigned int lookuphost =0;
 unsigned int paranoid =0;
+unsigned long timeout =0;
 
 static char seed[128];
 int s;
@@ -99,7 +100,7 @@ void connection_accept(int c) {
 
   if (instructs) {
     ac =ipsvd_check(iscdb, &inst, &match, (char*)instructs,
-		    remote_ip, remote_hostname.s);
+		    remote_ip, remote_hostname.s, timeout);
     if (ac == -1) discard("unable to check inst", remote_ip);
     if (ac == IPSVD_ERR) discard("unable to read", (char*)instructs);
   }
@@ -165,7 +166,7 @@ int main(int argc, const char **argv, const char *const *envp) {
 
   progname =*argv;
 
-  while ((opt =getopt(argc, argv, "vu:l:hpi:x:V")) != opteof) {
+  while ((opt =getopt(argc, argv, "vu:l:hpi:x:t:V")) != opteof) {
     switch(opt) {
     case 'v':
       ++verbose;
@@ -193,6 +194,9 @@ int main(int argc, const char **argv, const char *const *envp) {
       if (instructs) usage();
       instructs =optarg;
       iscdb =1;
+      break;
+    case 't':
+      scan_ulong(optarg, &timeout);
       break;
     case 'V':
       strerr_warn1(VERSION, 0);
