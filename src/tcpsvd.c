@@ -1,3 +1,4 @@
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
@@ -344,8 +345,8 @@ int main(int argc, const char **argv) {
   ndelay_off(s);
   if (pwd) {
     /* drop permissions */
-    if (prot_gid(pwd->pw_gid) == -1) drop("unable to set gid");
-    if (prot_uid(pwd->pw_uid) == -1) drop("unable to set uid");
+    if (prot_gid(pwd->pw_gid) == -1) fatal("unable to set gid");
+    if (prot_uid(pwd->pw_uid) == -1) fatal("unable to set uid");
   }
   close(0);
 

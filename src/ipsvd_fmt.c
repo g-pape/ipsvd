@@ -38,16 +38,16 @@ int ipsvd_fmt_msg(stralloc *sa, const char *msg) {
     switch(*++p) {
     case 0: --p;
     case '\\':
-      if (! stralloc_cats(sa, "\\")) return(-1);
+      if (! stralloc_append(sa, "\\")) return(-1);
       continue;
     case 'n':
-      if (! stralloc_cats(sa, "\n")) return(-1);
+      if (! stralloc_append(sa, "\n")) return(-1);
       continue;
     case 'r':
-      if (! stralloc_cats(sa, "\r")) return(-1);
+      if (! stralloc_append(sa, "\r")) return(-1);
       continue;
     default:
-      if (! stralloc_catb(sa, p -1, 2)) return(-1);
+      if (! stralloc_append(sa, p -1, 2)) return(-1);
     }
   }
   return(sa->len);
