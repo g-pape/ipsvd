@@ -1,3 +1,8 @@
+ipsvd 0.2.0
+Fri, 21 Mar 2003 14:17:16 +0100
+  * code cleanup
+  * 1st public version.
+
 ipsvd 0.1.6
 Thu, 20 Mar 2003 22:24:53 +0100
   * installs into /package.

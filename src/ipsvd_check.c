@@ -47,37 +47,28 @@ int ipsvd_instruct(stralloc *inst, stralloc *match) {
 }
 
 int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir, char *ip) {
-  stralloc tmp ={0};
   struct stat s;
   int i;
 
   if (stat(dir, &s) == -1) return(IPSVD_ERR);
-  if (! stralloc_copys(&tmp, dir)) return(-1);
-  if (! stralloc_cats(&tmp, "/")) return(-1);
-  if (! stralloc_cats(&tmp, ip)) return(-1);
-  if (! stralloc_0(&tmp)) return(-1);
+  if (! stralloc_copys(match, dir)) return(-1);
+  if (! stralloc_cats(match, "/")) return(-1);
+  if (! stralloc_cats(match, ip)) return(-1);
+  if (! stralloc_0(match)) return(-1);
   for (;;) {
-    if (stat(tmp.s, &s) != -1) {
-      if ((s.st_mode & S_IRWXU) == 0) {
-	if (! stralloc_copyb(match, tmp.s, tmp.len)) return(-1);
-	if (! stralloc_0(match)) return(-1);
-	return(IPSVD_DENY);
-      }
+    if (stat(match->s, &s) != -1) {
+      if ((s.st_mode & S_IRWXU) == 0) return(IPSVD_DENY);
       if (s.st_mode & S_IXUSR) {
-	if (! openreadclose(tmp.s, data, 256)) return(-1);
+	if (! openreadclose(match->s, data, 256)) return(-1);
 	if (data->len && (data->s[data->len -1] == '\n')) data->len--;
 	if (! stralloc_0(data)) return(-1);
-	if (! stralloc_copyb(match, tmp.s, tmp.len)) return(-1);
-	if (! stralloc_0(match)) return(-1);
 	return(IPSVD_EXEC);
       }
       if (s.st_mode & S_IRUSR) {
-	if (! openreadclose(tmp.s, data, 256)) return(-1);
+	if (! openreadclose(match->s, data, 256)) return(-1);
 	if (data->len && (data->s[data->len -1] == '\n')) data->len--;
 	for (i =0; i < data->len; i++) if (data->s[i] == '\n') data->s[i] =0;
 	if (! stralloc_0(data)) return(-1);
-	if (! stralloc_copyb(match, tmp.s, tmp.len)) return(-1);
-	if (! stralloc_0(match)) return(-1);
 	return(ipsvd_instruct(data, match));
       }
       if (! stralloc_copys(match, "")) return(-1);
@@ -85,8 +76,8 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir, char *ip) {
       return(IPSVD_DEFAULT);
     }
     else if (errno != error_noent) return(-1);
-    if ((i =byte_rchr(tmp.s, tmp.len, '.')) == tmp.len) break;
-    tmp.s[i] =0; tmp.len =i;
+    if ((i =byte_rchr(match->s, match->len, '.')) == match->len) break;
+    match->s[i] =0; match->len =i;
   }
   if (! stralloc_copys(match, "")) return(-1);
   if (! stralloc_0(match)) return(-1);
@@ -94,7 +85,6 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir, char *ip) {
 }
 
 int ipsvd_check_cdb(stralloc *data, stralloc *match, char *cdb, char *ip) {
-  stralloc tmp ={0};
   struct cdb c;
   uint32 dlen;
   int fd;
@@ -102,39 +92,32 @@ int ipsvd_check_cdb(stralloc *data, stralloc *match, char *cdb, char *ip) {
 
   if ((fd =open_read(cdb)) == -1) return(IPSVD_ERR);
   cdb_init(&c, fd);
-  if (! stralloc_copys(&tmp, ip)) return(-1);
+  if (! stralloc_copys(match, ip)) return(-1);
+  if (! stralloc_0(match)) return(-1);
   for (;;) {
-    switch(cdb_find(&c, tmp.s, tmp.len)) {
+    switch(cdb_find(&c, match->s, match->len)) {
     case -1: return(-1);
     case 1:
       dlen =cdb_datalen(&c);
       if (! stralloc_ready(data, dlen)) return(-1);
       if (cdb_read(&c, data->s, dlen, cdb_datapos(&c)) == -1) return(-1);
-
+      if (! dlen) return(-1);
       switch(data->s[dlen -1]) {
       case 'D':
-	if (! stralloc_copyb(match, tmp.s, tmp.len)) return(-1);
-	if (! stralloc_0(match)) return(-1);
 	close(fd);
 	return(IPSVD_DENY);
       case 'X':
-	data->s[dlen -1] =0;
-	data->len =dlen;
-	if (! stralloc_copyb(match, tmp.s, tmp.len)) return(-1);
-	if (! stralloc_0(match)) return(-1);
 	close(fd);
+	data->s[dlen -1] =0; data->len =dlen;
 	return(IPSVD_EXEC);
       case 'I':
-	data->s[dlen -1] =0;
-	data->len =dlen;
-	if (! stralloc_copyb(match, tmp.s, tmp.len)) return(-1);
-	if (! stralloc_0(match)) return(-1);
 	close(fd);
+	data->s[dlen -1] =0; data->len =dlen;
 	return(ipsvd_instruct(data, match));
       }
     }
-    if ((i =byte_rchr(tmp.s, tmp.len, '.')) == tmp.len) break;
-    tmp.s[i] =0; tmp.len =i;
+    if ((i =byte_rchr(match->s, match->len, '.')) == match->len) break;
+    match->s[i] =0; match->len =i;
   }
   if (! stralloc_copys(match, "")) return(-1);
   if (! stralloc_0(match)) return(-1);

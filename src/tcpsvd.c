@@ -8,14 +8,11 @@
 #include "ipsvd_check.h"
 #include "ipsvd_log.h"
 #include "ipsvd_fmt.h"
-#include "buffer.h"
-#include "byte.h"
 #include "stralloc.h"
 #include "str.h"
 #include "error.h"
 #include "strerr.h"
 #include "sgetopt.h"
-#include "open.h"
 #include "scan.h"
 #include "fmt.h"
 #include "sig.h"
@@ -25,7 +22,7 @@
 #include "pathexec.h"
 #include "ndelay.h"
 
-#define USAGE " [-nEHv] [-u user] [-c n] [-b n] [-r dir|-x cdb] host port prog"
+#define USAGE " [-nEHv] [-u user] [-c n] [-b n] [-i dir|-x cdb] host port prog"
 #define VERSION "$Id$"
 
 #define FATAL "tcpsvd: fatal: "
@@ -78,7 +75,7 @@ void ucspi_env() {
   if (! pathexec_env("PROTO", "TCP")) drop_nomem();
   if (! pathexec_env("TCPLOCALIP", local_ip)) drop_nomem();
   if (! pathexec_env("TCPLOCALPORT", local_port)) drop_nomem();
-  if (! pathexec_env("TCPLOCALHOST", "0")) drop_nomem();
+  /*  if (! pathexec_env("TCPLOCALHOST", "0")) drop_nomem(); */
   if (! pathexec_env("TCPREMOTEIP", remote_ip)) drop_nomem();
   if (! pathexec_env("TCPREMOTEPORT", remote_port)) drop_nomem();
   if (remote_hostname.s[0])
@@ -171,6 +168,7 @@ void connection_accept(int c) {
     run =args;
   }
   else run =prog;
+  if (ucspi) ucspi_env();
   if ((fd_move(0, c) == -1) || (fd_copy(1, 0) == -1))
     drop("unable to set filedescriptor");
   sig_uncatch(sig_term);

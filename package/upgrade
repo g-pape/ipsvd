@@ -9,7 +9,7 @@ parent=`dirname $here`
 
 echo 'Creating symlink ipsvd -> ipsvd-0.9.0...'
 rm -f ipsvd
-ln -s ipsvd-0.1.6 ipsvd
+ln -s ipsvd-0.2.0 ipsvd
 mv -f ipsvd ..
 
 echo 'Making command links in /command...'

@@ -13,9 +13,7 @@
 #include "sig.h"
 #include "stralloc.h"
 #include "str.h"
-#include "open.h"
 #include "fmt.h"
-#include "byte.h"
 #include "error.h"
 #include "strerr.h"
 #include "prot.h"
@@ -27,7 +25,7 @@
 #include "wait.h"
 #include "pathexec.h"
 
-#define USAGE " [-nhv] [-u user] [-r dir|-x cdb] host port prog"
+#define USAGE " [-nhv] [-u user] [-i dir|-x cdb] host port prog"
 #define VERSION "$Id$"
 
 #define FATAL "udpsvd: fatal: "
@@ -53,7 +51,6 @@ char remote_port[FMT_ULONG];
 struct sockaddr_in socka;
 int socka_size =sizeof(socka);
 char bufnum[FMT_ULONG];
-char ch;
 
 void usage() { strerr_die4x(111, "usage: ", progname, USAGE, "\n"); }
 void die_nomem() { strerr_die2x(111, FATAL, "out of memory."); }
@@ -218,9 +215,13 @@ int main(int argc, const char **argv, const char *const *envp) {
     strerr_die3x(100, FATAL, "unable to look up IP address: ", host);
   ips.len =4;
   ips.s[4] =0;
-  
   local_ip[ipsvd_fmt_ip(local_ip, ips.s)] =0;
   
+  if (! lookuphost) {
+    if (! stralloc_copys(&remote_hostname, "")) die_nomem();
+    if (! stralloc_0(&remote_hostname)) die_nomem();
+  }
+
   if ((s =socket_udp()) == -1) fatal("unable to create socket");
   if (socket_bind4_reuse(s, ips.s, port) == -1)
     fatal("unable to bind socket");
