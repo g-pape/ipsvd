@@ -4,7 +4,7 @@ ipsvd (0.11.0-1) unstable; urgency=low
     * fix typo in tcpsvd.8 (thx Bastian Kleineidam, closes: 293363).
   * debian/rules: check sslio program.
 
- -- Gerrit Pape <pape@smarden.org>  Sun, 20 Feb 2005 15:07:58 +0000
+ -- Gerrit Pape <pape@smarden.org>  Sun, 20 Feb 2005 16:13:53 +0000
 
 ipsvd (0.10.1-1) unstable; urgency=low
 
