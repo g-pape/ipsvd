@@ -1,5 +1,20 @@
-  * doc/index.html, doc/examples.html, man/ipsvd-instruct.5: typos.
+ipsvd 0.7.2
+
+  * doc/index.html: typo; related links; minor.
+  * doc/examples.html, man/ipsvd-instruct.5: typos.
   * doc/install.html: typo (thx Charlie Brady).
+  * byte_zero.c, case.h, case_diffb.c, dns.h, dns_dfd.c, dns_domain.c,
+    dns_dtda.c, dns_ip.c, dns_ipq.c, dns_mx.c, dns_name.c, dns_nd.c,
+    dns_packet.c, dns_random.c, dns_rcip.c, dns_rcrw.c, dns_resolve.c,
+    dns_sortip.c, dns_transmit.c, dns_txt.c, ip4.h, ip4_scan.c, socket.h,
+    socket_bind.c, socket_conn.c, socket_tcp.c, socket_udp.c,
+    stralloc_copy.c, test.c, uint16.h, uint16_pack.c, uint16_unpack.c: new;
+    from djbdns-pd-1.05, public domain.
+  * Makefile: adapt; use included djbdns client library.
+  * doc/install.html, doc/usedietlibc.html: adapt; package build no longer
+    requires djbdns-pd-1.05.
+  * ipsvd_hostname.c, ipsvd_hostname.h, print-cc.sh, print-ld.sh, tcpsvd.c,
+    udpsvd.c: adapt includes; minor.
 
 ipsvd 0.7.1
 Wed, 26 Nov 2003 09:14:35 +0000

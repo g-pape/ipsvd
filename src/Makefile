@@ -5,20 +5,22 @@ IT=tcpsvd udpsvd ipsvd-cdb
 default: $(IT)
 
 tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
-	ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a byte.a unix.a socket.lib
+	  ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a dns.a unix.a byte.a \
+	  time.a socket.lib
 	./load tcpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
-	ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a byte.a unix.a -ldjbdns \
-	`cat socket.lib`
+	  ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a dns.a unix.a byte.a \
+	  time.a `cat socket.lib`
 
 udpsvd: load udpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
-	ipsvd_scan.o uidgid.o cdb.a byte.a unix.a time.a socket.lib
+	  ipsvd_scan.o uidgid.o cdb.a dns.a unix.a byte.a time.a socket.lib
 	./load udpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
-	ipsvd_scan.o uidgid.o cdb.a byte.a unix.a time.a -ldjbdns \
-	`cat socket.lib`
+	  ipsvd_scan.o uidgid.o cdb.a dns.a unix.a byte.a time.a \
+	  `cat socket.lib`
 
-ipsvd-cdb: load ipsvd-cdb.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a
-	./load ipsvd-cdb ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a \
-	-ldjbdns `cat socket.lib`
+ipsvd-cdb: load ipsvd-cdb.o ipsvd_fmt.o ipsvd_check.o cdb.a dns.a unix.a \
+	  byte.a time.a
+	./load ipsvd-cdb ipsvd_fmt.o ipsvd_check.o cdb.a dns.a unix.a byte.a \
+	  time.a `cat socket.lib`
 
 tcpsvd.o: compile sysdeps tcpsvd.c ipsvd_log.h
 	./compile tcpsvd.c
@@ -35,10 +37,10 @@ ipsvd_log.o: compile ipsvd_log.c
 ipsvd_fmt.o: compile ipsvd_fmt.c
 	./compile ipsvd_fmt.c
 
-ipsvd_check.o: compile ipsvd_check.c
+ipsvd_check.o: compile ipsvd_check.c uint64.h
 	./compile ipsvd_check.c
 
-ipsvd_hostname.o: compile ipsvd_hostname.c
+ipsvd_hostname.o: compile ipsvd_hostname.c uint64.h
 	./compile ipsvd_hostname.c
 
 ipsvd_phcc.o: compile ipsvd_phcc.c
@@ -93,12 +95,14 @@ buffer_read.o: buffer.h buffer_read.c compile
 buffer_write.o: buffer.h buffer_write.c compile
 	./compile buffer_write.c
 
-byte.a: byte_chr.o byte_copy.o byte_cr.o byte_diff.o byte_rchr.o fmt_uint.o \
-	  fmt_uint0.o fmt_ulong.o makelib scan_ulong.o str_chr.o str_diff.o \
-	  str_len.o str_start.o
+byte.a: byte_chr.o byte_copy.o byte_cr.o byte_diff.o byte_rchr.o byte_zero.o \
+	  case_diffb.o fmt_uint.o fmt_uint0.o fmt_ulong.o ip4_scan.o makelib \
+	  scan_ulong.o str_chr.o str_diff.o str_len.o str_start.o \
+	  uint16_pack.o uint16_unpack.o
 	./makelib byte.a byte_chr.o byte_copy.o byte_cr.o byte_diff.o \
-	  byte_rchr.o fmt_uint.o fmt_uint0.o fmt_ulong.o scan_ulong.o \
-	  str_chr.o str_diff.o str_len.o str_start.o
+	  byte_rchr.o byte_zero.o case_diffb.o fmt_uint.o fmt_uint0.o \
+	  fmt_ulong.o ip4_scan.o scan_ulong.o str_chr.o str_diff.o str_len.o \
+	  str_start.o uint16_pack.o uint16_unpack.o
 
 byte_chr.o: byte.h byte_chr.c compile
 	./compile byte_chr.c
@@ -114,6 +118,12 @@ byte_diff.o: byte.h byte_diff.c compile
 
 byte_rchr.o: byte.h byte_rchr.c compile
 	./compile byte_rchr.c
+
+byte_zero.o: byte.h byte_zero.c compile
+	./compile byte_zero.c
+
+case_diffb.o: case.h case_diffb.c compile
+	./compile case_diffb.c
 
 chkshsgr: chkshsgr.o load
 	./load chkshsgr
@@ -136,6 +146,80 @@ compile: conf-cc conf-djbdnsinc print-cc.sh systype warn-auto.sh
 
 direntry.h: choose compile direntry.h1 direntry.h2 trydrent.c
 	./choose c trydrent direntry.h1 direntry.h2 >direntry.h
+
+dns.a: makelib dns_dfd.o dns_domain.o dns_dtda.o dns_ip.o dns_ipq.o dns_mx.o \
+	  dns_name.o dns_nd.o dns_packet.o dns_random.o dns_rcip.o \
+	  dns_rcrw.o dns_resolve.o dns_sortip.o dns_transmit.o dns_txt.o
+	./makelib dns.a dns_dfd.o dns_domain.o dns_dtda.o dns_ip.o dns_ipq.o \
+	  dns_mx.o dns_name.o dns_nd.o dns_packet.o dns_random.o dns_rcip.o \
+	  dns_rcrw.o dns_resolve.o dns_sortip.o dns_transmit.o dns_txt.o
+
+dns_dfd.o: compile dns_dfd.c error.h alloc.h byte.h dns.h stralloc.h \
+	  gen_alloc.h iopause.h taia.h tai.h uint64.h taia.h
+	./compile dns_dfd.c
+
+dns_domain.o: compile dns_domain.c error.h alloc.h case.h byte.h dns.h \
+	  stralloc.h gen_alloc.h iopause.h taia.h tai.h uint64.h taia.h
+	./compile dns_domain.c
+
+dns_dtda.o: compile dns_dtda.c stralloc.h gen_alloc.h dns.h stralloc.h \
+	  iopause.h taia.h tai.h uint64.h taia.h
+	./compile dns_dtda.c
+
+dns_ip.o: compile dns_ip.c stralloc.h gen_alloc.h uint16.h byte.h dns.h \
+	  stralloc.h iopause.h taia.h tai.h uint64.h taia.h
+	./compile dns_ip.c
+
+dns_ipq.o: compile dns_ipq.c stralloc.h gen_alloc.h case.h byte.h str.h \
+	  dns.h stralloc.h iopause.h taia.h tai.h uint64.h taia.h
+	./compile dns_ipq.c
+
+dns_mx.o: compile dns_mx.c stralloc.h gen_alloc.h byte.h uint16.h dns.h \
+	  stralloc.h iopause.h taia.h tai.h uint64.h taia.h
+	./compile dns_mx.c
+
+dns_name.o: compile dns_name.c stralloc.h gen_alloc.h uint16.h byte.h dns.h \
+	  stralloc.h iopause.h taia.h tai.h uint64.h taia.h
+	./compile dns_name.c
+
+dns_nd.o: compile dns_nd.c byte.h fmt.h dns.h stralloc.h gen_alloc.h \
+	  iopause.h taia.h tai.h uint64.h taia.h
+	./compile dns_nd.c
+
+dns_packet.o: compile dns_packet.c error.h dns.h stralloc.h gen_alloc.h \
+	  iopause.h taia.h tai.h uint64.h taia.h
+	./compile dns_packet.c
+
+dns_random.o: compile dns_random.c dns.h stralloc.h gen_alloc.h iopause.h \
+	  taia.h tai.h uint64.h taia.h taia.h uint32.h
+	./compile dns_random.c
+
+dns_rcip.o: compile dns_rcip.c taia.h tai.h uint64.h openreadclose.h \
+	  stralloc.h gen_alloc.h byte.h ip4.h env.h dns.h stralloc.h \
+	  iopause.h taia.h taia.h
+	./compile dns_rcip.c
+
+dns_rcrw.o: compile dns_rcrw.c taia.h tai.h uint64.h env.h byte.h str.h \
+	  openreadclose.h stralloc.h gen_alloc.h dns.h stralloc.h iopause.h \
+	  taia.h taia.h
+	./compile dns_rcrw.c
+
+dns_resolve.o: compile dns_resolve.c iopause.h taia.h tai.h uint64.h taia.h \
+	  byte.h dns.h stralloc.h gen_alloc.h iopause.h taia.h
+	./compile dns_resolve.c
+
+dns_sortip.o: compile dns_sortip.c byte.h dns.h stralloc.h gen_alloc.h \
+	  iopause.h taia.h tai.h uint64.h taia.h
+	./compile dns_sortip.c
+
+dns_transmit.o: compile dns_transmit.c socket.h uint16.h alloc.h error.h \
+	  byte.h uint16.h dns.h stralloc.h gen_alloc.h iopause.h taia.h \
+	  tai.h uint64.h taia.h
+	./compile dns_transmit.c
+
+dns_txt.o: compile dns_txt.c stralloc.h gen_alloc.h uint16.h byte.h dns.h \
+	  stralloc.h iopause.h taia.h tai.h uint64.h taia.h
+	./compile dns_txt.c
 
 env.o: compile env.c env.h str.h
 	./compile env.c
@@ -183,6 +267,9 @@ hasshsgr.h: chkshsgr choose compile hasshsgr.h1 hasshsgr.h2 load tryshsgr.c \
 
 haswaitp.h: choose compile haswaitp.h1 haswaitp.h2 load trywaitp.c
 	./choose cl trywaitp haswaitp.h1 haswaitp.h2 >haswaitp.h
+
+ip4_scan.o: compile ip4_scan.c scan.h ip4.h
+	./compile ip4_scan.c
 
 iopause.h: choose compile iopause.h1 iopause.h2 load trypoll.c
 	./choose clr trypoll iopause.h1 iopause.h2 >iopause.h
@@ -266,6 +353,18 @@ sig_catch.o: compile hassgact.h sig.h sig_catch.c
 sig_pause.o: compile hassgprm.h sig.h sig_pause.c
 	./compile sig_pause.c
 
+socket_bind.o: compile socket_bind.c byte.h socket.h uint16.h
+	./compile socket_bind.c
+
+socket_conn.o: compile socket_conn.c byte.h socket.h uint16.h
+	./compile socket_conn.c
+
+socket_tcp.o: compile socket_tcp.c ndelay.h socket.h uint16.h
+	./compile socket_tcp.c
+
+socket_udp.o: compile socket_udp.c ndelay.h socket.h uint16.h
+	./compile socket_udp.c
+
 str_chr.o: compile str.h str_chr.c
 	./compile str_chr.c
 
@@ -286,6 +385,9 @@ stralloc_catb.o: byte.h compile gen_alloc.h stralloc.h stralloc_catb.c
 
 stralloc_cats.o: byte.h compile gen_alloc.h str.h stralloc.h stralloc_cats.c
 	./compile stralloc_cats.c
+
+stralloc_copy.o: compile stralloc_copy.c byte.h stralloc.h gen_alloc.h
+	./compile stralloc_copy.c
 
 stralloc_eady.o: alloc.h compile gen_alloc.h gen_allocdefs.h stralloc.h \
 	  stralloc_eady.c
@@ -373,6 +475,24 @@ time.a: iopause.o makelib tai_now.o tai_pack.o tai_sub.o tai_unpack.o \
 	  tai_unpack.o taia_add.o taia_approx.o taia_frac.o taia_less.o \
 	  taia_now.o taia_pack.o taia_sub.o taia_uint.o
 
+uint16_pack.o: compile uint16_pack.c uint16.h
+	./compile uint16_pack.c
+
+uint16_unpack.o: compile uint16_unpack.c uint16.h
+	./compile uint16_unpack.c
+
+uint32.h: tryulong32.c compile load uint32.h1 uint32.h2
+	( ( ./compile tryulong32.c && ./load tryulong32 && \
+	./tryulong32 ) >/dev/null 2>&1 \
+	&& cat uint32.h2 || cat uint32.h1 ) >uint32.h
+	rm -f tryulong32.o tryulong32
+
+uint32_pack.o: compile uint32.h uint32_pack.c
+	./compile uint32_pack.c
+
+uint32_unpack.o: compile uint32.h uint32_unpack.c
+	./compile uint32_unpack.c
+
 uint64.h: choose compile load tryulong64.c uint64.h1 uint64.h2
 	./choose clr tryulong64 uint64.h1 uint64.h2 >uint64.h
 
@@ -383,9 +503,10 @@ unix.a: alloc.o alloc_re.o buffer.o buffer_0.o buffer_1.o buffer_2.o \
 	  open_read.o open_trunc.o open_write.o openreadclose.o \
 	  pathexec_env.o pathexec_run.o prot.o readclose.o seek_set.o \
 	  sgetopt.o sig.o sig_block.o sig_catch.o sig_pause.o \
-	  stralloc_cat.o stralloc_catb.o stralloc_cats.o stralloc_eady.o \
-	  stralloc_opyb.o stralloc_opys.o stralloc_pend.o strerr_die.o \
-	  strerr_sys.o subgetopt.o wait_nohang.o wait_pid.o
+	  socket_bind.o socket_conn.o socket_tcp.o socket_udp.o \
+	  stralloc_cat.o stralloc_catb.o stralloc_cats.o stralloc_copy.o \
+	  stralloc_eady.o stralloc_opyb.o stralloc_opys.o stralloc_pend.o \
+	  strerr_die.o strerr_sys.o subgetopt.o wait_nohang.o wait_pid.o
 	./makelib unix.a alloc.o alloc_re.o buffer.o buffer_0.o buffer_1.o \
 	  buffer_2.o buffer_get.o buffer_put.o buffer_read.o buffer_write.o \
 	  coe.o env.o error.o error_str.o fd_copy.o fd_move.o fifo.o \
@@ -393,9 +514,10 @@ unix.a: alloc.o alloc_re.o buffer.o buffer_0.o buffer_1.o buffer_2.o \
 	  open_read.o open_trunc.o open_write.o openreadclose.o \
 	  pathexec_env.o pathexec_run.o prot.o readclose.o seek_set.o \
 	  sgetopt.o sig.o sig_block.o sig_catch.o sig_pause.o \
-	  stralloc_cat.o stralloc_catb.o stralloc_cats.o stralloc_eady.o \
-	  stralloc_opyb.o stralloc_opys.o stralloc_pend.o strerr_die.o \
-	  strerr_sys.o subgetopt.o wait_nohang.o wait_pid.o
+	  socket_bind.o socket_conn.o socket_tcp.o socket_udp.o \
+	  stralloc_cat.o stralloc_catb.o stralloc_cats.o stralloc_copy.o \
+	  stralloc_eady.o stralloc_opyb.o stralloc_opys.o stralloc_pend.o \
+	  strerr_die.o strerr_sys.o subgetopt.o wait_nohang.o wait_pid.o
 
 wait_nohang.o: compile haswaitp.h wait_nohang.c
 	./compile wait_nohang.c
@@ -418,16 +540,3 @@ cdb_hash.o: compile cdb_hash.c cdb.h uint32.h
 cdb_make.o: compile cdb_make.c seek.h error.h alloc.h cdb.h uint32.h \
 	  cdb_make.h buffer.h uint32.h
 	./compile cdb_make.c
-
-# from djbdns-1.05; Public domain
-uint32.h: tryulong32.c compile load uint32.h1 uint32.h2
-	( ( ./compile tryulong32.c && ./load tryulong32 && \
-	./tryulong32 ) >/dev/null 2>&1 \
-	&& cat uint32.h2 || cat uint32.h1 ) >uint32.h
-	rm -f tryulong32.o tryulong32
-
-uint32_pack.o: compile uint32.h uint32_pack.c
-	./compile uint32_pack.c
-
-uint32_unpack.o: compile uint32.h uint32_unpack.c
-	./compile uint32_unpack.c

@@ -14,26 +14,18 @@ To recompile the <i>ipsvd</i> programs with the
 the recent version of
 <a href="http://www.fefe.de/dietlibc/">dietlibc</a> installed.
 <p>
-Change to the package directory of <i>ipsvd</i>:
+Change to the package directory of <i>ipsvd</i>
 <pre>
-  # cd /package/net/ipsvd/
+ # cd /package/net/ipsvd/
 </pre>
-Rebuild the djbdns client library with the diet libc:
+Change the <tt>conf-cc</tt> and <tt>conf-ld</tt> to use <tt>diet</tt>
 <pre>
-  # cd djbdns-pd-1.05
-  # make clean
-  # make libdjbdns.a CC='diet -Os gcc'
-  ...
-  # cd ..
+ # echo 'diet -Os gcc -O2 -Wall' &gt;src/conf-cc
+ # echo 'diet -Os gcc -s -Os -pipe' &gt;src/conf-ld
 </pre>
-Now change the <tt>conf-cc</tt> and <tt>conf-ld</tt> to use <tt>diet</tt>:
+Rebuild and install the <i>ipsvd</i> programs:
 <pre>
-  # echo 'diet -Os gcc -O2 -Wall' &gt;src/conf-cc
-  # echo 'diet -Os gcc -s -Os -pipe' &gt;src/conf-ld
-</pre>
-And rebuild and install the <i>ipsvd</i> programs:
-<pre>
-  # package/install
+ # package/install
 </pre>
 <hr>
 <address><a href="mailto:pape@smarden.org">

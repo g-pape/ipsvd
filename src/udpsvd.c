@@ -2,9 +2,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include <dns.h>
-#include <socket.h>
-#include <ip4.h>
+#include "dns.h"
+#include "socket.h"
+#include "ip4.h"
 #include "ipsvd_log.h"
 #include "ipsvd_check.h"
 #include "ipsvd_fmt.h"

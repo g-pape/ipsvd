@@ -1,4 +1,4 @@
-#include <dns.h>
+#include "ipsvd_hostname.h"
 #include "byte.h"
 
 static stralloc sa;
