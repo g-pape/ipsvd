@@ -310,9 +310,10 @@ subgetopt.o: compile subgetopt.c subgetopt.h
 	./compile subgetopt.c
 
 sysdeps: compile direntry.h hasflock.h hasmkffo.h hassgact.h hassgprm.h \
-	  hasshsgr.h haswaitp.h iopause.h load select.h systype uint64.h
+	  hasshsgr.h haswaitp.h iopause.h load select.h systype uint64.h \
+	  socket.lib
 	rm -f sysdeps
-	cat systype compile load >>sysdeps
+	cat systype compile load socket.lib >>sysdeps
 	grep sysdep direntry.h >>sysdeps
 	grep sysdep haswaitp.h >>sysdeps
 	grep sysdep hassgact.h >>sysdeps

@@ -1,4 +1,5 @@
-ipsvd 0.6.3
+ipsvd 0.7.0
+Mon, 20 Oct 2003 15:32:51 +0200
   * doc/examples.html: update bincimaps example; add check hostname
     instruction sample.
   * ipsvd_check.c, ipsvd_check.h: support check host instructions; change
@@ -9,6 +10,8 @@ ipsvd 0.6.3
     filenames starting with two dots; minor.
   * man/ipsvd-cdb.8: adapt.
   * Makefile: minor.
+  * doc/upgrade.html: new.
+  * doc/index.html adapt.
 
 ipsvd 0.6.1
 Tue, 14 Oct 2003 11:17:29 +0000

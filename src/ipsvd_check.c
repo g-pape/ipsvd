@@ -23,9 +23,9 @@ static stralloc sa ={0};
 static stralloc ips ={0};
 static stralloc fqdn ={0};
 static stralloc msg ={0};
-static stralloc forward ={0};
+static stralloc forwardfn ={0};
 static stralloc moredata ={0};
-static char *fward =0;
+static char *forward =0;
 unsigned long phccmax;
 char *phccmsg;
 
@@ -91,7 +91,7 @@ int ipsvd_instruct(stralloc *inst, stralloc *match, char *ip) {
 	    tmp[ipsvd_fmt_ip(tmp, ips.s +j)] =0;
 	    if (str_equal(tmp, ip)) {
 	      if (insts[next]) {
-		fward =insts +next;
+		forward =insts +next;
 		inst->len =insts -inst->s +i +1;
 		return(IPSVD_FORWARD);
 	      }
@@ -220,14 +220,14 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir,
   return(IPSVD_DEFAULT);
 
  forwarded:
-  if (! stralloc_copyb(&forward, match->s, base)) return(-1);
-  if (! stralloc_cats(&forward, fward)) return(-1);
-  if (! stralloc_0(&forward)) return(-1);
-  ok =ipsvd_check_direntry(&moredata, &forward, 0, now, timeout, &rc);
+  if (! stralloc_copyb(&forwardfn, match->s, base)) return(-1);
+  if (! stralloc_cats(&forwardfn, forward)) return(-1);
+  if (! stralloc_0(&forwardfn)) return(-1);
+  ok =ipsvd_check_direntry(&moredata, &forwardfn, 0, now, timeout, &rc);
   if (ok == -1) return(-1);
   --match->len;
   if (! stralloc_cats(match, ",")) return(-1);
-  if (! stralloc_cats(match, forward.s +base)) return(-1);
+  if (! stralloc_cats(match, forwardfn.s +base)) return(-1);
   if (! stralloc_0(match)) return(-1);
   if (ok) {
     if (rc == IPSVD_EXEC)
@@ -322,14 +322,14 @@ int ipsvd_check_cdb(stralloc *data, stralloc *match, char *cdb,
   return(IPSVD_DEFAULT);
 
  forwarded:
-  if (! stralloc_copys(&forward, fward)) return(-1);
-  if (! stralloc_0(&forward)) return(-1);
-  ok =ipsvd_check_cdbentry(&moredata, &forward, 0, &rc);
+  if (! stralloc_copys(&forwardfn, forward)) return(-1);
+  if (! stralloc_0(&forwardfn)) return(-1);
+  ok =ipsvd_check_cdbentry(&moredata, &forwardfn, 0, &rc);
   close(fd);
   if (ok == -1) return(-1);
   --match->len;
   if (! stralloc_cats(match, ",")) return(-1);
-  if (! stralloc_cats(match, forward.s)) return(-1);
+  if (! stralloc_cats(match, forwardfn.s)) return(-1);
   if (! stralloc_0(match)) return(-1);
   if (ok) {
     if (rc == IPSVD_EXEC)
