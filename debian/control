@@ -10,20 +10,17 @@ Architecture: any
 Depends: ${shlibs:Depends}
 Recommends: runit
 Description: Internet protocol service daemons
- ipsvd is a set of ``internet protocol service daemons'' for Unix.  It
- includes daemons for TCP/IP and UDP/IP.  An Internet protocol service
- (ipsv) daemon waits for incoming connections on a socket, and for new
- connections, it conditionally runs an arbitrary program to handle the
- connection.  ipsv daemons can be told to read and follow pre-defined
- instructions on how to handle incoming connections, based on the
- client's IP address or hostname it's possible to run different
- programs, set a different environment, deny a connection, or set a per
- host concurrency limit.  The network connection optionally can be
- encrypted using SSLv3.
+ ipsvd is a set of ``internet protocol service daemons'' for TCP/IP and
+ UDP/IP.  An ipsv daemon waits for incoming connections on a socket; for
+ new connections, it conditionally runs an arbitrary program to handle
+ the connection.  The daemons can be told to read and follow pre-defined
+ instructions on how to handle incoming connections; based on the client's
+ IP address or hostname, they can run different programs, set a different
+ environment, deny a  connection, or set a per host concurrency limit.
+ On Linux the network connection optionally can be encrypted using SSLv3.
  .
- ipsvd can be used to run services usually run by inetd, xinetd, or
- tcpserver.  Normally the ipsv daemons are run by a supervisor process,
- such as runsv from the runit package, or supervise from the daemontools
- package.  ipsvd uses the djbdns client library to query the DNS.
+ ipsvd can be used to run services usually run by inetd or tcpserver.
+ Normally the daemons are run by a supervisor process, such as runsv from
+ the runit package, or daemontools' supervise.
  .
  See http://smarden.org/ipsvd/ for more information.

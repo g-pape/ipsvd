@@ -10,6 +10,7 @@ Wed, 14 Jul 2004 19:43:48 +0000
   * Makefile: target check-tcpsvd, check-udpsvd: add libraries needed for
     socket() (fixes testing failure on solaris, thx Uffe Jakobsen); use
     matrixssl-1.1.2 with sslio.
+  * doc/index.html: minor.
 
 ipsvd 0.9.4
 Sat, 19 Jun 2004 14:47:09 +0000

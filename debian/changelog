@@ -4,8 +4,9 @@ ipsvd (0.9.5-1) unstable; urgency=low
   * diff/sslio-man.diff: remove, applied upstream.
   * debian/rules: target unpack: no diff; diet CC=diet -v -Os gcc -nostdinc;
   * debian/implicit: update to revision 1.10.
+  * debian/control: update wording in long description.
 
- -- Gerrit Pape <pape@smarden.org>  Wed, 14 Jul 2004 19:45:14 +0000
+ -- Gerrit Pape <pape@smarden.org>  Sun, 18 Jul 2004 09:55:02 +0000
 
 ipsvd (0.9.4-2) unstable; urgency=low
 

@@ -29,17 +29,15 @@
 It currently includes a TCP/IP service daemon, and a UDP/IP service daemon.
 <p>
 An internet protocol service (<i>ipsv</i>) daemon waits for incoming
-connections on a local socket.
-On incoming connections, it conditionally runs an arbitrary program with
-standard input reading from the socket, and standard output writing to the
-socket (if connected), that handles the connection.
+connections on a local socket; for new connections, it conditionally runs an
+arbitrary program with standard input reading from the socket, and standard
+output writing to the socket (if connected), to handle the connection.
 Standard error is used for logging.
 <p>
 <i>ipsv</i> daemons can be told to read and follow pre-defined instructions
-on how to handle incoming connections.
-It's possible to run different programs, or to set a different environment,
-or to deny a connection, or to set a per host concurrency limit, depending
-on the client's address or hostname.
+on how to handle incoming connections; based on the client's IP address or
+hostname, they can run different programs, set a different environment, deny
+a connection, or set a per host concurrency limit.
 <p>
 On Linux the network connection optionally can be encrypted using SSLv3.
 <p>
