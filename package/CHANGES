@@ -1,5 +1,5 @@
 ipsvd 0.6.0
-Mon, 29 Sep 2003 10:35:11 +0200
+Mon, 29 Sep 2003 10:59:15 +0000
   * man/ipsvd-instruct.5: minor.
   * ipsvd_scan.h, ipsvd_scan.c: new; ipsvd_scan_port(): get port number
     from name or number (thx Matthias Andree for sample code).
