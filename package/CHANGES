@@ -1,3 +1,6 @@
+  * man/ipsvd-instruct.5: on C0[:msg] per host concurrency is disabled (thx
+    Charlie Brady).
+
 ipsvd 0.8.1
 Sun, 22 Feb 2004 14:40:31 +0000
   * udpsvd: fix usage information output.
