@@ -1,5 +1,7 @@
 ipsvd 0.6.1
-Mon, 13 Oct 2003 14:55:28 +0000
+Tue, 14 Oct 2003 11:17:29 +0000
+  * ipsvd_scan.c: include sys/types.h (fixes build failure on freebsd,
+    thx Sergei Kolobov).
   * trysocketlib.c: new; check for libraries needed for socket() on some
     systems (solaris, thx Uffe Jakobsen).
   * Makefile: adapt.

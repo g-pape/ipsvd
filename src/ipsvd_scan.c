@@ -1,3 +1,4 @@
+#include <sys/types.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include "scan.h"
