@@ -1,0 +1,84 @@
+
+
+
+<HTML>
+<HEAD>
+<TITLE>tcpsvd(8) manual page</TITLE>
+</HEAD>
+<BODY bgcolor=white>
+<a href="http://smarden.org/pape/">G. Pape</a><br><A HREF="index.html">ipsvd</A><hr><P>
+
+<H2><A NAME="sect0">Name</A></H2>
+tcpsvd - TCP/IP service daemon 
+<H2><A NAME="sect1">Synopsis</A></H2>
+<B>tcpsvd</B> [-dEHv] [-c <I>num]</I> [-u <I>user]</I>
+[-r <I>dir</I> | -x <I>cdb]</I> <I>host</I> <I>port</I> <I>prog</I> 
+<H2><A NAME="sect2">Description</A></H2>
+
+<H2><A NAME="sect3">Options</A></H2>
+
+<DL>
+
+<DT><I>host</I> </DT>
+<DD><I>host</I> either is a hostname,
+or a dotted-decimal IP address, or 0. If <I>host</I> is 0, <B>tcpsvd</B> accepts connections
+to any local IP address. </DD>
+
+<DT><I>port</I> </DT>
+<DD><B>tcpsvd</B> accepts connections to <I>host</I>:<I>port</I>. </DD>
+
+<DT><I>prog</I>
+</DT>
+<DD><I>prog</I> consists of one or more arguments. For each connection, <B>tcpsvd</B> runs
+<I>prog</I>, with descriptor 0 reading from the network and descriptor 1 writing
+to the network. By default it also sets up TCP-related environment variables,
+see <B><I>tcp-environ</B>(5)</I> </DD>
+
+<DT><B>-c <I>num</B> </I></DT>
+<DD>concurrency. Handle up to <I>num</I> concurrent connections.
+Default is 30. </DD>
+
+<DT><B>-u <I>user</B> </I></DT>
+<DD>drop permissions. Switch user ID to <I>user</I>'s UID, and
+group ID to <I>user</I>'s primary GID, before starting <I>prog</I> to handle the connection.
+</DD>
+
+<DT><B>-r <I>dir</B> </I></DT>
+<DD>rules directory. </DD>
+
+<DT><B>-x <I>cdb</B> </I></DT>
+<DD>rules cdb. </DD>
+
+<DT><B>-d</B> </DT>
+<DD>deny. </DD>
+
+<DT><B>-E</B> </DT>
+<DD>no ucspi environment. Do
+not set up TCP-related environment variables. </DD>
+
+<DT><B>-H</B> </DT>
+<DD>no remote hostname lookup.
+</DD>
+
+<DT><B>-v</B> </DT>
+<DD>verbose. Print verbose messsages to standard out. </DD>
+</DL>
+
+<H2><A NAME="sect4">See Also</A></H2>
+<I>ipsvd-cdb(8)</I>,
+udpsvd8) <P>
+<I>http://smarden.org/ipsvd/</I> 
+<H2><A NAME="sect5">Author</A></H2>
+Gerrit Pape &lt;pape@smarden.org&gt; <P>
+
+<HR><P>
+<A NAME="toc"><B>Table of Contents</B></A><P>
+<UL>
+<LI><A NAME="toc0" HREF="#sect0">Name</A></LI>
+<LI><A NAME="toc1" HREF="#sect1">Synopsis</A></LI>
+<LI><A NAME="toc2" HREF="#sect2">Description</A></LI>
+<LI><A NAME="toc3" HREF="#sect3">Options</A></LI>
+<LI><A NAME="toc4" HREF="#sect4">See Also</A></LI>
+<LI><A NAME="toc5" HREF="#sect5">Author</A></LI>
+</UL>
+</BODY></HTML>

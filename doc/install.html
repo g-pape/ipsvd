@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<title>ipsvd - installation</title>
+</head>
+<body>
+<a href="http://smarden.org/pape/">G. Pape</a><br>
+<a href="index.html">ipsvd</a><br>
+<hr>
+<h1>ipsvd - installation</h1>
+<hr>
+Download <a href="ipsvd-0.1.0.tar.gz">ipsvd-0.1.0.tar.gz</a> and unpack the
+archive
+<pre>
+  # gunzip ipsvd-0.1.0.tar
+  # tar -xpf ipsvd-0.1.0.tar
+  # cd ipsvd-0.1.0
+</pre>
+Download the
+<a href="http://smarden.org/pape/djb/manpages/djbdns-pd-1.05.tar.gz">
+dibdns client library</a>, unpack the archive, and build the library
+<pre>
+  # gunzip djbdns-pd-1.05.tar
+  # tar -xpf djbdns-pd-1.05.tar
+  # cd djbdns-pd-1.05
+  # make
+  ...
+  # cd ../src
+</pre>
+Compile and install the <i>ipsvd</i> programs
+<pre>
+  # make
+  ...
+  # install -m0755 tcpsvd /usr/local/bin/tcpsvd
+  # install -m0755 udpsvd /usr/local/bin/udpsvd
+  # install -m0755 ipsvd-cdb /usr/local/bin/ipsvd-cdb
+</pre>
+If you want to make the man pages available in the <tt>/usr/local/man/</tt>
+hierarchy, do
+<pre>
+  # gzip man/*.8
+  # install -m0644 man/*.8.gz /usr/local/man/man8/
+</pre>
+<hr>
+<address><a href="mailto:pape@smarden.org">
+Gerrit Pape &lt;pape@smarden.org&gt;
+</a></address>
+<small>$Id$</small>
+</body>
+</html>

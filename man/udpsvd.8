@@ -1,0 +1,40 @@
+.TH udpsvd 8
+.SH NAME
+udpsvd \- UDP/IP service daemon
+.SH SYNOPSIS
+.B udpsvd
+[\-v]
+.I host
+.I port
+.I prog
+.SH DESCRIPTION
+.SH OPTIONS
+.TP
+.I host
+.I host
+either is a hostname, or a dotted-decimal IP address, or 0.
+If
+.I host
+is 0,
+.B udpsvd
+accepts connections to any local IP address.
+.TP
+.I port
+.B udpsvd
+accepts connections to
+.IR host :\fIport\fR.
+.TP
+.I prog
+.I prog
+consists of one or more arguments.
+.TP
+.B -v
+verbose.
+Print verbose messaged to standard out.
+.SH SEE ALSO
+tcpsvd(8),
+ipsvd-cdb(8)
+.P
+http://smarden.org/ipsvd/
+.SH AUTHOR
+Gerrit Pape <pape@smarden.org>
