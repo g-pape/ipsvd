@@ -236,7 +236,7 @@ void decode(void) {
 	close(fdstdou); fdstdou =-1;
 	if (adesc != SSL_ALERT_CLOSE_NOTIFY)
 	  fatals("ssl alert from peer", adesc);
-	if (verbose > 2) info("close notify from peer");
+	if (verbose > 2) info("ssl close notify from peer");
 	finish();
 	_exit(0);
       }

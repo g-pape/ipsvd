@@ -9,6 +9,24 @@
 <hr>
 <h1>ipsvd - upgrading from previous versions</h1>
 <hr>
+<h3>0.9.x to 0.10.1</h3>
+Client support has been added to the <a href="sslio.8.html">sslio</a>
+program to have it run under <tt>tcpclient</tt>.
+The logging, especially for ssl warnings and errors, has been improved, and
+the documentation updated.
+<p>
+Here's a sample on how to use <a href="sslio.8.html">sslio</a> in client
+mode with <tt>tcpclient</tt>, a <tt>https@</tt> program derived from
+ucspi-tcp's <tt>http@</tt> program:
+<pre>
+ #!/bin/sh
+ echo "GET /${2-} HTTP/1.0
+ Host: ${1-0}:${3-443}
+ " | tcpclient -RHl0 -- "${1-0}" "${3-443}" sslio -c sh -c '
+   addcr >&7
+   exec delcr <&6
+ ' | awk '/^$/ { body=1; next } { if (body) print }'
+</pre>
 <h3>0.8.0 or 0.8.2 to 0.9.x</h3>
 This version introduces the new <a href="sslio.8.html">sslio</a> program
 (for Linux only), which can be used to encrypt network connections using

@@ -94,7 +94,7 @@ ipsvd_scan.o: compile ipsvd_scan.c
 uidgid.o: compile uidgid.c uidgid.h
 	./compile uidgid.c
 
-sslerror_str.o: compile sslerror_str.c sslerror_str.h
+sslerror_str.o: compile matrixSsl.h sslerror_str.c sslerror_str.h 
 	./compile sslerror_str.c
 
 socket.lib: compile load trysocketlib.c

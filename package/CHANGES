@@ -1,3 +1,10 @@
+ipsvd 0.10.1
+Sun, 16 Jan 2005 10:32:01 +0000
+  * sslerror_str.c: fix build failure due to broken header include (thx
+    Charlie Brady)
+  * Makefile: target sslerror_str.o depends on matrixSsl.h.
+  * sslio.c: minor.
+
 ipsvd 0.10.0
 Sat, 15 Jan 2005 11:47:55 +0000
   * doc/install.html: typo.
