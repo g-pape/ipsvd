@@ -3,9 +3,11 @@
 ipsvd \- Internet protocol service daemon
 .SH SYNOPSIS
 .I ipsvd
+[\-hp] [\-l
+.IR name ]
 [\-i
 .IR dir |\-x
-.I cdb\fR]
+.IR cdb ]
 .I host
 .I port
 .I prog
@@ -40,6 +42,23 @@ read instructions for handling new connections from the constant database
 The constant database normally is created from an instructions directory by
 running
 .BR ipsvd-cdb (8).
+.TP
+.B \-l \fIname
+local hostname.
+Do not look up the local hostname in DNS, but use
+.I name
+as hostname.
+.TP
+.B \-h
+Look up the client's hostname in DNS.
+.TP
+.B \-p
+paranoid.
+After looking up the client's hostname in DNS, look up the IP addresses in
+DNS for that hostname, and forget about the hostname if none of the addresses
+match the client's IP address.
+You should set this option if you use hostname based instructions.
+The \-p option implies the \-h option.
 .SH SIGNALS
 If an
 .B ipsvd

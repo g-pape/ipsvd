@@ -11,18 +11,18 @@
 <H2><A NAME="sect0">Name</A></H2>
 udpsvd - UDP/IP service daemon 
 <H2><A NAME="sect1">Synopsis</A></H2>
-<B>udpsvd</B> [-nHv] [-u <I>user]</I> [-i <I>dir</I>|-x
-<I>cdb]</I> <I>host</I> <I>port</I> <I>prog</I> 
+<B>udpsvd</B> [-Hpv] [-u <I>user]</I> [-l <I>name]</I>
+[-i <I>dir</I>|-x <I>cdb]</I> <I>host</I> <I>port</I> <I>prog</I> 
 <H2><A NAME="sect2">Description</A></H2>
-<B>udpsvd</B> creates an UDP/IP socket, binds it
-to the address <I>host</I>:<I>prog</I>, and listens on the socket for incoming datagrams.
-<P>
-If a datagram is available on the socket, <B>udpsvd</B> conditionally starts a
-program, with standard input reading from the socket, and standard output
-writing to the socket, to handle this, and possibly more, datagrams. <B>udpsvd</B>
-does not start the program if another program that it has started before
-still is running. If the program exits, <B>udpsvd</B> again listens to the socket
-until a new datagram is available. <P>
+<B>udpsvd</B> creates an UDP/IP socket,
+binds it to the address <I>host</I>:<I>prog</I>, and listens on the socket for incoming
+datagrams. <P>
+If a datagram is available on the socket, <B>udpsvd</B> conditionally
+starts a program, with standard input reading from the socket, and standard
+output writing to the socket, to handle this, and possibly more, datagrams.
+<B>udpsvd</B> does not start the program if another program that it has started
+before still is running. If the program exits, <B>udpsvd</B> again listens to the
+socket until a new datagram is available. <P>
 <B>udpsvd</B> optionally checks for special
 intructions depending on the IP address of the client sending the datagram
 which not yet was handled by a running program, see <B><I>ipsvd-instruct</B>(5)</I> for
@@ -74,26 +74,33 @@ instructions for handling new connections from the constant database <I>cdb</I>.
 The constant database normally is created from an instructions directory
 by running <B><I>ipsvd-cdb</B>(8)</I>. </DD>
 
-<DT><B>-n</B> </DT>
-<DD>Discard a datagram instead of starting <I>prog</I> to
-handle it, if there is no program still running handling datagrams, and
-if there are no special intructions for the client that sent the datagram.
-</DD>
+<DT><B>-l <I>name</B> </I></DT>
+<DD>local hostname. Do not look up the local hostname
+in DNS, but use <I>name</I> as hostname. This option must be set if <B>tcpsvd</B> listens
+on port 53 to avoid loops. </DD>
 
 <DT><B>-H</B> </DT>
 <DD>Do not look up client's hostname in DNS. </DD>
 
-<DT><B>-v</B> </DT>
-<DD>verbose. Print verbose messages
-to standard output. </DD>
+<DT><B>-p</B> </DT>
+<DD>paranoid.
+After looking up the client's hostname in DNS, look up the IP addresses
+in DNS for that hostname, and forget the hostname if none of the addresses
+match the client's IP address. You should set this option if you use hostname
+based instructions. The -p option has no effect if the -H option is set. </DD>
+
+<DT><B>-v</B>
+</DT>
+<DD>verbose. Print verbose messages to standard output. </DD>
 </DL>
 
 <H2><A NAME="sect5">See Also</A></H2>
-<I>ipsvd(7)</I>, <I>tcpsvd(8)</I>, <I>ipsvd-instruct(5)</I>, <I>ipsvd-cdb(8)</I>
-<P>
+<I>ipsvd(7)</I>, <I>tcpsvd(8)</I>,
+<I>ipsvd-instruct(5)</I>, <I>ipsvd-cdb(8)</I> <P>
 <I>http://smarden.org/ipsvd/</I> 
 <H2><A NAME="sect6">Author</A></H2>
-Gerrit Pape &lt;pape@smarden.org&gt; <P>
+Gerrit Pape
+&lt;pape@smarden.org&gt; <P>
 
 <HR><P>
 <A NAME="toc"><B>Table of Contents</B></A><P>

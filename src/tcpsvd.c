@@ -8,8 +8,10 @@
 #include "ipsvd_check.h"
 #include "ipsvd_log.h"
 #include "ipsvd_fmt.h"
-#include "stralloc.h"
+#include "ipsvd_hostname.h"
+#include "ipsvd_phcc.h"
 #include "str.h"
+#include "byte.h"
 #include "error.h"
 #include "strerr.h"
 #include "sgetopt.h"
@@ -22,7 +24,7 @@
 #include "pathexec.h"
 #include "ndelay.h"
 
-#define USAGE " [-nEHv] [-u user] [-c n] [-b n] [-i dir|-x cdb] host port prog"
+#define USAGE " [-Ehpv] [-u user] [-c n] [-C n] [-b n] [-l name] [-i dir|-x cdb] host port prog"
 #define VERSION "$Id$"
 
 #define FATAL "tcpsvd: fatal: "
@@ -32,17 +34,18 @@
 
 const char *progname;
 
-unsigned int lookuphost =1;
+unsigned int lookuphost =0;
 unsigned int verbose =0;
 unsigned long backlog =20;
+unsigned int paranoid =0;
 const char **prog;
-unsigned long svnum =0;
-unsigned long svmax =30;
-unsigned int deny =0;
+unsigned long cnum =0;
+unsigned long cmax =30;
 
 unsigned int ucspi =1;
 const char *instructs =0;
 unsigned int iscdb =0;
+stralloc local_hostname ={0};
 char local_ip[IP4_FMT];
 char *local_port;
 stralloc remote_hostname ={0};
@@ -54,6 +57,7 @@ static char seed[128];
 char bufnum[FMT_ULONG];
 struct sockaddr_in socka;
 int socka_size =sizeof(socka);
+unsigned int phcc =0;
 
 void usage() { strerr_die4x(111, "usage: ", progname, USAGE, "\n"); }
 void die_nomem() { strerr_die2x(111, FATAL, "out of memory."); }
@@ -72,22 +76,29 @@ void drop2(char *m0, char *m1) {
 }
 
 void ucspi_env() {
+  char *l =local_hostname.s;
+  char *r =remote_hostname.s;
+  
   /* setup ucspi env */
   if (! pathexec_env("PROTO", "TCP")) drop_nomem();
   if (! pathexec_env("TCPLOCALIP", local_ip)) drop_nomem();
   if (! pathexec_env("TCPLOCALPORT", local_port)) drop_nomem();
-  /*  if (! pathexec_env("TCPLOCALHOST", "0")) drop_nomem(); */
+  if (! pathexec_env("TCPLOCALHOST", *l ? l : 0)) drop_nomem();
   if (! pathexec_env("TCPREMOTEIP", remote_ip)) drop_nomem();
   if (! pathexec_env("TCPREMOTEPORT", remote_port)) drop_nomem();
-  if (remote_hostname.s[0])
-    if (! pathexec_env("TCPREMOTEHOST", remote_hostname.s)) drop_nomem();
+  if (! pathexec_env("TCPREMOTEHOST", *r ? r : 0)) drop_nomem();
   if (! pathexec_env("TCPREMOTEINFO", 0)) drop_nomem();
+  /* additional */
+  if (phccmax) {
+    bufnum[fmt_ulong(bufnum, phcc)] =0;
+    if (! pathexec_env("TCPCONCURRENCY", bufnum)) drop_nomem();
+  }
 }
 
 void connection_status() {
-  bufnum[fmt_ulong(bufnum, svnum)] =0;
+  bufnum[fmt_ulong(bufnum, cnum)] =0;
   out(INFO); out("status "); out(bufnum); out("/");
-  bufnum[fmt_ulong(bufnum, svmax)] =0;
+  bufnum[fmt_ulong(bufnum, cmax)] =0;
   out(bufnum); flush("\n");
 }
 
@@ -100,9 +111,10 @@ void sig_term_handler() {
 void sig_child_handler() {
   int wstat;
   int i;
-
+  
   while ((i =wait_nohang(&wstat)) > 0) {
-    if (svnum) svnum--;
+    if (phccmax) ipsvd_phcc_rem(i);
+    if (cnum) cnum--;
     if (verbose) {
       bufnum[fmt_ulong(bufnum, i)] =0;
       out(INFO); out("end "); out(bufnum); out(" exit ");
@@ -119,27 +131,50 @@ void connection_accept(int c) {
   int ac;
   const char **run;
   const char *args[4];
-
-  remote_ip[ipsvd_fmt_ip(remote_ip, (char*)&socka.sin_addr)] =0;
+  char *ip =(char*)&socka.sin_addr;
+  
+  remote_ip[ipsvd_fmt_ip(remote_ip, ip)] =0;
+  if (verbose) {
+    out(INFO); out("pid ");
+    bufnum[fmt_ulong(bufnum, getpid())] =0;
+    out(bufnum); out(" from "); outfix(remote_ip); flush("\n");
+  }
   remote_port[ipsvd_fmt_port(remote_port, (char*)&socka.sin_port)] =0;
-
   if (lookuphost) {
-    if (dns_name4(&remote_hostname, (char *)&socka.sin_addr) == -1) {
-      warn2("temporarily unable to reverse look up IP address", remote_ip);
-      if (! stralloc_copys(&remote_hostname, "(unknown)")) drop_nomem();
-    }
+    if (ipsvd_hostname(&remote_hostname, ip, paranoid) == -1)
+      warn2("temporarily unable to look up in DNS", remote_ip);
     if (! stralloc_0(&remote_hostname)) drop_nomem();
   }
-
+  
+  if (getsockname(c, (struct sockaddr*)&socka, &socka_size) == -1)
+    drop("unable to get local address");
+  if (! local_hostname.len) {
+    if (dns_name4(&local_hostname, (char*)&socka.sin_addr) == -1)
+      drop("unable to look up local hostname");
+    if (! stralloc_0(&local_hostname)) die_nomem();
+  }
+  local_ip[ipsvd_fmt_ip(local_ip, (char*)&socka.sin_addr)] =0;
+  
   if (instructs) {
-    ac =ipsvd_check(iscdb, &inst, &match, (char*)instructs, remote_ip);
+    ac =ipsvd_check(iscdb, &inst, &match, (char*)instructs,
+		    remote_ip, remote_hostname.s);
     if (ac == -1) drop2("unable to check inst", remote_ip);
     if (ac == IPSVD_ERR) drop2("unable to read", (char*)instructs);
   }
   else ac =IPSVD_DEFAULT;
-
-  if (deny && (ac == IPSVD_DEFAULT)) ac =IPSVD_DENY;
-
+  
+  if (phccmax) {
+    if (phcc > phccmax) ac =IPSVD_DENY;
+    if (verbose) {
+      bufnum[fmt_ulong(bufnum, getpid())] =0;
+      out(INFO); out("concurrency "); out(bufnum); out(" ");
+      outfix(remote_ip); out(" ");
+      bufnum[fmt_ulong(bufnum, phcc)] =0;
+      out(bufnum); out("/");
+      bufnum[fmt_ulong(bufnum, phccmax)] =0;
+      out(bufnum); out("\n");
+    }
+  }
   if (verbose) {
     out(INFO);
     switch(ac) {
@@ -148,7 +183,9 @@ void connection_accept(int c) {
     case IPSVD_EXEC: out("exec "); break;
     }
     bufnum[fmt_ulong(bufnum, getpid())] =0;
-    out(bufnum); out(" :"); outfix(remote_hostname.s); out(":");
+    out(bufnum); out(" ");
+    outfix(local_hostname.s); out(":"); out(local_ip);
+    out(" :"); outfix(remote_hostname.s); out(":");
     outfix(remote_ip); out(":"); outfix(remote_port);
     if (instructs) {
       out(" ");
@@ -156,13 +193,13 @@ void connection_accept(int c) {
 	out((char*)instructs); out("/");
       }
       outfix(match.s);
-      if(inst.s && inst.len) {
+      if(inst.s && inst.len && (verbose > 1)) {
 	out(": "); outinst(&inst);
       }
     }
     flush("\n");
   }
-
+  
   if (ac == IPSVD_DENY) _exit(100);
   if (ac == IPSVD_EXEC) {
     args[0] ="/bin/sh"; args[1] ="-c"; args[2] =inst.s; args[3] =0;
@@ -175,7 +212,7 @@ void connection_accept(int c) {
   sig_uncatch(sig_term);
   sig_uncatch(sig_pipe);
   pathexec(run);
-
+  
   drop2("unable to run", (char*)*prog);
 }
 
@@ -191,12 +228,17 @@ int main(int argc, const char **argv) {
   int conn;
 
   progname =*argv;
+  phccmax =0;
 
-  while ((opt =getopt(argc, argv, "c:i:x:u:nEb:HvV")) != opteof) {
+  while ((opt =getopt(argc, argv, "c:C:i:x:u:l:Eb:hpvV")) != opteof) {
     switch(opt) {
     case 'c':
-      scan_ulong(optarg, &svmax);
-      if (svmax < 1) usage();
+      scan_ulong(optarg, &cmax);
+      if (cmax < 1) usage();
+      break;
+    case 'C':
+      scan_ulong(optarg, &phccmax);
+      if (phccmax < 1) usage();
       break;
     case 'i':
       if (instructs) usage();
@@ -211,8 +253,9 @@ int main(int argc, const char **argv) {
       if (! (pwd =getpwnam(optarg)))
 	strerr_die3x(100, FATAL, "unknown user: ", (char*)optarg);
       break;
-    case 'n':
-      deny =1;
+    case 'l':
+      if (! stralloc_copys(&local_hostname, optarg)) die_nomem();
+      if (! stralloc_0(&local_hostname)) die_nomem();
       break;
     case 'E':
       ucspi =0;
@@ -220,11 +263,15 @@ int main(int argc, const char **argv) {
     case 'b':
       scan_ulong(optarg, &backlog);
       break;
-    case 'H':
-      lookuphost =0;
+    case 'h':
+      lookuphost =1;
+      break;
+    case 'p':
+      lookuphost =1;
+      paranoid =1;
       break;
     case 'v':
-      verbose =1;
+      ++verbose;
       break;
     case 'V':
       strerr_warn1(VERSION, 0);
@@ -240,12 +287,15 @@ int main(int argc, const char **argv) {
   local_port =(char*)*argv++;
   if (! argv || ! *argv) usage();
   prog =argv;
+  if (phccmax > cmax) phccmax =cmax;
 
   dns_random_init(seed);
   sig_block(sig_child);
   sig_catch(sig_child, sig_child_handler);
   sig_catch(sig_term, sig_term_handler);
   sig_ignore(sig_pipe);
+
+  if (phccmax) if (ipsvd_phcc_init(cmax) == -1) die_nomem();
 
   if (str_equal(host, "")) host ="0.0.0.0";
   if (str_equal(host, "0")) host ="0.0.0.0";
@@ -265,7 +315,7 @@ int main(int argc, const char **argv) {
 
   if (! lookuphost) {
     if (! stralloc_copys(&remote_hostname, "")) die_nomem();
-    if (! stralloc_0(&remote_hostname)) die_nomem();
+    //    if (! stralloc_0(&remote_hostname)) die_nomem();
   }
 
   if ((s =socket_tcp()) == -1) fatal("unable to create socket");
@@ -292,7 +342,7 @@ int main(int argc, const char **argv) {
     flush(", starting.\n");
   }
   for (;;) {
-    while (svnum >= svmax) sig_pause();
+    while (cnum >= cmax) sig_pause();
 
     sig_unblock(sig_child);
     conn =accept(s, (struct sockaddr *)&socka, &socka_size);
@@ -302,9 +352,10 @@ int main(int argc, const char **argv) {
       if (errno != error_intr) warn("unable to accept connection");
       continue;
     }
-    svnum++;
-    remote_ip[ipsvd_fmt_ip(remote_ip, (char *)&socka.sin_addr)] =0;
+    cnum++;
 
+    if (verbose) connection_status();
+    if (phccmax) phcc =ipsvd_phcc_add((char*)&socka.sin_addr);
     if ((pid =fork()) == -1) {
       warn2("drop connection", "unable to fork");
       close(conn);
@@ -315,7 +366,7 @@ int main(int argc, const char **argv) {
       close(s);
       connection_accept(conn);
     }
-    if (verbose) connection_status();
+    if (phccmax) ipsvd_phcc_setpid(pid);
     close(conn);
   }
   _exit(0);

@@ -9,9 +9,9 @@
 #include "ipsvd_log.h"
 #include "ipsvd_check.h"
 #include "ipsvd_fmt.h"
+#include "ipsvd_hostname.h"
 #include "sgetopt.h"
 #include "sig.h"
-#include "stralloc.h"
 #include "str.h"
 #include "fmt.h"
 #include "error.h"
@@ -19,13 +19,11 @@
 #include "prot.h"
 #include "ndelay.h"
 #include "scan.h"
-#include "iopause.h"
-#include "taia.h"
 #include "fd.h"
 #include "wait.h"
 #include "pathexec.h"
 
-#define USAGE " [-nHv] [-u user] [-i dir|-x cdb] host port prog"
+#define USAGE " [-nhpv] [-u user] [-l name] [-i dir|-x cdb] host port prog"
 #define VERSION "$Id$"
 
 #define FATAL "udpsvd: fatal: "
@@ -39,11 +37,12 @@ const char **prog;
 const char *instructs =0;
 unsigned int iscdb =0;
 unsigned long verbose =0;
-unsigned int deny =0;
-unsigned int lookuphost =1;
+unsigned int lookuphost =0;
+unsigned int paranoid =0;
 
 static char seed[128];
 int s;
+stralloc local_hostname ={0};
 char local_ip[IP4_FMT];
 char *local_port;
 stralloc remote_hostname ={0};
@@ -83,24 +82,28 @@ void connection_accept(int c) {
   int ac;
   const char **run;
   const char *args[4];
+  char *ip =(char*)&socka.sin_addr;
 
-  remote_ip[ipsvd_fmt_ip(remote_ip, (char*)&socka.sin_addr)] =0;
+  remote_ip[ipsvd_fmt_ip(remote_ip, ip)] =0;
+  if (verbose) {
+    out(INFO); out("pid ");
+    bufnum[fmt_ulong(bufnum, getpid())] =0;
+    out(bufnum); out(" from "); outfix(remote_ip); flush("\n");
+  }
   remote_port[ipsvd_fmt_port(remote_port, (char*)&socka.sin_port)] =0;
   if (lookuphost) {
-    if (dns_name4(&remote_hostname, (char *)&socka.sin_addr) == -1) {
-      warn2("temporarily unable to reverse look up IP address", remote_ip);
-      if (! stralloc_copys(&remote_hostname, "(unknown)")) drop_nomem();
-    }
+    if (ipsvd_hostname(&remote_hostname, ip, paranoid) == -1)
+      warn2("temporarily unable to look up in DNS", remote_ip);
     if (! stralloc_0(&remote_hostname)) drop_nomem();
   }
 
   if (instructs) {
-    ac =ipsvd_check(iscdb, &inst, &match, (char*)instructs, remote_ip);
+    ac =ipsvd_check(iscdb, &inst, &match, (char*)instructs,
+		    remote_ip, remote_hostname.s);
     if (ac == -1) discard("unable to check inst", remote_ip);
     if (ac == IPSVD_ERR) discard("unable to read", (char*)instructs);
   }
   else ac =IPSVD_DEFAULT;
-  if (deny && (ac == IPSVD_DEFAULT)) ac =IPSVD_DENY;
 
   if (verbose) {
     out(INFO);
@@ -110,7 +113,9 @@ void connection_accept(int c) {
     case IPSVD_EXEC: out("exec "); break;
     }
     bufnum[fmt_ulong(bufnum, getpid())] =0;
-    out(bufnum); out(" :"); outfix(remote_hostname.s); out(":");
+    out(bufnum); out(" ");
+    outfix(local_hostname.s); out(":"); out(local_ip);
+    out(" :"); outfix(remote_hostname.s); out(":");
     outfix(remote_ip); out(":"); outfix(remote_port);
     if (instructs) {
       out(" ");
@@ -118,7 +123,7 @@ void connection_accept(int c) {
 	out((char*)instructs); out("/");
       }
       outfix(match.s);
-      if(inst.s && inst.len) {
+      if(inst.s && inst.len && (verbose > 1)) {
 	out(": "); outinst(&inst);
       }
     }
@@ -160,20 +165,25 @@ int main(int argc, const char **argv, const char *const *envp) {
 
   progname =*argv;
 
-  while ((opt =getopt(argc, argv, "vu:nHi:x:V")) != opteof) {
+  while ((opt =getopt(argc, argv, "vu:l:hpi:x:V")) != opteof) {
     switch(opt) {
     case 'v':
-      verbose =1;
+      ++verbose;
       break;
     case 'u':
       if (! (pwd =getpwnam(optarg)))
 	strerr_die3x(100, FATAL, "unknown user: ", (char*)optarg);
       break;
-    case 'n':
-      deny =1;
+    case 'l':
+      if (! stralloc_copys(&local_hostname, optarg)) die_nomem();
+      if (! stralloc_0(&local_hostname)) die_nomem();
       break;
-    case 'H':
-      lookuphost =0;
+    case 'h':
+      lookuphost =1;
+      break;
+    case 'p':
+      lookuphost =1;
+      paranoid =1;
       break;
     case 'i':
       if (instructs) usage();
@@ -218,6 +228,11 @@ int main(int argc, const char **argv, const char *const *envp) {
   ips.len =4;
   ips.s[4] =0;
   local_ip[ipsvd_fmt_ip(local_ip, ips.s)] =0;
+  if (! local_hostname.len) {
+    if (dns_name4(&local_hostname, ips.s) == -1)
+      fatal("unable to look up local hostname");
+    if (! stralloc_0(&local_hostname)) die_nomem();
+  }
   
   if (! lookuphost) {
     if (! stralloc_copys(&remote_hostname, "")) die_nomem();

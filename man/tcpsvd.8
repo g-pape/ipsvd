@@ -3,10 +3,12 @@
 tcpsvd \- TCP/IP service daemon
 .SH SYNOPSIS
 .B tcpsvd
-[\-nEHv] [\-c
+[\-hpEvv] [\-c
+.I n\fR] [\-C
 .I n\fR] [\-b
 .I n\fR] [\-u
-.I user\fR] [\-i
+.I user\fR] [\-l
+.I name\fR] [\-i
 .IR dir |\-x
 .I cdb\fR]
 .I host
@@ -27,8 +29,8 @@ keeps listening on the socket for new connections, and can handle multiple
 connections simultaneously.
 .P
 .B tcpsvd
-optionally checks for special intructions depending on the IP address of the
-client that initiated the connection, see
+optionally checks for special intructions depending on the IP address or
+hostname of the client that initiated the connection, see
 .BR ipsvd-instruct (5).
 .SH OPTIONS
 .TP
@@ -58,26 +60,6 @@ writing to the network.
 By default it also sets up TCP-related environment variables, see
 .BR tcp-environ (5)
 .TP
-.B \-c \fIn
-concurrency.
-Handle up to
-.I n
-connections simultaneously.
-Default is 30.
-If there are
-.I n
-connections active,
-.B tcpsvd
-defers acceptance of a new connection until an active connection is closed.
-.TP
-.B \-u \fIuser
-drop permissions.
-Switch user ID to
-.IR user 's
-UID, and group ID to
-.IR user 's
-primary GID after creating and binding to the socket.
-.TP
 .B \-i \fIdir
 read instructions for handling new connections from the instructions
 directory
@@ -93,15 +75,66 @@ The constant database normally is created from an instructions directory by
 running
 .BR ipsvd-cdb (8).
 .TP
-.B \-n
-Deny a new connection instead of starting
-.I prog
-to handle it, if there are no special intructions for the client that
-initiated the connection.
+.B \-l \fIname
+local hostname.
+Do not look up the local hostname in DNS, but use
+.I name
+as hostname.
+This option must be set if
+.B tcpsvd
+listens on port 53 to avoid loops.
 .TP
-.B \-E
-no ucspi environment.
-Do not set up TCP-related environment variables.
+.B \-u \fIuser
+drop permissions.
+Switch user ID to
+.IR user 's
+UID, and group ID to
+.IR user 's
+primary GID after creating and binding to the socket.
+.TP
+.B \-c \fIn
+concurrency.
+Handle up to
+.I n
+connections simultaneously.
+Default is 30.
+If there are
+.I n
+connections active,
+.B tcpsvd
+defers acceptance of a new connection until an active connection is closed.
+.TP
+.B \-C \fIn
+per host concurrency.
+Allow only up to
+.I n
+connections from the same IP address simultaneously.
+If there are
+.I n
+active connections from one IP address, new incoming connections from this IP
+address are silently closed.
+For each accepted connection, the current per host concurrency is available
+through the environment variable
+.IR TCPCONCURRENCY .
+.I n
+can be overwritten by
+.BR ipsvd (7)
+instructions, see
+.BR ipsvd-instruct (5). 
+By default
+.B tcpsvd
+doesn't keep track of connections.
+.TP
+.B \-h
+Look up the client's hostname in DNS.
+.TP
+.B \-p
+paranoid.
+After looking up the client's hostname in DNS, look up the IP addresses in
+DNS for that hostname, and forget about the hostname if none of the addresses
+match the client's IP address.
+You should set this option if you use hostname based instructions.
+The \-p option implies the \-h option.
 .TP
 .B \-b \fIn
 backlog.
@@ -113,12 +146,17 @@ On some systems
 is silently limited.
 Default is 20.
 .TP
-.B \-H
-Do not look up client's hostname in DNS.
+.B \-E
+no special environment.
+Do not set up TCP-related environment variables.
 .TP
 .B \-v
 verbose.
 Print verbose messsages to standard output.
+.TP
+.B \-vv
+more verbose.
+Print more verbose messages to standard output.
 .SH SEE ALSO
 ipsvd(7),
 udpsvd(8),

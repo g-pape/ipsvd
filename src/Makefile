@@ -4,11 +4,15 @@ IT=tcpsvd udpsvd ipsvd-cdb
 
 default: $(IT)
 
-tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a
-	./load tcpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a -ldjbdns
+tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o \
+	  ipsvd_hostname.o ipsvd_phcc.o cdb.a byte.a unix.a
+	./load tcpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o \
+	  ipsvd_hostname.o ipsvd_phcc.o cdb.a byte.a unix.a -ldjbdns
 
-udpsvd: load udpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a time.a
-	./load udpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a time.a -ldjbdns
+udpsvd: load udpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o \
+	  ipsvd_hostname.o cdb.a byte.a unix.a time.a
+	./load udpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o \
+	  ipsvd_hostname.o cdb.a byte.a unix.a time.a -ldjbdns
 
 ipsvd-cdb: load ipsvd-cdb.o ipsvd_check.o cdb.a byte.a unix.a
 	./load ipsvd-cdb ipsvd_check.o cdb.a byte.a unix.a -ldjbdns
@@ -30,7 +34,13 @@ ipsvd_fmt.o: compile ipsvd_fmt.c
 
 ipsvd_check.o: compile ipsvd_check.c
 	./compile ipsvd_check.c
-                                                                                
+
+ipsvd_hostname.o: compile ipsvd_hostname.c
+	./compile ipsvd_hostname.c
+
+ipsvd_phcc.o: compile ipsvd_phcc.c
+	./compile ipsvd_phcc.c
+
 clean:
 	rm -f `cat TARGETS` *~
 
@@ -65,12 +75,12 @@ buffer_read.o: buffer.h buffer_read.c compile
 buffer_write.o: buffer.h buffer_write.c compile
 	./compile buffer_write.c
 
-byte.a: byte_chr.o byte_copy.o byte_cr.o byte_diff.o byte_rchr.o \
-fmt_uint.o fmt_uint0.o fmt_ulong.o makelib scan_ulong.o str_chr.o \
-str_diff.o str_len.o str_start.o
+byte.a: byte_chr.o byte_copy.o byte_cr.o byte_diff.o byte_rchr.o fmt_uint.o \
+	  fmt_uint0.o fmt_ulong.o makelib scan_ulong.o str_chr.o str_diff.o \
+	  str_len.o str_start.o
 	./makelib byte.a byte_chr.o byte_copy.o byte_cr.o byte_diff.o \
-	byte_rchr.o fmt_uint.o fmt_uint0.o fmt_ulong.o scan_ulong.o str_chr.o \
-	str_diff.o str_len.o str_start.o
+	  byte_rchr.o fmt_uint.o fmt_uint0.o fmt_ulong.o scan_ulong.o \
+	  str_chr.o str_diff.o str_len.o str_start.o
 
 byte_chr.o: byte.h byte_chr.c compile
 	./compile byte_chr.c
@@ -95,8 +105,7 @@ chkshsgr.o: chkshsgr.c compile
 
 choose: choose.sh warn-auto.sh
 	rm -f choose
-	cat warn-auto.sh choose.sh \
-	> choose
+	cat warn-auto.sh choose.sh >choose
 	chmod 555 choose
 
 coe.o: coe.c coe.h compile
@@ -104,11 +113,11 @@ coe.o: coe.c coe.h compile
 
 compile: conf-cc conf-djbdnsinc print-cc.sh systype warn-auto.sh
 	rm -f compile
-	sh print-cc.sh > compile
+	sh print-cc.sh >compile
 	chmod 555 compile
 
 direntry.h: choose compile direntry.h1 direntry.h2 trydrent.c
-	./choose c trydrent direntry.h1 direntry.h2 > direntry.h
+	./choose c trydrent direntry.h1 direntry.h2 >direntry.h
 
 env.o: compile env.c env.h str.h
 	./compile env.c
@@ -138,34 +147,34 @@ fmt_ulong.o: compile fmt.h fmt_ulong.c
 	./compile fmt_ulong.c
 
 hasflock.h: choose compile hasflock.h1 hasflock.h2 load tryflock.c
-	./choose cl tryflock hasflock.h1 hasflock.h2 > hasflock.h
+	./choose cl tryflock hasflock.h1 hasflock.h2 >hasflock.h
 
 hasmkffo.h: choose compile hasmkffo.h1 hasmkffo.h2 load trymkffo.c
-	./choose cl trymkffo hasmkffo.h1 hasmkffo.h2 > hasmkffo.h
+	./choose cl trymkffo hasmkffo.h1 hasmkffo.h2 >hasmkffo.h
 
 hassgact.h: choose compile hassgact.h1 hassgact.h2 load trysgact.c
-	./choose cl trysgact hassgact.h1 hassgact.h2 > hassgact.h
+	./choose cl trysgact hassgact.h1 hassgact.h2 >hassgact.h
 
 hassgprm.h: choose compile hassgprm.h1 hassgprm.h2 load trysgprm.c
-	./choose cl trysgprm hassgprm.h1 hassgprm.h2 > hassgprm.h
+	./choose cl trysgprm hassgprm.h1 hassgprm.h2 >hassgprm.h
 
-hasshsgr.h: chkshsgr choose compile hasshsgr.h1 hasshsgr.h2 load \
-tryshsgr.c warn-shsgr
+hasshsgr.h: chkshsgr choose compile hasshsgr.h1 hasshsgr.h2 load tryshsgr.c \
+	  warn-shsgr
 	./chkshsgr || ( cat warn-shsgr; exit 1 )
-	./choose clr tryshsgr hasshsgr.h1 hasshsgr.h2 > hasshsgr.h
+	./choose clr tryshsgr hasshsgr.h1 hasshsgr.h2 >hasshsgr.h
 
 haswaitp.h: choose compile haswaitp.h1 haswaitp.h2 load trywaitp.c
-	./choose cl trywaitp haswaitp.h1 haswaitp.h2 > haswaitp.h
+	./choose cl trywaitp haswaitp.h1 haswaitp.h2 >haswaitp.h
 
 iopause.h: choose compile iopause.h1 iopause.h2 load trypoll.c
-	./choose clr trypoll iopause.h1 iopause.h2 > iopause.h
+	./choose clr trypoll iopause.h1 iopause.h2 >iopause.h
 
 iopause.o: compile iopause.c iopause.h select.h tai.h taia.h uint64.h
 	./compile iopause.c
 
 load: conf-ld conf-djbdnslib print-ld.sh systype warn-auto.sh
 	rm -f load
-	sh print-ld.sh > load
+	sh print-ld.sh >load
 	chmod 555 load
 
 lock_ex.o: compile hasflock.h lock.h lock_ex.c
@@ -176,7 +185,7 @@ lock_exnb.o: compile hasflock.h lock.h lock_exnb.c
 
 makelib: print-ar.sh systype warn-auto.sh
 	rm -f makelib
-	sh print-ar.sh > makelib
+	sh print-ar.sh >makelib
 	chmod 555 makelib
 
 ndelay_off.o: compile ndelay.h ndelay_off.c
@@ -198,22 +207,21 @@ open_write.o: compile open.h open_write.c
 	./compile open_write.c
 
 openreadclose.o: compile error.h gen_alloc.h open.h openreadclose.c \
-openreadclose.h readclose.h stralloc.h
+	  openreadclose.h readclose.h stralloc.h
 	./compile openreadclose.c
 
 pathexec_env.o: alloc.h byte.h compile env.h gen_alloc.h pathexec.h \
-pathexec_env.c str.h stralloc.h
+	  pathexec_env.c str.h stralloc.h
 	./compile pathexec_env.c
 
-pathexec_run.o: compile env.h error.h gen_alloc.h pathexec.h \
-pathexec_run.c str.h stralloc.h
+pathexec_run.o: compile env.h error.h gen_alloc.h pathexec.h pathexec_run.c \
+	  str.h stralloc.h
 	./compile pathexec_run.c
 
 prot.o: compile hasshsgr.h prot.c prot.h
 	./compile prot.c
 
-readclose.o: compile error.h gen_alloc.h readclose.c readclose.h \
-stralloc.h
+readclose.o: compile error.h gen_alloc.h readclose.c readclose.h stralloc.h
 	./compile readclose.c
 
 scan_ulong.o: compile scan.h scan_ulong.c
@@ -223,7 +231,7 @@ seek_set.o: compile seek.h seek_set.c
 	./compile seek_set.c
 
 select.h: choose compile select.h1 select.h2 trysysel.c
-	./choose c trysysel select.h1 select.h2 > select.h
+	./choose c trysysel select.h1 select.h2 >select.h
 
 sgetopt.o: buffer.h compile sgetopt.c sgetopt.h subgetopt.h
 	./compile sgetopt.c
@@ -255,28 +263,24 @@ str_start.o: compile str.h str_start.c
 stralloc_cat.o: byte.h compile gen_alloc.h stralloc.h stralloc_cat.c
 	./compile stralloc_cat.c
 
-stralloc_catb.o: byte.h compile gen_alloc.h stralloc.h \
-stralloc_catb.c
+stralloc_catb.o: byte.h compile gen_alloc.h stralloc.h stralloc_catb.c
 	./compile stralloc_catb.c
 
-stralloc_cats.o: byte.h compile gen_alloc.h str.h stralloc.h \
-stralloc_cats.c
+stralloc_cats.o: byte.h compile gen_alloc.h str.h stralloc.h stralloc_cats.c
 	./compile stralloc_cats.c
 
-stralloc_eady.o: alloc.h compile gen_alloc.h gen_allocdefs.h \
-stralloc.h stralloc_eady.c
+stralloc_eady.o: alloc.h compile gen_alloc.h gen_allocdefs.h stralloc.h \
+	  stralloc_eady.c
 	./compile stralloc_eady.c
 
-stralloc_opyb.o: byte.h compile gen_alloc.h stralloc.h \
-stralloc_opyb.c
+stralloc_opyb.o: byte.h compile gen_alloc.h stralloc.h stralloc_opyb.c
 	./compile stralloc_opyb.c
 
-stralloc_opys.o: byte.h compile gen_alloc.h str.h stralloc.h \
-stralloc_opys.c
+stralloc_opys.o: byte.h compile gen_alloc.h str.h stralloc.h stralloc_opys.c
 	./compile stralloc_opys.c
 
-stralloc_pend.o: alloc.h compile gen_alloc.h gen_allocdefs.h \
-stralloc.h stralloc_pend.c
+stralloc_pend.o: alloc.h compile gen_alloc.h gen_allocdefs.h stralloc.h \
+	  stralloc_pend.c
 	./compile stralloc_pend.c
 
 strerr_die.o: buffer.h compile strerr.h strerr_die.c
@@ -288,24 +292,24 @@ strerr_sys.o: compile error.h strerr.h strerr_sys.c
 subgetopt.o: compile subgetopt.c subgetopt.h
 	./compile subgetopt.c
 
-sysdeps: compile direntry.h hasflock.h hasmkffo.h hassgact.h \
-hassgprm.h hasshsgr.h haswaitp.h iopause.h load select.h systype \
-uint64.h
+sysdeps: compile direntry.h hasflock.h hasmkffo.h hassgact.h hassgprm.h \
+	  hasshsgr.h haswaitp.h iopause.h load select.h systype uint64.h
 	rm -f sysdeps
-	cat systype compile load >> sysdeps
-	grep sysdep direntry.h >> sysdeps
-	grep sysdep haswaitp.h >> sysdeps
-	grep sysdep hassgact.h >> sysdeps
-	grep sysdep hassgprm.h >> sysdeps
-	grep sysdep select.h >> sysdeps
-	grep sysdep uint64.h >> sysdeps
-	grep sysdep iopause.h >> sysdeps
-	grep sysdep hasmkffo.h >> sysdeps
-	grep sysdep hasflock.h >> sysdeps
-	grep sysdep hasshsgr.h >> sysdeps
+	cat systype compile load >>sysdeps
+	grep sysdep direntry.h >>sysdeps
+	grep sysdep haswaitp.h >>sysdeps
+	grep sysdep hassgact.h >>sysdeps
+	grep sysdep hassgprm.h >>sysdeps
+	grep sysdep select.h >>sysdeps
+	grep sysdep uint64.h >>sysdeps
+	grep sysdep iopause.h >>sysdeps
+	grep sysdep hasmkffo.h >>sysdeps
+	grep sysdep hasflock.h >>sysdeps
+	grep sysdep hasshsgr.h >>sysdeps
+	cat sysdeps
 
 systype: find-systype.sh trycpp.c x86cpuid.c
-	sh find-systype.sh > systype
+	sh find-systype.sh >systype
 
 tai_now.o: compile tai.h tai_now.c uint64.h
 	./compile tai_now.c
@@ -344,35 +348,35 @@ taia_uint.o: compile tai.h taia.h taia_uint.c uint64.h
 	./compile taia_uint.c
 
 time.a: iopause.o makelib tai_now.o tai_pack.o tai_sub.o tai_unpack.o \
-taia_add.o taia_approx.o taia_frac.o taia_less.o taia_now.o \
-taia_pack.o taia_sub.o taia_uint.o
+	  taia_add.o taia_approx.o taia_frac.o taia_less.o taia_now.o \
+	  taia_pack.o taia_sub.o taia_uint.o
 	./makelib time.a iopause.o tai_now.o tai_pack.o tai_sub.o \
-	tai_unpack.o taia_add.o taia_approx.o taia_frac.o taia_less.o \
-	taia_now.o taia_pack.o taia_sub.o taia_uint.o
+	  tai_unpack.o taia_add.o taia_approx.o taia_frac.o taia_less.o \
+	  taia_now.o taia_pack.o taia_sub.o taia_uint.o
 
 uint64.h: choose compile load tryulong64.c uint64.h1 uint64.h2
-	./choose clr tryulong64 uint64.h1 uint64.h2 > uint64.h
+	./choose clr tryulong64 uint64.h1 uint64.h2 >uint64.h
 
 unix.a: alloc.o alloc_re.o buffer.o buffer_0.o buffer_1.o buffer_2.o \
-buffer_get.o buffer_put.o buffer_read.o buffer_write.o coe.o env.o \
-error.o error_str.o fd_copy.o fd_move.o fifo.o lock_ex.o lock_exnb.o \
-makelib ndelay_off.o ndelay_on.o open_append.o open_read.o \
-open_trunc.o open_write.o openreadclose.o pathexec_env.o \
-pathexec_run.o prot.o readclose.o seek_set.o sgetopt.o sig.o \
-sig_block.o sig_catch.o sig_pause.o stralloc_cat.o stralloc_catb.o \
-stralloc_cats.o stralloc_eady.o stralloc_opyb.o stralloc_opys.o \
-stralloc_pend.o strerr_die.o strerr_sys.o subgetopt.o wait_nohang.o \
-wait_pid.o
+	  buffer_get.o buffer_put.o buffer_read.o buffer_write.o coe.o \
+	  env.o error.o error_str.o fd_copy.o fd_move.o fifo.o lock_ex.o \
+	  lock_exnb.o makelib ndelay_off.o ndelay_on.o open_append.o \
+	  open_read.o open_trunc.o open_write.o openreadclose.o \
+	  pathexec_env.o pathexec_run.o prot.o readclose.o seek_set.o \
+	  sgetopt.o sig.o sig_block.o sig_catch.o sig_pause.o \
+	  stralloc_cat.o stralloc_catb.o stralloc_cats.o stralloc_eady.o \
+	  stralloc_opyb.o stralloc_opys.o stralloc_pend.o strerr_die.o \
+	  strerr_sys.o subgetopt.o wait_nohang.o wait_pid.o
 	./makelib unix.a alloc.o alloc_re.o buffer.o buffer_0.o buffer_1.o \
-	buffer_2.o buffer_get.o buffer_put.o buffer_read.o buffer_write.o \
-	coe.o env.o error.o error_str.o fd_copy.o fd_move.o fifo.o lock_ex.o \
-	lock_exnb.o ndelay_off.o ndelay_on.o open_append.o open_read.o \
-	open_trunc.o open_write.o openreadclose.o pathexec_env.o \
-	pathexec_run.o prot.o readclose.o seek_set.o sgetopt.o sig.o \
-	sig_block.o sig_catch.o sig_pause.o stralloc_cat.o stralloc_catb.o \
-	stralloc_cats.o stralloc_eady.o stralloc_opyb.o stralloc_opys.o \
-	stralloc_pend.o strerr_die.o strerr_sys.o subgetopt.o wait_nohang.o \
-	wait_pid.o
+	  buffer_2.o buffer_get.o buffer_put.o buffer_read.o buffer_write.o \
+	  coe.o env.o error.o error_str.o fd_copy.o fd_move.o fifo.o \
+	  lock_ex.o lock_exnb.o ndelay_off.o ndelay_on.o open_append.o \
+	  open_read.o open_trunc.o open_write.o openreadclose.o \
+	  pathexec_env.o pathexec_run.o prot.o readclose.o seek_set.o \
+	  sgetopt.o sig.o sig_block.o sig_catch.o sig_pause.o \
+	  stralloc_cat.o stralloc_catb.o stralloc_cats.o stralloc_eady.o \
+	  stralloc_opyb.o stralloc_opys.o stralloc_pend.o strerr_die.o \
+	  strerr_sys.o subgetopt.o wait_nohang.o wait_pid.o
 
 wait_nohang.o: compile haswaitp.h wait_nohang.c
 	./compile wait_nohang.c
@@ -392,15 +396,15 @@ cdb.o: compile cdb.c error.h seek.h byte.h cdb.h uint32.h
 cdb_hash.o: compile cdb_hash.c cdb.h uint32.h
 	./compile cdb_hash.c
 
-cdb_make.o: compile cdb_make.c seek.h error.h alloc.h cdb.h \
-uint32.h cdb_make.h buffer.h uint32.h
+cdb_make.o: compile cdb_make.c seek.h error.h alloc.h cdb.h uint32.h \
+	  cdb_make.h buffer.h uint32.h
 	./compile cdb_make.c
 
 # from djbdns-1.05; Public domain
 uint32.h: tryulong32.c compile load uint32.h1 uint32.h2
 	( ( ./compile tryulong32.c && ./load tryulong32 && \
 	./tryulong32 ) >/dev/null 2>&1 \
-	&& cat uint32.h2 || cat uint32.h1 ) > uint32.h
+	&& cat uint32.h2 || cat uint32.h1 ) >uint32.h
 	rm -f tryulong32.o tryulong32
 
 uint32_pack.o: compile uint32.h uint32_pack.c

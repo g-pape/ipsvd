@@ -1,3 +1,24 @@
+ipsvd 0.2.6
+Sat, 12 Apr 2003 13:24:59 +0200
+  * doc/install.html: typo.
+  * ipsvd-cdb.c: adapt; typo.
+  * ipsvd_check.c, ipsvd_check.h: support hostname based instructions and
+    catchall file 0.
+  * ipsvd_hostname.c, ipsvd_hostname.h: new; lookup hostname in dns.
+  * tcpsvd.c, udpsvd.c: remove -n option; support hostname based
+    instructions; log localip:localhost info; add -l option; add -p option;
+    replace -H with -h, by default do not look up hostname; add -vv option;
+    slightly change log messages.
+  * ipsvd_phcc.c, ipsvd_phcc.h: new; connection tracking, per host
+    concurrency.
+  * tcpsvd.c: add -C option, support per host concurrency limit; include
+    <sys/types.h> (BSD OS needs it, thx clemens fischer).
+  * man/ipsvd-instruct.5: document hostname based instructions, concurrency
+    instructions,  and catchall file 0.
+  * man/tcpsvd.8, man/udpsvd.8: adapt.
+  * man/ipsvd.7: add -hpl options.
+  * Makefile: cleanup.
+
 ipsvd 0.2.0
 Sat, 22 Mar 2003 00:51:26 +0100
   * code cleanup

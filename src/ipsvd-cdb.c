@@ -15,7 +15,7 @@
 #include "cdb_make.h"
 #include "str.h"
 
-#define USAGE " ipsvd-cdb cdb cdb.tmp dir"
+#define USAGE " cdb cdb.tmp dir"
 #define VERSION "$Id$"
 #define FATAL "ipsvd-cdb: fatal: "
 #define WARNING "ipsvd-cdb: warning: "
@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
       errno =0;
       continue;
     }
-    ac =ipsvd_check(0, &sa, &tmp, ".", d->d_name);
+    ac =ipsvd_check(0, &sa, &tmp, ".", d->d_name, d->d_name);
     if (ac == -1) fatal2("unable to read instruction", d->d_name);
     if (ac == IPSVD_ERR) fatal2("unable to read", "."); /* impossible? */
 

@@ -3,8 +3,9 @@
 udpsvd \- UDP/IP service daemon
 .SH SYNOPSIS
 .B udpsvd
-[\-nHv] [\-u
-.I user\fR] [\-i
+[\-hpvv] [\-u
+.I user\fR] [\-l
+.I name\fR] [\-i
 .IR dir |\-x
 .I cdb\fR]
 .I host
@@ -27,10 +28,13 @@ still is running.
 If the program exits,
 .B udpsvd
 again listens to the socket until a new datagram is available.
+If there are still datagrams available on the socket, the program is
+restarted immediatly.
 .P
 .B udpsvd
-optionally checks for special intructions depending on the IP address of the
-client sending the datagram which not yet was handled by a running program,
+optionally checks for special intructions depending on the IP address or
+hostname of the client sending the datagram which not yet was handled by a
+running program,
 see
 .BR ipsvd-instruct (5)
 for details.
@@ -52,7 +56,7 @@ On the other hand, it makes perfectly sense with programs like
 that fork to establish a separate connection to the client when receiving
 the datagram.
 In general it's adequate to set up special instructions for programs that
-should be run by tcpwrapper.
+support being run by tcpwrapper.
 .SH OPTIONS
 .TP
 .I host
@@ -80,14 +84,6 @@ the socket, if there is no program that was started before by
 .B udpsvd
 still running and handling datagrams.
 .TP
-.B \-u \fIuser
-drop permissions.
-Switch user ID to
-.IR user 's
-UID, and group ID to
-.IR user 's
-primary GID after creating and binding to the socket.
-.TP
 .B \-i \fIdir
 read instructions for handling new connections from the instructions
 directory
@@ -103,18 +99,41 @@ The constant database normally is created from an instructions directory by
 running
 .BR ipsvd-cdb (8).
 .TP
-.B \-n
-Discard a datagram instead of starting
-.I prog
-to handle it, if there is no program still running handling datagrams, and if
-there are no special intructions for the client that sent the datagram.
+.B \-l \fIname
+local hostname.
+Do not look up the local hostname in DNS, but use
+.I name
+as hostname.
+By default
+.B udpsvd
+looks up the local hostname once at startup. 
 .TP
-.B \-H
-Do not look up client's hostname in DNS.
+.B \-u \fIuser
+drop permissions.
+Switch user ID to
+.IR user 's
+UID, and group ID to
+.IR user 's
+primary GID after creating and binding to the socket.
 .TP
-.B -v
+.B \-h
+Look up the client's hostname in DNS.
+.TP
+.B \-p
+paranoid.
+After looking up the client's hostname in DNS, look up the IP addresses in
+DNS for that hostname, and forget the hostname if none of the addresses
+match the client's IP address.
+You should set this option if you use hostname based instructions.
+The \-p option implies the \-h option.
+.TP
+.B \-v
 verbose.
 Print verbose messages to standard output.
+.TP
+.B \-vv
+more verbose.
+Print more verbose messages to standard output.
 .SH SEE ALSO
 ipsvd(7),
 tcpsvd(8),

@@ -22,53 +22,66 @@ to read the instructions from there.
 <H2><A NAME="sect2">Matching</A></H2>
 On each incoming connection,
 the <B><I>ipsvd</B>(8)</I> matches the client's IP address against files in the instructions
-directory. For example, the IP address <I>a.b.c.d</I> is matched against the following
-files in the instructions directory, in this order, first match wins: 
+directory. For example, the IP address <I>a.b.c.d</I> which reverse resolves to <I>eric.burdon.smarden.org</I>
+is matched against the following files in the instructions directory, in
+this order, first match wins: 
 <OL>
-.
-<LI><I>a.b.c.d</I> </LI>.<LI><I>a.b.c</I> </LI>.<LI><I>a.b</I> </LI>.<LI><I>a</I> </LI>
+.<LI><I>a.b.c.d</I> </LI>.<LI><I>a.b.c</I> </LI>.<LI><I>a.b</I> </LI>.<LI><I>a</I> </LI>
 </OL>
 <P>
-After successfully matching a client's IP address against
-the instructions directory, <B><I>ipsvd</B>(8)</I> examines the file that matched the
-IP address, and acts accordingly: 
+If the client's hostname has
+been successfully looked up in DNS: 
 <OL>
-.<LI>If the file doesn't have any of the user's
-access permissions set (chmod 0), the connection is closed immediately.
-</LI>.<LI>If the file has the user's execute permission set, <B><I>ipsvd</B>(8)</I> reads the contents
-of the file and runs <I>/bin/sh</I> -c '&lt;contents&gt;' instead of the default program
-<I>prog</I> given at the command line for this connection. </LI>.<LI>If the file has the
-user's read permission set, <B><I>ipsvd</B>(8)</I> reads the contents of the file and
-interprets each line as an instruction for this connection (see below).
-</LI>
+.<LI><I>eric.burdon.smarden.org</I> </LI>.<LI><I>burdon.smarden.org</I>
+</LI>.<LI><I>smarden.org</I> </LI>.<LI><I>org</I> </LI>
 </OL>
 <P>
-If the client's IP address doesn't match any file in the instructions directory,
-the default action is taken (the program <I>prog</I> is run to handle the connection,
-unless the -n option is given). 
+And finally the catchall file ``0'' (zero): 
+<OL>
+.<LI><I>0</I> </LI>
+</OL>
+<P>
+After successfully
+matching a client's IP address or hostname against the instructions directory,
+<B><I>ipsvd</B>(8)</I> examines the file that matched the IP address or hostname, and
+acts accordingly: 
+<OL>
+.<LI>If the file doesn't have any of the user's access permissions
+set (chmod 0), the connection is closed immediately. </LI>.<LI>If the file has the
+user's execute permission set, <B><I>ipsvd</B>(8)</I> reads the contents of the file and
+runs <I>/bin/sh</I> -c '&lt;contents&gt;' instead of the default program <I>prog</I> given at the
+command line for this connection. </LI>.<LI>If the file has the user's read permission
+set, <B><I>ipsvd</B>(8)</I> reads the contents of the file and interprets each line as
+an instruction for this connection (see below). </LI>
+</OL>
+<P>
+If the client's IP address
+or hostname doesn't match any file in the instructions directory, the default
+action is taken (the program <I>prog</I> is run to handle the connection). 
 <H2><A NAME="sect3">Instructions</A></H2>
-If <B><I>ipsvd</B>(8)</I> is given instructions
-for an incoming connection, it reads the corresponding file and interprets
-each line as follows. The file may be empty, meaning that there is no special
-instruction. 
+If
+<B><I>ipsvd</B>(8)</I> is given instructions for an incoming connection, it reads the
+corresponding file and interprets each line as follows. The file may be
+empty, meaning that there is no special instruction. 
 <OL>
-.<LI>If the line starts with a plus (``+''), and the string following
-the plus contains a ``='', <B><I>ipsvd</B>(8)</I> puts the string following the plus into
-the environment before starting <I>prog</I> to handle the connection. If the string
-following the plus doesn't contain a ``='', <B><I>ipsvd</B>(8)</I> prints a warning and discards
-this line. </LI>
+.<LI>If the line starts
+with a plus (``+''), and the string following the plus contains a ``='', <B><I>ipsvd</B>(8)</I>
+puts the string following the plus into the environment before starting
+<I>prog</I> to handle the connection. If the string following the plus doesn't contain
+a ``='', <B><I>ipsvd</B>(8)</I> prints a warning and discards this line. </LI>
 </OL>
 <P>
-If <B><I>ipsvd</B>(8)</I> cannot interpret a line, it prints a warning, discards
-the line, and continues with the next instruction if any. 
+If <B><I>ipsvd</B>(8)</I> cannot
+interpret a line, it prints a warning, discards the line, and continues
+with the next instruction if any. 
 <H2><A NAME="sect4">Example Instructions</A></H2>
 
 <DL>
 
-<DT>+MEMORY=20000
-</DT>
-<DD>This instruction causes the environment variable ``MEMORY'' with the value
-``20000'' to be availbale to the program <I>prog</I> that handles the connection. </DD>
+<DT>+MEMORY=20000 </DT>
+<DD>This
+instruction causes the environment variable ``MEMORY'' with the value ``20000''
+to be availbale to the program <I>prog</I> that handles the connection. </DD>
 
 <DT>+DEBUG=
 </DT>

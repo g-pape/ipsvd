@@ -11,42 +11,42 @@
 <H2><A NAME="sect0">Name</A></H2>
 tcpsvd - TCP/IP service daemon 
 <H2><A NAME="sect1">Synopsis</A></H2>
-<B>tcpsvd</B> [-nEHv] [-c <I>n]</I> [-b <I>n]</I> [-u
-<I>user]</I> [-i <I>dir</I>|-x <I>cdb]</I> <I>host</I> <I>port</I> <I>prog</I> 
+<B>tcpsvd</B> [-EHpv] [-c <I>n]</I> [-b <I>n]</I> [-u
+<I>user]</I> [-l <I>name]</I> [-i <I>dir</I>|-x <I>cdb]</I> <I>host</I> <I>port</I> <I>prog</I> 
 <H2><A NAME="sect2">Description</A></H2>
-<B>tcpsvd</B> creates a TCP/IP socket,
-binds it to the address <I>host</I>:<I>prog</I>, and listens on the socket for incoming
-connections. <P>
-On each incoming connection, <B>tcpsvd</B> conditionally runs a program,
-with standard input reading from the socket, and standard output writing
-to the socket, to handle this connection. <B>tcpsvd</B> keeps listening on the
-socket for new connections, and can handle multiple connections simultaneously.
-<P>
-<B>tcpsvd</B> optionally checks for special intructions depending on the IP address
-of the client that initiated the connection, see <B><I>ipsvd-instruct</B>(5)</I>. 
+<B>tcpsvd</B> creates a
+TCP/IP socket, binds it to the address <I>host</I>:<I>prog</I>, and listens on the socket
+for incoming connections. <P>
+On each incoming connection, <B>tcpsvd</B> conditionally
+runs a program, with standard input reading from the socket, and standard
+output writing to the socket, to handle this connection. <B>tcpsvd</B> keeps listening
+on the socket for new connections, and can handle multiple connections
+simultaneously. <P>
+<B>tcpsvd</B> optionally checks for special intructions depending
+on the IP address of the client that initiated the connection, see <B><I>ipsvd-instruct</B>(5)</I>.
+
 <H2><A NAME="sect3">Options</A></H2>
 
 <DL>
 
-<DT><I>host</I>
-</DT>
-<DD><I>host</I> either is a hostname, or a dotted-decimal IP address, or 0. If <I>host</I>
-is 0, <B>tcpsvd</B> accepts connections to any local IP address. </DD>
+<DT><I>host</I> </DT>
+<DD><I>host</I> either is a hostname, or a dotted-decimal IP address, or
+0. If <I>host</I> is 0, <B>tcpsvd</B> accepts connections to any local IP address. </DD>
 
-<DT><I>port</I> </DT>
-<DD><B>tcpsvd</B> accepts
-connections to <I>host</I>:<I>port</I>. </DD>
+<DT><I>port</I>
+</DT>
+<DD><B>tcpsvd</B> accepts connections to <I>host</I>:<I>port</I>. </DD>
 
 <DT><I>prog</I> </DT>
-<DD><I>prog</I> consists of one or more arguments. For
-each connection, <B>tcpsvd</B> normally runs <I>prog</I>, with file descriptor 0 reading
-from the network, and file descriptor 1 writing to the network. By default
-it also sets up TCP-related environment variables, see <B><I>tcp-environ</B>(5)</I> </DD>
+<DD><I>prog</I> consists of one or more
+arguments. For each connection, <B>tcpsvd</B> normally runs <I>prog</I>, with file descriptor
+0 reading from the network, and file descriptor 1 writing to the network.
+By default it also sets up TCP-related environment variables, see <B><I>tcp-environ</B>(5)</I>
+</DD>
 
-<DT><B>-c <I>n</B>
-</I></DT>
-<DD>concurrency. Handle up to <I>n</I> connections simultaneously. Default is 30. If
-there are <I>n</I> connections active, <B>tcpsvd</B> defers acceptance of a new connection
+<DT><B>-c <I>n</B> </I></DT>
+<DD>concurrency. Handle up to <I>n</I> connections simultaneously. Default is 30.
+If there are <I>n</I> connections active, <B>tcpsvd</B> defers acceptance of a new connection
 until an active connection is closed. </DD>
 
 <DT><B>-u <I>user</B> </I></DT>
@@ -64,34 +64,41 @@ instructions for handling new connections from the constant database <I>cdb</I>.
 The constant database normally is created from an instructions directory
 by running <B><I>ipsvd-cdb</B>(8)</I>. </DD>
 
-<DT><B>-n</B> </DT>
-<DD>Deny a new connection instead of starting <I>prog</I>
-to handle it, if there are no special intructions for the client that initiated
-the connection. </DD>
+<DT><B>-b <I>n</B> </I></DT>
+<DD>backlog. Allow a backlog of approximately <I>n</I> TCP
+SYNs. On some systems <I>n</I> is silently limited. Default is 20. </DD>
+
+<DT><B>-l <I>name</B> </I></DT>
+<DD>local hostname.
+Do not look up the local hostname in DNS, but use <I>name</I> as hostname. This
+option must be set if <B>tcpsvd</B> listens on port 53 to avoid loops. </DD>
 
 <DT><B>-E</B> </DT>
-<DD>no ucspi environment. Do not set up TCP-related environment
-variables. </DD>
-
-<DT><B>-b <I>n</B> </I></DT>
-<DD>backlog. Allow a backlog of approximately <I>n</I> TCP SYNs. On some
-systems <I>n</I> is silently limited. Default is 20. </DD>
+<DD>no ucspi
+environment. Do not set up TCP-related environment variables. </DD>
 
 <DT><B>-H</B> </DT>
-<DD>Do not look up client's hostname
-in DNS. </DD>
+<DD>Do not look
+up client's hostname in DNS. </DD>
+
+<DT><B>-p</B> </DT>
+<DD>paranoid. After looking up the client's hostname
+in DNS, look up the IP addresses in DNS for that hostname, and forget the
+hostname if none of the addresses match the client's IP address. You should
+set this option if you use hostname based instructions. The -p option has
+no effect if the -H option is set. </DD>
 
 <DT><B>-v</B> </DT>
-<DD>verbose. Print verbose messsages to standard output. </DD>
+<DD>verbose. Print verbose messsages to standard
+output. </DD>
 </DL>
 
 <H2><A NAME="sect4">See Also</A></H2>
-<I>ipsvd(7)</I>,
-<I>udpsvd(8)</I>, <I>ipsvd-instruct(5)</I>, <I>ipsvd-cdb(8)</I> <P>
-<I>http://smarden.org/ipsvd/</I> 
+<I>ipsvd(7)</I>, <I>udpsvd(8)</I>, <I>ipsvd-instruct(5)</I>, <I>ipsvd-cdb(8)</I> <P>
+<I>http://smarden.org/ipsvd/</I>
+
 <H2><A NAME="sect5">Author</A></H2>
-Gerrit
-Pape &lt;pape@smarden.org&gt; <P>
+Gerrit Pape &lt;pape@smarden.org&gt; <P>
 
 <HR><P>
 <A NAME="toc"><B>Table of Contents</B></A><P>

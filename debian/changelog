@@ -1,5 +1,11 @@
+ipsvd (0.2.6-1) unstable; urgency=low
+
+  * new upstream version.
+
+ -- Gerrit Pape <pape@smarden.org>  Sat, 12 Apr 2003 13:29:07 +0200
+
 ipsvd (0.2.0-1) unstable; urgency=low
 
-  * Initial release.
+  * initial release.
 
  -- Gerrit Pape <pape@smarden.org>  Sat, 22 Mar 2003 00:51:57 +0100
