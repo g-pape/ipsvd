@@ -1,81 +1,57 @@
 #!/usr/bin/make -f
 
-# Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+STRIP =strip
 
-#CFLAGS = -Wall -g
+ifneq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+  STRIP =: nostrip
+endif
 
-#ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-#	CFLAGS += -O0
-#else
-#	CFLAGS += -O2
-#endif
-#ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
-#	INSTALL_PROGRAM += -s
-#endif
+DIR =`pwd`/debian/ipsvd
 
-configure: configure-stamp
-configure-stamp:
-	dh_testdir
-	touch configure-stamp
-
-build: build-stamp
-
-build-stamp: configure-stamp 
-	dh_testdir
-
-	tar xfzp ipsvd-0.7.1.tar.gz
+build: deb-checkdir build-stamp
+build-stamp:
+	tar xzpf ipsvd-0.7.1.tar.gz
 	( \
-	set -e; \
-	cd net/ipsvd-0.7.1/src; \
-	ln -s ipsvd-0.7.1 ipsvd; mv ipsvd ../..; \
-	echo '/usr/include/djbdns' >conf-djbdnsinc; \
+	cd net/ipsvd-0.7.1/src && \
+	ln -s ipsvd-0.7.1 ipsvd && mv ipsvd ../.. && \
+	echo '/usr/include/djbdns' >conf-djbdnsinc && \
 	$(MAKE); \
 	)
-
 	touch build-stamp
 
-clean:
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp configure-stamp
-
+clean: deb-checkdir deb-checkuid
 	rm -rf net
+	rm -f build-stamp
+	rm -rf "$(DIR)"
+	rm -f debian/files debian/substvars changelog
 
-	dh_clean
-
-install: build
-	dh_testdir
-	dh_testroot
-	dh_clean -k
-	dh_installdirs
-
+install: deb-checkdir deb-checkuid build-stamp
+	rm -rf "$(DIR)"
+	# programs
+	install -d -m0755 "$(DIR)"/usr/bin
 	for i in tcpsvd udpsvd ipsvd-cdb; do \
-	  install -m0755 net/ipsvd/src/$$i $(CURDIR)/debian/ipsvd/usr/bin/; \
+	  install -m0755 net/ipsvd/src/$$i "$(DIR)"/usr/bin/ || exit 1; \
 	done
+	$(STRIP) -R .comment -R .note "$(DIR)"/usr/bin/*
+	# man pages
+	for i in 5 7 8; do \
+	  install -d -m0755 "$(DIR)"/usr/share/man/man$$i && \
+	  for j in net/ipsvd/man/*.$$i; do \
+	    install -m0644 $$j "$(DIR)"/usr/share/man/man$$i/ || exit 1; \
+	  done || exit 1; \
+	done
+	gzip -9 "$(DIR)"/usr/share/man/man?/*.?
+	# changelog
+	rm -f changelog && ln -s net/ipsvd/package/CHANGES changelog
 
-# Build architecture-independent files here.
-binary-indep: build install
-# We have nothing to do by default.
+binary-indep:
 
-# Build architecture-dependent files here.
-binary-arch: build install
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs net/ipsvd/package/CHANGES
-	dh_installdocs
-#	dh_installexamples
-#	dh_installdebconf	
-	dh_installman net/ipsvd/man/*.[875]
-	dh_link
-	dh_strip
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
+binary-arch: build install ipsvd.deb
+	dpkg-shlibdeps "$(DIR)"/usr/bin/*
+	dpkg-gencontrol -isp -pipsvd -P"$(DIR)"
+	dpkg -b "$(DIR)" ..
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install configure
+.PHONY: build clean install binary-indep binary-arch binary
+
+include debian/implicit
