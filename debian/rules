@@ -1,9 +1,15 @@
 #!/usr/bin/make -f
 
 STRIP =strip
-
 ifneq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
   STRIP =: nostrip
+endif
+
+CFLAGS =-O2 -Wall
+LDFLAGS =-s -Os -pipe
+CC =gcc
+ifneq (,$(findstring diet,$(DEB_BUILD_OPTIONS)))
+  CC =diet -v -Os gcc
 endif
 
 DIR =`pwd`/debian/ipsvd
@@ -11,12 +17,12 @@ DIR =`pwd`/debian/ipsvd
 build: deb-checkdir build-stamp
 build-stamp:
 	tar xzpf ipsvd-0.8.0.tar.gz
-	( \
-	cd net/ipsvd-0.8.0/src && \
+	-gcc -v
+	( cd net/ipsvd-0.8.0/src && \
 	ln -s ipsvd-0.8.0 ipsvd && mv ipsvd ../.. && \
-	echo '/usr/include/djbdns' >conf-djbdnsinc && \
-	$(MAKE); \
-	)
+	echo "$(CC) $(CFLAGS)" >conf-cc && \
+	echo "$(CC) $(LDFLAGS)" >conf-ld && \
+	$(MAKE) )
 	touch build-stamp
 
 clean: deb-checkdir deb-checkuid
@@ -47,7 +53,7 @@ install: deb-checkdir deb-checkuid build-stamp
 binary-indep:
 
 binary-arch: install ipsvd.deb
-	dpkg-shlibdeps "$(DIR)"/usr/bin/*
+	test "$(CC)" != 'gcc' || dpkg-shlibdeps "$(DIR)"/usr/bin/*
 	dpkg-gencontrol -isp -pipsvd -P"$(DIR)"
 	dpkg -b "$(DIR)" ..
 
