@@ -89,7 +89,7 @@ void ucspi_env() {
   if (! pathexec_env("TCPREMOTEHOST", *r ? r : 0)) drop_nomem();
   if (! pathexec_env("TCPREMOTEINFO", 0)) drop_nomem();
   /* additional */
-  if (phccmax) {
+  if (phcc > 0) {
     bufnum[fmt_ulong(bufnum, phcc)] =0;
     if (! pathexec_env("TCPCONCURRENCY", bufnum)) drop_nomem();
   }
@@ -163,7 +163,7 @@ void connection_accept(int c) {
   }
   else ac =IPSVD_DEFAULT;
   
-  if (phccmax) {
+  if (phcc > 0) {
     if (phcc > phccmax) ac =IPSVD_DENY;
     if (verbose) {
       bufnum[fmt_ulong(bufnum, getpid())] =0;
