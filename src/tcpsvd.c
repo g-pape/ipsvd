@@ -78,7 +78,7 @@ void drop2(char *m0, char *m1) {
 void ucspi_env() {
   char *l =local_hostname.s;
   char *r =remote_hostname.s;
-  
+
   /* setup ucspi env */
   if (! pathexec_env("PROTO", "TCP")) drop_nomem();
   if (! pathexec_env("TCPLOCALIP", local_ip)) drop_nomem();
@@ -112,7 +112,7 @@ void sig_term_handler() {
 void sig_child_handler() {
   int wstat;
   int i;
-  
+
   while ((i =wait_nohang(&wstat)) > 0) {
     if (phccmax) ipsvd_phcc_rem(i);
     if (cnum) cnum--;
@@ -133,7 +133,7 @@ void connection_accept(int c) {
   const char **run;
   const char *args[4];
   char *ip =(char*)&socka.sin_addr;
-  
+
   remote_ip[ipsvd_fmt_ip(remote_ip, ip)] =0;
   if (verbose) {
     out(INFO); out("pid ");
@@ -163,7 +163,7 @@ void connection_accept(int c) {
     if (ac == IPSVD_ERR) drop2("unable to read", (char*)instructs);
   }
   else ac =IPSVD_DEFAULT;
-  
+
   if (phcc > 0) {
     if (phcc > phccmax) ac =IPSVD_DENY;
     if (verbose) {
@@ -200,7 +200,7 @@ void connection_accept(int c) {
     }
     flush("\n");
   }
-  
+
   if (ac == IPSVD_DENY) _exit(100);
   if (ac == IPSVD_EXEC) {
     args[0] ="/bin/sh"; args[1] ="-c"; args[2] =inst.s; args[3] =0;
@@ -214,7 +214,7 @@ void connection_accept(int c) {
   sig_uncatch(sig_child);
   sig_unblock(sig_child);
   pathexec(run);
-  
+
   drop2("unable to run", (char*)*prog);
 }
 
@@ -247,7 +247,7 @@ int main(int argc, const char **argv) {
       instructs =optarg;
       break;
     case 'x':
-      if (instructs) usage();    
+      if (instructs) usage();
       instructs =optarg;
       iscdb =1;
       break;
@@ -309,7 +309,7 @@ int main(int argc, const char **argv) {
   if ((dns_ip4(&ips, &sa) == -1) || (ips.len < 4))
     if (dns_ip4_qualify(&ips, &fqdn, &sa) == -1)
       fatal2("temporarily unable to look up IP address", host);
-  if (ips.len < 4) 
+  if (ips.len < 4)
     strerr_die3x(100, FATAL, "unable to look up IP address: ", host);
   ips.len =4;
   ips.s[4] =0;

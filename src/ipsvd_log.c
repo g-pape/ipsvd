@@ -2,7 +2,7 @@
 #include "ipsvd_log.h"
 
 void out(char *m) { buffer_puts(buffer_1, m); }
-void outfix(char *m) { 
+void outfix(char *m) {
   char ch;
   int i;
 

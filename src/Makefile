@@ -98,7 +98,7 @@ byte_rchr.o: byte.h byte_rchr.c compile
 	./compile byte_rchr.c
 
 chkshsgr: chkshsgr.o load
-	./load chkshsgr 
+	./load chkshsgr
 
 chkshsgr.o: chkshsgr.c compile
 	./compile chkshsgr.c

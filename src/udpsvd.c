@@ -129,7 +129,7 @@ void connection_accept(int c) {
     }
     flush("\n");
   }
-  
+
   if (ac == IPSVD_DENY) {
     recv(s, 0, 0, 0);
     _exit(100);
@@ -201,21 +201,21 @@ int main(int argc, const char **argv, const char *const *envp) {
     }
   }
   argv +=optind;
-  
+
   if (! argv || ! *argv) usage();
   host =(char*)*argv++;
   if (! argv || ! *argv) usage();
   local_port =(char*)*argv++;
   if (! argv || ! *argv) usage();
   prog =argv;
-  
+
   dns_random_init(seed);
   sig_catch(sig_term, sig_term_handler);
   sig_ignore(sig_pipe);
-  
+
   if (str_equal(host, "")) host ="0.0.0.0";
   if (str_equal(host, "0")) host ="0.0.0.0";
-  
+
   scan_ulong(local_port, &port);
   if (! port) usage();
 
@@ -233,7 +233,7 @@ int main(int argc, const char **argv, const char *const *envp) {
       fatal("unable to look up local hostname");
     if (! stralloc_0(&local_hostname)) die_nomem();
   }
-  
+
   if (! lookuphost) {
     if (! stralloc_copys(&remote_hostname, "")) die_nomem();
     if (! stralloc_0(&remote_hostname)) die_nomem();
@@ -243,13 +243,13 @@ int main(int argc, const char **argv, const char *const *envp) {
   if (socket_bind4_reuse(s, ips.s, port) == -1)
     fatal("unable to bind socket");
   ndelay_off(s);
-  
+
   if (pwd) { /* drop permissions */
     if (prot_gid(pwd->pw_gid) == -1) fatal("unable to set gid");
     if (prot_uid(pwd->pw_uid) == -1) fatal("unable to set uid");
   }
   close(0);
-  
+
   if (verbose) {
     out(INFO); out("listening on "); outfix(local_ip); out(":");
     outfix(local_port);
@@ -261,7 +261,7 @@ int main(int argc, const char **argv, const char *const *envp) {
     }
     flush(", starting.\n");
   }
-  
+
   io[0].fd =s;
   io[0].events =IOPAUSE_READ;
   io[0].revents =0;
@@ -270,7 +270,7 @@ int main(int argc, const char **argv, const char *const *envp) {
     taia_uint(&deadline, 3600);
     taia_add(&deadline, &now, &deadline);
     iopause(io, 1, &deadline, &now);
-    
+
     if (io[0].revents | IOPAUSE_READ) {
       io[0].revents =0;
       while ((pid =fork()) == -1) {
