@@ -82,9 +82,12 @@ int ipsvd_instruct(stralloc *inst, stralloc *match, char *ip) {
 			   sa.s, 0);
 	      break;
 	    }
-	  if (ips.len < 4)
+	  if (ips.len < 4) {
+	    if (! stralloc_0(&sa)) return(-1);
 	    strerr_warn4(progname, ": warning: ",
-			 "unable to look up IP address: ", insts +1, 0);
+			 "unable to look up IP address: ", sa.s, 0);
+	    break;
+	  }
 	  for (j =0; j +4 <= ips.len; j +=4) {
 	    char tmp[IP4_FMT];
 	    
