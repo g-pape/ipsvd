@@ -150,7 +150,7 @@ void decode(void) {
       if (len == 0) {
 	if (verbose > 2) info("stdin: eof");
 	close(fdstdin); close(decpipe[1]);
-	fdstdin =-1;
+	fdstdin =decpipe[1] =-1;
 	return;
       }
       if (verbose > 2) infou("read bytes: ", len);
