@@ -11,26 +11,29 @@ mkfifo -m0600 "${ctmp}"/p0
 mkfifo -m0600 "${ctmp}"/p1
 sh -c "exec <${ctmp}/p0
        exec >${ctmp}/p1
-       sslio $OPTS -Csslio.pem sh -c 'sleep 1; echo foo'" &
+       sslio $OPTS -Csslio.pem sh -c 'echo foo'" &
 pid=$!
 sh -c "exec 7>${ctmp}/p0
        exec 6<${ctmp}/p1
-       sslio $OPTS -c sh -c 'sleep 2; exec cat <&6'"
-echo $?
-sleep 1
+       sslio $OPTS -c sh -c 'cat <&6'"
+rcc=$?
 wait $pid
-echo $?
+rcs=$?
+sleep 2
+echo $rcs
+echo $rcc
 sh -c "exec <${ctmp}/p0
        exec >${ctmp}/p1
-       sslio $OPTS -Csslio.pem sh -c 'sleep 2; exec cat >&2'" &
+       sslio $OPTS -Csslio.pem sh -c 'cat >&2'" &
 pid=$!
 sh -c "exec 7>${ctmp}/p0
        exec 6<${ctmp}/p1
-       sslio $OPTS -c sh -c 'sleep 1; echo bar >&7'"
-rc=$?
-sleep 3
-echo $rc
+       sslio $OPTS -c sh -c 'echo bar >&7'"
+rcc=$?
 wait $pid
-echo $?
+rcs=$?
+sleep 2
+echo $rcs
+echo $rcc
 
 rm -rf "${ctmp}"

@@ -18,6 +18,7 @@ unpack: deb-checkdir unpack-stamp
 unpack-stamp:
 	tar xzf ipsvd-0.11.0.tar.gz
 	ln -s ipsvd-0.11.0 net/ipsvd
+	(cd net/ipsvd && patch -p0) <debian/diff/sslio.check.diff
 	echo '$(CC) $(CFLAGS)' >net/ipsvd/src/conf-cc
 	echo '$(CC) $(LDFLAGS)' >net/ipsvd/src/conf-ld
 	touch unpack-stamp
