@@ -132,9 +132,10 @@ support per host concurrency.
 check hostname.
 If the line starts with a ``='', and is followed by a hostname,
 .BR ipsvd (7)
-looks up the IP address for
+looks up the IP addresses for
 .I hostname
-in DNS and checks if this address matches the client's IP address.
+in DNS and checks if the client's IP address matches one of these IP
+addresses.
 If so,
 .IR ipsvd (7)
 stops processing the instructions here and runs

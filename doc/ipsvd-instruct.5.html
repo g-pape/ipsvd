@@ -89,14 +89,14 @@ considered. Not all <i><b>ipsvd</b>(7)</i>&rsquo;s support per host concurrency.
 <dt><b>=</b><i>hostname[:<i>forward</i>]</i>
 </dt>
 <dd>check hostname. If the line starts with a &lsquo;&lsquo;=&rsquo;&rsquo;, and is followed by a hostname,
-<i><b>ipsvd</b>(7)</i> looks up the IP address for <i>hostname</i> in DNS and checks if this
-address matches the client&rsquo;s IP address. If so, <i><i>ipsvd</i>(7)</i> stops processing
-the instructions here and runs <i>prog</i>. If <i>hostname</i> is followed a colon and
-<i>forward</i>, <i><b>ipsvd</b>(7)</i> now examines the file <i>forward</i> and acts accordingly, instead
-of running <i>prog</i>. All check hostname instructions in <i>forward</i> are ignored.
-If <i>forward</i> does not exist, the connection is closed. 
-<p> <i>hostname</i> may be &lsquo;&lsquo;0&rsquo;&rsquo;
-(zero), matching any IP address. 
+<i><b>ipsvd</b>(7)</i> looks up the IP addresses for <i>hostname</i> in DNS and checks if the
+client&rsquo;s IP address matches one of these IP addresses. If so, <i><i>ipsvd</i>(7)</i> stops
+processing the instructions here and runs <i>prog</i>. If <i>hostname</i> is followed
+a colon and <i>forward</i>, <i><b>ipsvd</b>(7)</i> now examines the file <i>forward</i> and acts accordingly,
+instead of running <i>prog</i>. All check hostname instructions in <i>forward</i> are
+ignored. If <i>forward</i> does not exist, the connection is closed. 
+<p> <i>hostname</i> may
+be &lsquo;&lsquo;0&rsquo;&rsquo; (zero), matching any IP address. 
 <p> Note: Using check hostname instructions
 can cause significant delay while responding to connection attemps, caused
 by DNS lookups. </dd>
