@@ -4,6 +4,12 @@ udpsvd
 udpsvd.o
 ipsvd-cdb
 ipsvd-cdb.o
+check-tcpsvd
+check-tcpsvd.o
+check-udpsvd
+check-udpsvd.o
+check-ipsvd-cdb
+check-ipsvd-cdb.o
 ipsvd_check.o
 ipsvd_fmt.o
 ipsvd_log.o

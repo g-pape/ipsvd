@@ -34,9 +34,9 @@ int ipsvd_fmt_msg(stralloc *sa, const char *msg) {
   for (p =msg; *p; ++p) {
     i =str_chr(p, '\\');
     if (! stralloc_catb(sa, p, i)) return(-1);
-    if ((p +=i) == 0) break;
+    if (*(p +=i) == 0) break;
     switch(*++p) {
-    case 0: --p;
+    case 0: break;
     case '\\':
       if (! stralloc_append(sa, "\\")) return(-1);
       continue;

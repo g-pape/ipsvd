@@ -5,6 +5,6 @@ $Id$
 usage: tcpsvd [-Ehpv] [-u user] [-c n] [-C n:msg] [-b n] [-l name] [-i dir|-x cdb] [-t sec] host port prog
 
 111
-tcpsvd: info: listening on 127.0.0.1:12614, starting.
-tcpsvd: info: sigterm received, exit.
+foo
+bar
 0

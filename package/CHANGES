@@ -1,5 +1,14 @@
+ipsvd 0.8.2
+Mon, 23 Feb 2004 20:15:29 +0000
   * man/ipsvd-instruct.5: on C0[:msg] per host concurrency is disabled (thx
     Charlie Brady).
+  * ipsvd_fmt.c: fix bug in parsing phcc message not ending with escaped
+    character.
+  * check-tcpsvd.c, check-udpsvd.c, check-ipsvd-cdb.c: new.
+  * ipsvd-cdb.check: don't echo \; use check-ipsvd-cdb.
+  * tcpsvd.check: use check-tcpsvd.
+  * udpsvd.check: use check-udpsvd.
+  * tcpsvd.dist, udpsvd.dist, ipsvd-cdb.dist: adapt.
 
 ipsvd 0.8.1
 Sun, 22 Feb 2004 14:40:31 +0000

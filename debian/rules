@@ -16,10 +16,10 @@ DIR =`pwd`/debian/ipsvd
 
 build: deb-checkdir build-stamp
 build-stamp:
-	tar xzpf ipsvd-0.8.1.tar.gz
+	tar xzpf ipsvd-0.8.2.tar.gz
 	-gcc -v
-	( cd net/ipsvd-0.8.1/src && \
-	ln -s ipsvd-0.8.1 ipsvd && mv ipsvd ../.. && \
+	( cd net/ipsvd-0.8.2/src && \
+	ln -s ipsvd-0.8.2 ipsvd && mv ipsvd ../.. && \
 	echo "$(CC) $(CFLAGS)" >conf-cc && \
 	echo "$(CC) $(LDFLAGS)" >conf-ld && \
 	$(MAKE) )

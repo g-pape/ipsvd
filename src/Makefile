@@ -4,7 +4,7 @@ IT=tcpsvd udpsvd ipsvd-cdb
 
 default: $(IT) check
 
-check:
+check: check-tcpsvd check-udpsvd check-ipsvd-cdb
 	./check-local $(IT)
 
 tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
@@ -25,6 +25,15 @@ ipsvd-cdb: load ipsvd-cdb.o ipsvd_fmt.o ipsvd_check.o cdb.a dns.a unix.a \
 	./load ipsvd-cdb ipsvd_fmt.o ipsvd_check.o cdb.a dns.a unix.a byte.a \
 	  time.a `cat socket.lib`
 
+check-tcpsvd: load check-tcpsvd.o unix.a byte.a
+	./load check-tcpsvd unix.a byte.a
+
+check-udpsvd: load check-udpsvd.o unix.a byte.a
+	./load check-udpsvd unix.a byte.a
+
+check-ipsvd-cdb: load check-ipsvd-cdb.o uint32_unpack.o unix.a byte.a
+	./load check-ipsvd-cdb uint32_unpack.o unix.a byte.a
+
 tcpsvd.o: compile sysdeps tcpsvd.c ipsvd_log.h
 	./compile tcpsvd.c
 
@@ -33,6 +42,15 @@ udpsvd.o: compile sysdeps udpsvd.c ipsvd_log.h
 
 ipsvd-cdb.o: compile sysdeps ipsvd-cdb.c
 	./compile ipsvd-cdb.c
+
+check-tcpsvd.o: compile check-tcpsvd.c
+	./compile check-tcpsvd.c
+
+check-udpsvd.o: compile check-udpsvd.c
+	./compile check-udpsvd.c
+
+check-ipsvd-cdb.o: compile uint32.h check-ipsvd-cdb.c
+	./compile check-ipsvd-cdb.c
 
 ipsvd_log.o: compile ipsvd_log.c
 	./compile ipsvd_log.c

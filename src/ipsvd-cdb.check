@@ -10,7 +10,7 @@ chmod 0 "${ctmp}"/0
 echo '+foo=bar' >"${ctmp}"/10.0.0.1
 chmod 600 "${ctmp}"/10.0.0.1
 echo '+foo=bar' >"${ctmp}"/10.14.1
-echo 'C14:foo\r\n' >>"${ctmp}"/10.14.1
+echo 'C14:foobar' >>"${ctmp}"/10.14.1
 chmod 600 "${ctmp}"/10.14.1
 echo '+foo=' >"${ctmp}"/127
 echo '+bar' >>"${ctmp}"/127
@@ -21,7 +21,7 @@ chmod 700 "${ctmp}"/192.168
 
 ipsvd-cdb "${ctmp}".cdb "${ctmp}".cdb.tmp "${ctmp}"
 echo $?
-cat "${ctmp}".cdb
-echo
+check-ipsvd-cdb <"${ctmp}".cdb |sort
+echo $?
 rm -f "${ctmp}".cdb
 rm -rf "${ctmp}"
