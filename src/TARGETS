@@ -9,6 +9,7 @@ ipsvd_fmt.o
 ipsvd_log.o
 ipsvd_hostname.o
 ipsvd_phcc.o
+ipsvd_scan.o
 uidgid.o
 cdb_hash.o
 cdb_make.o

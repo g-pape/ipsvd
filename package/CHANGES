@@ -1,3 +1,12 @@
+ipsvd 0.5.1
+Mon, 29 Sep 2003 10:35:11 +0200
+  * man/ipsvd-instruct.5: minor.
+  * ipsvd_scan.h, ipsvd_scan.c: new; ipsvd_scan_port(): get port number
+    from name or number (thx Matthias Andree for sample code).
+  * tcpsvd.c, udpsvd.c: support name from /etc/services as command line
+    option port.
+  * man/tcpsvd.8, man/udpsvd.8, Makefile: adapt.
+
 ipsvd 0.5.0
 Wed, 06 Aug 2003 15:39:11 +0200
   * doc/examples.html: typo (dead link, thx clemens fischer).

@@ -9,6 +9,7 @@
 #include "ipsvd_check.h"
 #include "ipsvd_fmt.h"
 #include "ipsvd_hostname.h"
+#include "ipsvd_scan.h"
 #include "uidgid.h"
 #include "sgetopt.h"
 #include "sig.h"
@@ -226,8 +227,8 @@ int main(int argc, const char **argv, const char *const *envp) {
   if (str_equal(host, "")) host ="0.0.0.0";
   if (str_equal(host, "0")) host ="0.0.0.0";
 
-  scan_ulong(local_port, &port);
-  if (! port) usage();
+  if (! ipsvd_scan_port(local_port, "udp", &port))
+    strerr_die3x(100, FATAL, "unknown port number or name: ", local_port);
 
   if (! stralloc_copys(&sa, host)) die_nomem();
   if ((dns_ip4(&ips, &sa) == -1) || (ips.len < 4))

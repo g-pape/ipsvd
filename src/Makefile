@@ -4,15 +4,15 @@ IT=tcpsvd udpsvd ipsvd-cdb
 
 default: $(IT)
 
-tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o \
-	  ipsvd_hostname.o ipsvd_phcc.o uidgid.o cdb.a byte.a unix.a
-	./load tcpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o \
-	  ipsvd_hostname.o ipsvd_phcc.o uidgid.o cdb.a byte.a unix.a -ldjbdns
+tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
+	ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a byte.a unix.a
+	./load tcpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
+	ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a byte.a unix.a -ldjbdns
 
-udpsvd: load udpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o \
-	  ipsvd_hostname.o uidgid.o cdb.a byte.a unix.a time.a
-	./load udpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o \
-	  ipsvd_hostname.o uidgid.o cdb.a byte.a unix.a time.a -ldjbdns
+udpsvd: load udpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
+	ipsvd_scan.o uidgid.o cdb.a byte.a unix.a time.a
+	./load udpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
+	ipsvd_scan.o uidgid.o cdb.a byte.a unix.a time.a -ldjbdns
 
 ipsvd-cdb: load ipsvd-cdb.o ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a
 	./load ipsvd-cdb ipsvd_fmt.o ipsvd_check.o cdb.a byte.a unix.a -ldjbdns
@@ -40,6 +40,9 @@ ipsvd_hostname.o: compile ipsvd_hostname.c
 
 ipsvd_phcc.o: compile ipsvd_phcc.c
 	./compile ipsvd_phcc.c
+
+ipsvd_scan.o: compile ipsvd_scan.c
+	./compile ipsvd_scan.c
 
 uidgid.o: compile uidgid.c uidgid.h
 	./compile uidgid.c
