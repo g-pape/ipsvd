@@ -11,7 +11,7 @@
 <H2><A NAME="sect0">Name</A></H2>
 udpsvd - UDP/IP service daemon 
 <H2><A NAME="sect1">Synopsis</A></H2>
-<B>udpsvd</B> [-nhv] [-u <I>user]</I> [-i <I>dir</I>|-x
+<B>udpsvd</B> [-nHv] [-u <I>user]</I> [-i <I>dir</I>|-x
 <I>cdb]</I> <I>host</I> <I>port</I> <I>prog</I> 
 <H2><A NAME="sect2">Description</A></H2>
 <B>udpsvd</B> creates an UDP/IP socket, binds it
@@ -80,18 +80,18 @@ handle it, if there is no program still running handling datagrams, and
 if there are no special intructions for the client that sent the datagram.
 </DD>
 
-<DT><B>-h</B> </DT>
-<DD>Look up client's hostname in DNS. </DD>
+<DT><B>-H</B> </DT>
+<DD>Do not look up client's hostname in DNS. </DD>
 
 <DT><B>-v</B> </DT>
-<DD>verbose. Print verbose messages to standard
-output. </DD>
+<DD>verbose. Print verbose messages
+to standard output. </DD>
 </DL>
 
 <H2><A NAME="sect5">See Also</A></H2>
-<I>ipsvd(7)</I>, <I>tcpsvd(8)</I>, <I>ipsvd-instruct(5)</I>, <I>ipsvd-cdb(8)</I> <P>
-<I>http://smarden.org/ipsvd/</I>
-
+<I>ipsvd(7)</I>, <I>tcpsvd(8)</I>, <I>ipsvd-instruct(5)</I>, <I>ipsvd-cdb(8)</I>
+<P>
+<I>http://smarden.org/ipsvd/</I> 
 <H2><A NAME="sect6">Author</A></H2>
 Gerrit Pape &lt;pape@smarden.org&gt; <P>
 
