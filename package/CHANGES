@@ -1,10 +1,14 @@
+ipsvd 0.9.4
+Sat, 19 Jun 2004 14:47:09 +0000
   * doc/benefits.html, man/tcpsvd.8: typos (thx David Thiel).
+  * doc/install.html, Makefile: use matrixssl-1.1.1 with sslio.
+  * tcpsvd.check, udpsvd.check: use -llocalhost.
 
 ipsvd 0.9.3
 Wed, 02 Jun 2004 19:27:13 +0000
   * sslio.c: end network connection when seeing eof from prog; adapt some
     verbose log messages.
-  * doc/install.html, Makefile: use matrixssl-1-1 with sslio.
+  * doc/install.html, Makefile: use matrixssl-1.1 with sslio.
 
 ipsvd 0.9.2
 Sat, 15 May 2004 14:11:54 +0000

@@ -7,7 +7,7 @@ tcpsvd -V
 echo $?
 
 mkdir "${ctmp}"
-tcpsvd -i"${ctmp}" 127.0.0.1 12614 sh -c 'cat >&2' &
+tcpsvd -llocalhost -i"${ctmp}" 127.0.0.1 12614 sh -c 'cat >&2' &
 pid=$!
 sleep 1
 echo "sh -c 'echo foo >&2; cat >&2'" >"${ctmp}"/127.0

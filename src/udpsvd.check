@@ -7,7 +7,7 @@ udpsvd -V
 echo $?
 
 mkdir "${ctmp}"
-udpsvd -i"${ctmp}" 127.0.0.1 12614 sh -c 'head -n1 >&2' &
+udpsvd -llocalhost -i"${ctmp}" 127.0.0.1 12614 sh -c 'head -n1 >&2' &
 pid=$!
 sleep 1
 echo "sh -c 'head -n1 >&2; echo bar >&2'" >"${ctmp}"/127.0
