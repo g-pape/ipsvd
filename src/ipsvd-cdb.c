@@ -77,6 +77,7 @@ int main(int argc, char **argv) {
       errno =0;
       continue;
     }
+    sa.len =0;
     ac =ipsvd_check(0, &sa, &tmp, ".", 0, d->d_name, 0);
     if (ac == -1) fatal2("unable to read instruction", d->d_name);
     if (ac == IPSVD_ERR) fatal2("unable to read", "."); /* impossible? */

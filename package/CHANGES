@@ -1,5 +1,11 @@
+ipsvd 0.7.1
+Wed, 26 Nov 2003 09:14:35 +0000
   * Makefile: target ipsvd-cdb: add libraries needed for socket() (fixes
     build failure on solaris, thx Uffe Jakobsen).
+  * man/ipsvd.7: typo.
+  * ipsvd-cdb.c: bug: deny-entries possibly became instruction-entries in
+    the cdb, fix: reset stralloc before ipsvd_check() (thx Lukas Beeler).
+  * doc/index.html: minor.
 
 ipsvd 0.7.0
 Tue, 21 Oct 2003 15:59:30 +0000

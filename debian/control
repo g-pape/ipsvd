@@ -10,9 +10,9 @@ Architecture: any
 Depends: ${shlibs:Depends}
 Recommends: runit
 Description: Internet protocol service daemons
- ipsvd is a set of ``internet protocol service daemons''.  It includes
- daemons for TCP/IP and UDP/IP.  An Internet protocol service (ipsv)
- daemon waits for incoming connections on a socket, and for new
+ ipsvd is a set of ``internet protocol service daemons'' for Unix.  It
+ includes daemons for TCP/IP and UDP/IP.  An Internet protocol service
+ (ipsv) daemon waits for incoming connections on a socket, and for new
  connections, it conditionally runs an arbitrary program to handle the
  connection.  ipsv daemons can be told to read and follow pre-defined
  instructions on how to handle incoming connections.  Based on the
