@@ -139,7 +139,7 @@ choose: choose.sh warn-auto.sh
 coe.o: coe.c coe.h compile
 	./compile coe.c
 
-compile: conf-cc conf-djbdnsinc print-cc.sh systype warn-auto.sh
+compile: conf-cc print-cc.sh systype warn-auto.sh
 	rm -f compile
 	sh print-cc.sh >compile
 	chmod 555 compile
@@ -277,7 +277,7 @@ iopause.h: choose compile iopause.h1 iopause.h2 load trypoll.c
 iopause.o: compile iopause.c iopause.h select.h tai.h taia.h uint64.h
 	./compile iopause.c
 
-load: conf-ld conf-djbdnslib print-ld.sh systype warn-auto.sh
+load: conf-ld print-ld.sh systype warn-auto.sh
 	rm -f load
 	sh print-ld.sh >load
 	chmod 555 load
