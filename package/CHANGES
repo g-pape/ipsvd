@@ -1,3 +1,5 @@
+  * doc/index.html: typo.
+
 ipsvd 0.7.1
 Wed, 26 Nov 2003 09:14:35 +0000
   * Makefile: target ipsvd-cdb: add libraries needed for socket() (fixes
