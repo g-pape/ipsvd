@@ -11,8 +11,8 @@
 <H2><A NAME="sect0">Name</A></H2>
 tcpsvd - TCP/IP service daemon 
 <H2><A NAME="sect1">Synopsis</A></H2>
-<B>tcpsvd</B> [-hpEvv] [-c <I>n]</I> [-C <I>n]</I> [-b
-<I>n]</I> [-u <I>user]</I> [-l <I>name]</I> [-i <I>dir</I>|-x <I>cdb</I>] [ -t <I>sec</I>] <I>host</I> <I>port</I> <I>prog</I> 
+<B>tcpsvd</B> [-hpEvv] [-c <I>n]</I> [-C <I>n:<I>msg</I>]</I>
+[-b <I>n]</I> [-u <I>user]</I> [-l <I>name]</I> [-i <I>dir</I>|-x <I>cdb</I>] [ -t <I>sec</I>] <I>host</I> <I>port</I> <I>prog</I> 
 <H2><A NAME="sect2">Description</A></H2>
 <B>tcpsvd</B>
 creates a TCP/IP socket, binds it to the address <I>host</I>:<I>prog</I>, and listens
@@ -77,14 +77,18 @@ Handle up to <I>n</I> connections simultaneously. Default is 30. If there are <I
 connections active, <B>tcpsvd</B> defers acceptance of a new connection until
 an active connection is closed. </DD>
 
-<DT><B>-C <I>n</B> </I></DT>
-<DD>per host concurrency. Allow only up to
-<I>n</I> connections from the same IP address simultaneously. If there are <I>n</I> active
-connections from one IP address, new incoming connections from this IP
-address are silently closed. For each accepted connection, the current per
-host concurrency is available through the environment variable <I>TCPCONCURRENCY</I>.
-<I>n</I> can be overwritten by <B><I>ipsvd</B>(7)</I> instructions, see <B><I>ipsvd-instruct</B>(5)</I>.<B></B> By
-default <B>tcpsvd</B> doesn't keep track of connections. </DD>
+<DT><B>-C <I>n</I>[:<I>msg</I>]</B> </DT>
+<DD>per host concurrency. Allow only
+up to <I>n</I> connections from the same IP address simultaneously. If there are
+<I>n</I> active connections from one IP address, new incoming connections from
+this IP address are closed immediately. If <I>n</I> is followed by :<I>msg,</I> the message
+<I>msg</I> is written to the client if possible, before closing the connection.
+By default <I>msg</I> is empty. See <B><I>ipsvd-instruct</B>(7)</I> for supported escape sequences
+in <I>msg</I>. <P>
+ For each accepted connection, the current per host concurrency
+is available through the environment variable <I>TCPCONCURRENCY</I>. <I>n</I> and <I>msg</I>
+can be overwritten by <B><I>ipsvd</B>(7)</I> instructions, see <B><I>ipsvd-instruct</B>(5)</I>.<B></B> By default
+<B>tcpsvd</B> doesn't keep track of connections. </DD>
 
 <DT><B>-h</B> </DT>
 <DD>Look up the client's hostname
