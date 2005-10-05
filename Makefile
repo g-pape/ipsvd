@@ -27,7 +27,7 @@ $(PACKAGE).tar.gz:
 	chmod +t TEMP/net
 	find TEMP -exec touch {} \;
 	su -c 'chown -R root:root TEMP ; \
-		( cd TEMP ; tar cpfz ../$(PACKAGE).tar.gz net --exclude CVS ) ; \
+		(cd TEMP ; tar --exclude CVS -cpzf ../$(PACKAGE).tar.gz net) ; \
 		rm -rf TEMP'
 
 clean:
