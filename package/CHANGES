@@ -1,3 +1,7 @@
+ipsvd 0.11.1
+  * ipsvd_log.c: minor
+  * Makefile, doc/install.html: adapt to matrixssl-1-7-1-open.
+
 ipsvd 0.11.0
 Sun, 20 Feb 2005 16:13:38 +0000
   * man/tcpsvd.8: typo (thx Bastian Kleineidam).

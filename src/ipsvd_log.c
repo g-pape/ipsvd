@@ -33,4 +33,4 @@ void outinst(stralloc *sa) {
   }
   out("...(truncate)");
 }
-void flush(char *m) { buffer_putsflush(buffer_1, m); }
+void flush(char *m) { buffer_puts(buffer_1, m); buffer_flush(buffer_1); }
