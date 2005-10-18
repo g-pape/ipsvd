@@ -1,4 +1,6 @@
 ipsvd 0.11.1
+  * sslio.check: tweak sslio program check (fixes testing failure on
+    Debian m68k)
   * ipsvd_log.c: minor
   * Makefile, doc/install.html: adapt to matrixssl-1-7-1-open.
 
