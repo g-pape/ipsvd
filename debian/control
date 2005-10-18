@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Gerrit Pape <pape@smarden.org>
 Build-Depends: libmatrixssl1.7-dev
-Standards-Version: 3.6.1.0
+Standards-Version: 3.6.2.1
 
 Package: ipsvd
 Architecture: any
