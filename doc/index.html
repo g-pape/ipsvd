@@ -26,7 +26,8 @@
 <a href="sslio.8.html">The <tt>sslio</tt> program</a> (on Linux and MacOSX)
 <hr>
 <i>ipsvd</i> is a set of internet protocol service daemons for Unix.
-It currently includes a TCP/IP service daemon, and a UDP/IP service daemon.
+It currently includes a TCP/IP service daemon, an SSLv3 TCP/IP service
+daemon (Linux and MacOSX), and an UDP/IP service daemon.
 <p>
 An internet protocol service (<i>ipsv</i>) daemon waits for incoming
 connections on a local socket; for new connections, it conditionally runs an
@@ -38,9 +39,6 @@ Standard error is used for logging.
 on how to handle incoming connections; based on the client's IP address or
 hostname, they can run different programs, set a different environment, deny
 a connection, or set a per host concurrency limit.
-<p>
-On Linux and MacOSX the network connection optionally can be encrypted using
-SSLv3.
 <p>
 Normally the <i>ipsv</i> daemons are run by a supervisor process, such as
 <a href="http://smarden.org/runit/runsv.8.html">runsv</a> from the

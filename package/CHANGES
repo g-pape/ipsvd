@@ -1,3 +1,15 @@
+ipsvd 0.12.0
+
+  * ssl_io.c, ssl_io.h: new; split off most code from sslio.c.
+  * sslio.c: main() function only, uses ssl_io() from ssl_io.
+  * tcpsvd.c: be sslsvd using ssl_io() #ifdef SSLSVD.
+  * sslsvd.c: new; #define SSLSVD, #include tcpsvd.c.
+  * man/sslsvd.8: new; man page for sslsvd(8).
+  * man/ipsvd-cdb.8, man/ipsvd-instruct.5, man/ipsvd.7, man/sslio.8,
+    man/tcpsvd.8, man/udpsvd.8: add SEE ALSO sslsvd(8).
+  * sslsvd.check, sslsvd.dist: selftest for sslsvd not yet implemented.
+  * doc/index.html: mention sslsvd.
+
 ipsvd 0.11.1
 Tue, 18 Oct 2005 19:02:18 +0000
   * sslio.check: tweak sslio program check (fixes testing failure on

@@ -26,7 +26,17 @@
 #include "pathexec.h"
 #include "ndelay.h"
 
+#ifdef SSLSVD
+#include "matrixSsl.h"
+#include "ssl_io.h"
+#endif
+
+#ifdef SSLSVD
+#define USAGE " [-Ehpv] [-u user] [-c n] [-C n:msg] [-b n] [-l name] [-i dir|-x cdb] [-t sec] [-U ssluser] [-/ root] [-Z cert] [-K key] host port prog"
+#else
 #define USAGE " [-Ehpv] [-u user] [-c n] [-C n:msg] [-b n] [-l name] [-i dir|-x cdb] [-t sec] host port prog"
+#endif
+
 #define VERSION "$Id$"
 
 #define FATAL "tcpsvd: fatal: "
@@ -34,7 +44,7 @@
 #define INFO "tcpsvd: info: "
 #define DROP "tcpsvd: drop: "
 
-const char *progname;
+char *progname;
 
 unsigned int lookuphost =0;
 unsigned int verbose =0;
@@ -54,7 +64,10 @@ char *local_port;
 static stralloc remote_hostname ={0};
 char remote_ip[IP4_FMT];
 char remote_port[FMT_ULONG];
+#ifdef SSLSVD
+#else
 struct uidgid ugid;
+#endif
 
 static char seed[128];
 char bufnum[FMT_ULONG];
@@ -232,12 +245,18 @@ void connection_accept(int c) {
   sig_uncatch(sig_pipe);
   sig_uncatch(sig_child);
   sig_unblock(sig_child);
+#ifdef SSLSVD
+  pid =getpid();
+  id[fmt_ulong(id, pid)] =0;
+  ssl_io(0, run);
+#else
   pathexec(run);
+#endif
 
-  drop2("unable to run", (char*)*prog);
+  drop2("unable to run", (char *)*prog);
 }
 
-int main(int argc, const char **argv) {
+int main(int argc, char **argv) {
   int opt;
   char *user =0;
   char *host;
@@ -250,12 +269,15 @@ int main(int argc, const char **argv) {
   progname =*argv;
   phccmax =0;
 
-  while ((opt =getopt(argc, argv, "c:C:i:x:u:l:Eb:hpt:vV")) != opteof) {
+#ifdef SSLSVD
+  while ((opt =getopt(argc, (const char **)argv,
+                      "c:C:i:x:u:l:Eb:hpt:vVU:/:Z:K:")) != opteof) {
+#else
+  while ((opt =getopt(argc, (const char **)argv,
+                      "c:C:i:x:u:l:Eb:hpt:vV")) != opteof) {
+#endif
     switch(opt) {
-    case 'c':
-      scan_ulong(optarg, &cmax);
-      if (cmax < 1) usage();
-      break;
+    case 'c': scan_ulong(optarg, &cmax); if (cmax < 1) usage(); break;
     case 'C':
       delim =scan_ulong(optarg, &phccmax);
       if (phccmax < 1) usage();
@@ -265,60 +287,66 @@ int main(int argc, const char **argv) {
 	phccmsg =msg.s;
       }
       break;
-    case 'i':
-      if (instructs) usage();
-      instructs =optarg;
-      break;
-    case 'x':
-      if (instructs) usage();
-      instructs =optarg;
-      iscdb =1;
-      break;
-    case 'u':
-      user =(char*)optarg;
-      break;
+    case 'i': if (instructs) usage(); instructs =optarg; break;
+    case 'x': if (instructs) usage(); instructs =optarg; iscdb =1; break;
+    case 'u': user =(char*)optarg; break;
     case 'l':
       if (! stralloc_copys(&local_hostname, optarg)) die_nomem();
       if (! stralloc_0(&local_hostname)) die_nomem();
       break;
-    case 'E':
-      ucspi =0;
-      break;
-    case 'b':
-      scan_ulong(optarg, &backlog);
-      break;
-    case 'h':
-      lookuphost =1;
-      break;
-    case 'p':
-      lookuphost =1;
-      paranoid =1;
-      break;
-    case 't':
-      scan_ulong(optarg, &timeout);
-      break;
-    case 'v':
-      ++verbose;
-      break;
-    case 'V':
-      strerr_warn1(VERSION, 0);
-    case '?':
-      usage();
+    case 'E': ucspi =0; break;
+    case 'b': scan_ulong(optarg, &backlog); break;
+    case 'h': lookuphost =1; break;
+    case 'p': lookuphost =1; paranoid =1; break;
+    case 't': scan_ulong(optarg, &timeout); break;
+    case 'v': ++verbose; break;
+#ifdef SSLSVD
+    case 'U': ssluser =(char*)optarg; break;
+    case '/': root =(char*)optarg; break;
+    case 'Z': cert =(char*)optarg; break;
+    case 'K': key =(char*)optarg; break;
+#endif
+    case 'V': strerr_warn1(VERSION, 0);
+    case '?': usage();
     }
   }
   argv +=optind;
 
   if (! argv || ! *argv) usage();
-  host =(char*)*argv++;
+  host =*argv++;
   if (! argv || ! *argv) usage();
-  local_port =(char*)*argv++;
+  local_port =*argv++;
   if (! argv || ! *argv) usage();
-  prog =argv;
+  prog =(const char **)argv;
   if (phccmax > cmax) phccmax =cmax;
 
   if (user)
-    if (! uidgid_get(&ugid, user, 1))
+    if (! uidgid_get(&ugid, user, 1)) {
+      if (errno)
+        strerr_die4sys(111, FATAL, "unable to get user/group: ", user, ": ");
       strerr_die3x(100, FATAL, "unknown user/group: ", user);
+    }
+#ifdef SSLSVD
+  svuser =user;
+  client =0;
+  if ((getuid() == 0) && (! ssluser))
+    strerr_die2x(100, FATAL, "-U ssluser must be set when running as root");
+  if (ssluser)
+    if (! uidgid_get(&sslugid, ssluser, 1)) {
+      if (errno)
+        strerr_die4sys(111, FATAL, "unable to get user/group: ", ssluser, ": ");
+      strerr_die3x(100, FATAL, "unknown user/group: ", ssluser);
+    }
+  if (! cert) cert ="./cert.pem";
+  if (! key) key =cert;
+  if (matrixSslOpen() < 0) fatal("unable to initialize ssl");
+  if (matrixSslReadKeys(&keys, cert, key, 0, ca) < 0) {
+    if (client) fatal("unable to read cert, key, or ca file");
+    fatal("unable to read cert or key file");
+  }
+  if (matrixSslNewSession(&ssl, keys, 0, SSL_FLAGS_SERVER) < 0)
+    strerr_die2x(111, FATAL, "unable to create ssl session");
+#endif
 
   dns_random_init(seed);
   sig_block(sig_child);
@@ -355,22 +383,28 @@ int main(int argc, const char **argv) {
   if (listen(s, backlog) == -1) fatal("unable to listen");
   ndelay_off(s);
 
+#ifdef SSLSVD
+#else
   if (user) {
     /* drop permissions */
     if (prot_gid(ugid.gid) == -1) fatal("unable to set gid");
     if (prot_uid(ugid.uid) == -1) fatal("unable to set uid");
   }
+#endif
   close(0);
 
   if (verbose) {
     out(INFO); out("listening on "); outfix(local_ip); out(":");
     outfix(local_port);
+#ifdef SSLSVD
+#else
     if (user) {
       bufnum[fmt_ulong(bufnum, (unsigned long)ugid.uid)] =0;
       out(", uid "); out(bufnum);
       bufnum[fmt_ulong(bufnum, (unsigned long)ugid.gid)] =0;
       out(", gid "); out(bufnum);
     }
+#endif
     flush(", starting.\n");
   }
   for (;;) {
@@ -397,6 +431,9 @@ int main(int argc, const char **argv) {
     if (pid == 0) {
       /* child */
       close(s);
+#ifdef SSLSVD
+      if (*progname) *progname ='\\';
+#endif
       connection_accept(conn);
     }
     if (phccmax) ipsvd_phcc_setpid(pid);

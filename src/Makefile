@@ -13,6 +13,13 @@ tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
 	  ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a dns.a unix.a byte.a \
 	  time.a `cat socket.lib`
 
+sslsvd: load sslsvd.o ssl_io.o sslerror_str.o ipsvd_log.o ipsvd_fmt.o \
+	  ipsvd_check.o ipsvd_hostname.o ipsvd_phcc.o ipsvd_scan.o uidgid.o \
+	  cdb.a dns.a unix.a byte.a time.a socket.lib matrixssl.a
+	./load sslsvd ssl_io.o sslerror_str.o ipsvd_log.o ipsvd_fmt.o \
+	  ipsvd_check.o ipsvd_hostname.o ipsvd_phcc.o ipsvd_scan.o uidgid.o \
+	  cdb.a dns.a unix.a byte.a time.a `cat socket.lib` matrixssl.a
+
 udpsvd: load udpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
 	  ipsvd_scan.o uidgid.o cdb.a dns.a unix.a byte.a time.a socket.lib
 	./load udpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
@@ -24,8 +31,10 @@ ipsvd-cdb: load ipsvd-cdb.o ipsvd_fmt.o ipsvd_check.o cdb.a dns.a unix.a \
 	./load ipsvd-cdb ipsvd_fmt.o ipsvd_check.o cdb.a dns.a unix.a byte.a \
 	  time.a `cat socket.lib`
 
-sslio: load sslio.o uidgid.o sslerror_str.o unix.a byte.a time.a matrixssl.a
-	./load sslio uidgid.o sslerror_str.o unix.a byte.a time.a matrixssl.a
+sslio: load sslio.o ssl_io.o uidgid.o sslerror_str.o unix.a byte.a time.a \
+	  matrixssl.a
+	./load sslio ssl_io.o uidgid.o sslerror_str.o unix.a byte.a time.a \
+	  matrixssl.a
 
 matrixssl.a: makelib matrixssl
 	install -m0644 Makefile.matrixssl matrixssl/src/Makefile.matrixssl
@@ -51,6 +60,12 @@ check-ipsvd-cdb: load check-ipsvd-cdb.o uint32_unpack.o unix.a byte.a
 tcpsvd.o: compile sysdeps tcpsvd.c ipsvd_log.h
 	./compile tcpsvd.c
 
+sslsvd.o: compile sysdeps tcpsvd.c ssl_io.c ipsvd_log.h matrixssl
+	./compile -I./matrixssl sslsvd.c
+
+ssl_io.o: compile sysdeps ssl_io.c matrixssl
+	./compile -I./matrixssl ssl_io.c
+
 udpsvd.o: compile sysdeps udpsvd.c ipsvd_log.h
 	./compile udpsvd.c
 
@@ -58,7 +73,7 @@ ipsvd-cdb.o: compile sysdeps ipsvd-cdb.c
 	./compile ipsvd-cdb.c
 
 sslio.o: compile sysdeps sslio.c matrixssl
-	./compile -I./matrixssl sslio.c
+	./compile sslio.c
 
 check-tcpsvd.o: compile check-tcpsvd.c
 	./compile check-tcpsvd.c
@@ -104,7 +119,7 @@ socket.lib: compile load trysocketlib.c
 command.ssl: command.sslcheck
 command.sslcheck:
 	( (test ! -r matrixssl.tar.gz && echo nossl) || \
-	  echo sslio) >command.sslcheck
+	  echo sslio sslsvd) >command.sslcheck
 	mv -f command.sslcheck command.ssl
 
 nossl:

@@ -6,6 +6,8 @@ ipsvd-cdb
 ipsvd-cdb.o
 sslio
 sslio.o
+sslsvd
+sslsvd.o
 check-tcpsvd
 check-tcpsvd.o
 check-udpsvd
@@ -18,6 +20,7 @@ ipsvd_log.o
 ipsvd_hostname.o
 ipsvd_phcc.o
 ipsvd_scan.o
+ssl_io.o
 sslerror_str.o
 uidgid.o
 socket.lib

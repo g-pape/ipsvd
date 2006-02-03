@@ -9,6 +9,14 @@
 <hr>
 <h1>ipsvd - upgrading from previous versions</h1>
 <hr>
+<h3>0.11.0 or 0.11.1 to 0.12.0</h3>
+This version introduces the new <a href="sslsvd.8.html">sslsvd</a> SSLv3
+TCP/IP service daemon.
+<a href="sslsvd.8.html">sslsvd</a> integrates the
+<a href="sslio.8.html">sslio</a> program into
+<a href="tcpsvd.8.html">tcpsvd</a>, so that initializing the SSL session
+and reading the SSL key and certificate doesn't need to be done for each
+incoming connection, but only once on startup of the service daemon.
 <h3>0.10.1 to 0.11.0 or 0.11.1</h3>
 The <a href="sslio.8.html">sslio</a> program also runs on MacOSX, see the
 <a href="install.html">installation insructions</a> on how to enable it in

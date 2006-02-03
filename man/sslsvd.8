@@ -1,36 +1,53 @@
-.TH tcpsvd 8
+.TH sslsvd 8
 .SH NAME
-tcpsvd \- TCP/IP service daemon
+sslsvd \- SSLv3 TCP/IP service daemon
 .SH SYNOPSIS
-.B tcpsvd
-[\-hpEvv] [\-c
-.I n\fR] [\-C
-.I n\fR:\fImsg\fR] [\-b
-.I n\fR] [\-u
-.I user\fR] [\-l
-.I name\fR] [\-i
+.B sslsvd
+[\-hpEvv]
+[\-c
+.IR n ]
+[\-C
+.IR n\fR:\fImsg ]
+[\-b
+.IR n ]
+[\-u
+.IR user ]
+[\-l
+.IR name ]
+[\-i
 .IR dir |\-x
 .IR cdb ]
-[ \-t
+[\-t
 .IR sec ]
+[\-U
+.IR ssluser ]
+[\-/
+.IR root ]
+[\-Z
+.IR cert ]
+[\-K
+.IR key ]
 .I host
 .I port
 .I prog
 .SH DESCRIPTION
-.B tcpsvd
+.B sslsvd
 creates a TCP/IP socket, binds it to the address
 .IR host :\fIport\fR,
-and listens on the socket for incoming connections.
+and listens on the socket for incoming SSLv3 connections.
 .P
 On each incoming connection,
-.B tcpsvd
+.B sslsvd
 conditionally runs a program, with standard input reading from the socket,
 and standard output writing to the socket, to handle this connection.
-.B tcpsvd
+The data read and written to the socket will automatically decrypted and
+encrypted respectively by
+.BR sslsvd .
+.B sslsvd
 keeps listening on the socket for new connections, and can handle multiple
 connections simultaneously.
 .P
-.B tcpsvd
+.B sslsvd
 optionally checks for special instructions depending on the IP address or
 hostname of the client that initiated the connection, see
 .BR ipsvd-instruct (5).
@@ -42,11 +59,11 @@ either is a hostname, or a dotted-decimal IP address, or 0.
 If
 .I host
 is 0,
-.B tcpsvd
+.B sslsvd
 accepts connections to any local IP address.
 .TP
 .I port
-.B tcpsvd
+.B sslsvd
 accepts connections to
 .IR host :\fIport\fR.
 .I port
@@ -56,11 +73,11 @@ may be a name from /etc/services or a number.
 .I prog
 consists of one or more arguments.
 For each connection,
-.B tcpsvd
+.B sslsvd
 normally runs
 .IR prog ,
-with file descriptor 0 reading from the network, and file descriptor 1
-writing to the network.
+with file descriptor 0 reading decrypted data from the network, and file
+descriptor 1 writing to be encrypted data to the network.
 By default it also sets up TCP-related environment variables, see
 .BR tcp-environ (5)
 .TP
@@ -87,7 +104,7 @@ the file that matches the clients address or hostname if any, discard and
 remove the file if it wasn't accessed within the last
 .I sec
 seconds;
-.B tcpsvd
+.B sslsvd
 does not discard or remove a file if the user's write permission is not set,
 for those files the timeout is disabled.
 Default is 0, which means that the timeout is disabled.
@@ -97,9 +114,6 @@ local hostname.
 Do not look up the local hostname in DNS, but use
 .I name
 as hostname.
-This option must be set if
-.B tcpsvd
-listens on port 53 to avoid loops.
 .TP
 .B \-u \fIuser\fR[:\fIgroup\fR]
 drop permissions.
@@ -107,7 +121,8 @@ Switch user ID to
 .IR user 's
 UID, and group ID to
 .IR user 's
-primary GID after creating and binding to the socket.
+primary GID before running
+.IR prog .
 If
 .I user
 is followed by a colon and a group name, the group ID is switched to
@@ -125,7 +140,7 @@ Default is 30.
 If there are
 .I n
 connections active,
-.B tcpsvd
+.B sslsvd
 defers acceptance of a new connection until an active connection is closed.
 .TP
 .B \-C \fIn\fR[:\fImsg\fR]
@@ -163,7 +178,7 @@ can be overwritten by
 instructions, see
 .BR ipsvd-instruct (5). 
 By default
-.B tcpsvd
+.B sslsvd
 doesn't keep track of connections.
 .TP
 .B \-h
@@ -198,9 +213,53 @@ Print verbose messsages to standard output.
 .B \-vv
 more verbose.
 Print more verbose messages to standard output.
+.SS SSL OPTIONS
+.TP
+.B \-U \fIssluser
+drop permissions.
+Switch user ID to
+.IR ssluser 's
+UID, and group ID to
+.IR ssluser 's
+primary GID before running the SSLv3 encrypt/decrypt process.
+If
+.I ssluser
+is followed by a colon and a group name, the group ID is switched to
+the GID of
+.I group
+instead.
+This option must be set when
+.B sslsvd
+is started by root.
+.TP
+.B \-/ \fIroot
+chroot.
+Change the root directory to
+.I root
+before running the SSLv3 encrypt/decrypt process.
+This option should be set when
+.B sslsvd
+is started by root.
+.TP
+.B \-Z \fIcert
+cert file.
+Read the certificate from the file
+.I cert
+(default is ``./cert.pem'').
+If the \-/ option is given, first the cert file is read, then the root
+directory is changed.
+.TP
+.B \-K \fIkey
+private key.
+Read the private key from the file
+.I key
+(default is
+.IR cert ).
+If the \-/ option is given, first the cert file is read, then the root
+directory is changed.
 .SH SEE ALSO
 ipsvd(7),
-sslsvd(8),
+tcpsvd(8),
 udpsvd(8),
 ipsvd-instruct(5),
 ipsvd-cdb(8),
