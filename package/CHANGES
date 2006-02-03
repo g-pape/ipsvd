@@ -1,5 +1,5 @@
 ipsvd 0.12.0
-
+Fri, 03 Feb 2006 19:38:01 +0000
   * ssl_io.c, ssl_io.h: new; split off most code from sslio.c.
   * sslio.c: main() function only, uses ssl_io() from ssl_io.
   * tcpsvd.c: be sslsvd using ssl_io() #ifdef SSLSVD.
