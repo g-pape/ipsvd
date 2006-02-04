@@ -73,7 +73,7 @@ ipsvd-cdb.o: compile sysdeps ipsvd-cdb.c
 	./compile ipsvd-cdb.c
 
 sslio.o: compile sysdeps sslio.c matrixssl
-	./compile sslio.c
+	./compile -I./matrixssl sslio.c
 
 check-tcpsvd.o: compile check-tcpsvd.c
 	./compile check-tcpsvd.c
