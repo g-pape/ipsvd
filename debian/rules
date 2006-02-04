@@ -16,8 +16,9 @@ DIR =$(shell pwd)/debian/ipsvd
 
 unpack: deb-checkdir unpack-stamp
 unpack-stamp:
-	tar xzf ipsvd-0.11.1.tar.gz
-	ln -s ipsvd-0.11.1 net/ipsvd
+	tar xzf ipsvd-0.12.0.tar.gz
+	ln -s ipsvd-0.12.0 net/ipsvd
+	(cd net/ipsvd/ && patch -p0) <debian/diff/matrixssl-shared.diff
 	echo '$(CC) $(CFLAGS)' >net/ipsvd/src/conf-cc
 	echo '$(CC) $(LDFLAGS)' >net/ipsvd/src/conf-ld
 	touch unpack-stamp
@@ -26,12 +27,6 @@ build: deb-checkdir build-stamp
 build-stamp: unpack-stamp
 	-gcc -v
 	$(MAKE) -Cnet/ipsvd/src default check
-	if test -r /usr/include/matrixSsl.h; then \
-	  (cd net/ipsvd/src && \
-	  ./compile sslio.c && ./compile sslerror_str.c && \
-	  ./load sslio uidgid.o sslerror_str.o unix.a byte.a time.a -lmatrixssl && \
-	  ./check-local sslio); \
-	fi
 	touch build-stamp
 
 clean: deb-checkdir deb-checkuid
@@ -44,11 +39,9 @@ install: deb-checkdir deb-checkuid build-stamp
 	rm -rf '$(DIR)'
 	# programs
 	install -d -m0755 '$(DIR)'/usr/bin
-	for i in tcpsvd udpsvd ipsvd-cdb; do \
+	for i in tcpsvd sslsvd udpsvd ipsvd-cdb sslio; do \
 	  install -m0755 net/ipsvd/src/$$i '$(DIR)'/usr/bin/ || exit 1; \
 	done
-	test ! -x net/ipsvd/src/sslio || \
-	  install -m0755 net/ipsvd/src/sslio '$(DIR)'/usr/bin/
 	$(STRIP) -R .comment -R .note '$(DIR)'/usr/bin/*
 	# man pages
 	for i in 5 7 8; do \
