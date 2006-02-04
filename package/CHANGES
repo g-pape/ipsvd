@@ -1,3 +1,8 @@
+ipsvd 0.12.1
+Sat, 04 Feb 2006 19:14:23 +0000
+  * Makefile: fix build failure with local matrixssl library (thx Charlie
+    Brady).
+
 ipsvd 0.12.0
 Fri, 03 Feb 2006 20:26:27 +0000
   * ssl_io.c, ssl_io.h: new; split off most code from sslio.c.
