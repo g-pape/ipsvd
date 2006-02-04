@@ -4,8 +4,9 @@ ipsvd (0.12.0-1) unstable; urgency=low
   * debian/diff/matrixssl-shared.diff: new; upstream Makefile builds ssl*
     programs with shared matrixssl library.
   * debian/rules: ssl* programs now build from (patched) upstream Makefile.
+  * debian/control: minor update to long description.
 
- -- Gerrit Pape <pape@smarden.org>  Sat,  4 Feb 2006 08:55:32 +0000
+ -- Gerrit Pape <pape@smarden.org>  Sat,  4 Feb 2006 09:23:00 +0000
 
 ipsvd (0.11.1-1) unstable; urgency=low
 
