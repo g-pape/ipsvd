@@ -1,10 +1,10 @@
 Index: src/Makefile
 ===================================================================
 RCS file: /var/lib/cvs/ipsvd/src/Makefile,v
-retrieving revision 1.28
-diff -u -r1.28 Makefile
---- src/Makefile	3 Feb 2006 19:30:24 -0000	1.28
-+++ src/Makefile	4 Feb 2006 08:52:29 -0000
+retrieving revision 1.29
+diff -u -r1.29 Makefile
+--- src/Makefile	4 Feb 2006 19:12:26 -0000	1.29
++++ src/Makefile	6 Feb 2006 18:40:53 -0000
 @@ -15,10 +15,10 @@
  
  sslsvd: load sslsvd.o ssl_io.o sslerror_str.o ipsvd_log.o ipsvd_fmt.o \
@@ -31,7 +31,7 @@ diff -u -r1.28 Makefile
  
  matrixssl.a: makelib matrixssl
  	install -m0644 Makefile.matrixssl matrixssl/src/Makefile.matrixssl
-@@ -60,11 +59,11 @@
+@@ -60,10 +59,10 @@
  tcpsvd.o: compile sysdeps tcpsvd.c ipsvd_log.h
  	./compile tcpsvd.c
  
@@ -41,19 +41,17 @@ diff -u -r1.28 Makefile
 +	./compile sslsvd.c
  
 -ssl_io.o: compile sysdeps ssl_io.c matrixssl
--	./compile -I./matrixssl ssl_io.c
 +ssl_io.o: compile sysdeps ssl_io.c
-+	./compile ssl_io.c
+ 	./compile -I./matrixssl ssl_io.c
  
  udpsvd.o: compile sysdeps udpsvd.c ipsvd_log.h
- 	./compile udpsvd.c
 @@ -72,7 +71,7 @@
  ipsvd-cdb.o: compile sysdeps ipsvd-cdb.c
  	./compile ipsvd-cdb.c
  
 -sslio.o: compile sysdeps sslio.c matrixssl
 +sslio.o: compile sysdeps sslio.c
- 	./compile sslio.c
+ 	./compile -I./matrixssl sslio.c
  
  check-tcpsvd.o: compile check-tcpsvd.c
 @@ -105,8 +104,8 @@
