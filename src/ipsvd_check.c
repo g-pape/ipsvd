@@ -104,7 +104,7 @@ int ipsvd_instruct(stralloc *inst, stralloc *match, char *ip) {
 	  }
 	}
 	break;
-      case 0: /* skip empty line */
+      case 0: case '#': /* skip empty line and comment */ 
 	break;
       default:
 	strerr_warn6(progname, ": warning: ",

@@ -1,3 +1,6 @@
+  * ipsvd_check.c, man/ipsvd-instruct.5: lines starting with # are
+    comments, ignore them completely.
+
 ipsvd 0.12.1
 Sat, 04 Feb 2006 19:14:23 +0000
   * Makefile: fix build failure with local matrixssl library (thx Charlie
