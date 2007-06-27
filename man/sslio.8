@@ -178,6 +178,15 @@ If the output buffer is too small to hold encrypted or decrypted data,
 automatically blows up the buffer to
 .I SSLIO_BUFOU
 more bytes.
+.TP
+SSLIO_BAD_CERTIFICATE
+(client mode)  If the environment variable
+.I SSLIO_BAD_CERTIFICATE
+is set,
+.B sslio \-c
+accepts server ceritificates it would normally reject with
+.
+ fatal: ssl decode error: bad certificate
 .SH SEE ALSO
 sslsvd(8),
 tcpsvd(8),

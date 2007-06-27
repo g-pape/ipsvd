@@ -96,6 +96,7 @@ static unsigned long bytesin =0;
 static unsigned long bytesou =0;
 
 static unsigned char error, alvl, adesc;
+static char *bad_certificate;
 
 static void sig_term_handler(void) {
   if (verbose) info("sigterm received, exit.");
@@ -148,6 +149,7 @@ void finish(void) {
 int validate(sslCertInfo_t *cert, void *arg) {
   sslCertInfo_t *c =cert;
 
+  if (bad_certificate) return 1;
   while (c->next) c =c->next;
   return(c->verified);
 }
@@ -314,6 +316,7 @@ void doio(void) {
 
 int ssl_io(unsigned int newsession, const char **prog) {
   if (client) { fdstdin =6; fdstdou =7; }
+  bad_certificate = env_get("SSLIO_BAD_CERTIFICATE");
   if ((s =env_get("SSLIO_BUFIN"))) scan_ulong(s, &bufsizein);
   if ((s =env_get("SSLIO_BUFOU"))) scan_ulong(s, &bufsizeou);
   if (bufsizein < 64) bufsizein =64;
@@ -345,7 +348,8 @@ int ssl_io(unsigned int newsession, const char **prog) {
       if (matrixSslNewSession(&ssl, keys, 0, client?0:SSL_FLAGS_SERVER) < 0)
         fatalmx("unable to create ssl session");
     }
-    if (client) if (ca) matrixSslSetCertValidator(ssl, &validate, 0);
+    if (client)
+      if (ca || bad_certificate) matrixSslSetCertValidator(ssl, &validate, 0);
 
     sig_catch(sig_term, sig_term_handler);
     sig_ignore(sig_pipe);
