@@ -18,12 +18,12 @@ static int init(char ip[64])
   if (x)
     while (iplen <= 60) {
       if (*x == '.')
-	++x;
+        ++x;
       else {
         i = ip4_scan(x,ip + iplen);
-	if (!i) break;
-	x += i;
-	iplen += 4;
+        if (!i) break;
+        x += i;
+        iplen += 4;
       }
     }
 
@@ -41,10 +41,10 @@ static int init(char ip[64])
               ++i;
             if (iplen <= 60)
               if (ip4_scan(data.s + i,ip + iplen)) {
-		if (byte_equal(ip + iplen,4,"\0\0\0\0"))
-		  byte_copy(ip + iplen,4,"\177\0\0\1");
+                if (byte_equal(ip + iplen,4,"\0\0\0\0"))
+                  byte_copy(ip + iplen,4,"\177\0\0\1");
                 iplen += 4;
-	      }
+              }
           }
           i = j + 1;
         }

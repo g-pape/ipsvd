@@ -118,21 +118,21 @@ void finish(void) {
       decou.start =decou.end =decou.buf;
       rc =matrixSslEncodeClosureAlert(ssl, &decou);
       if (rc == SSL_FULL) {
-	if (! blowup(&decou, &decoubuf, bufsizeou)) die_nomem();
-	if (verbose > 1) infou("decode output buffer size: ", decou.size);
-	continue;
+        if (! blowup(&decou, &decoubuf, bufsizeou)) die_nomem();
+        if (verbose > 1) infou("decode output buffer size: ", decou.size);
+        continue;
       }
       if (rc == SSL_ERROR)
-	if (verbose) warnx("unable to encode ssl close notify");
+        if (verbose) warnx("unable to encode ssl close notify");
       if (rc == 0) {
-	if (write(fdstdou, decou.start, decou.end -decou.start)
-	    != (decou.end -decou.start)) {
-	  if (verbose) warn("unable to send ssl close notify");
-	  break;
-	}
-	if (verbose > 2) info("sending ssl close notify");
-	if (verbose > 2) infou("write bytes: ", decou.end -decou.start);
-	bytesou +=decou.end -decou.start;
+        if (write(fdstdou, decou.start, decou.end -decou.start)
+            != (decou.end -decou.start)) {
+          if (verbose) warn("unable to send ssl close notify");
+          break;
+        }
+        if (verbose > 2) info("sending ssl close notify");
+        if (verbose > 2) infou("write bytes: ", decou.end -decou.start);
+        bytesou +=decou.end -decou.start;
       }
       break;
     }
@@ -174,7 +174,7 @@ void encode(void) {
       continue;
     }
     if (write(fdstdou, encou.start, encou.end -encou.start)
-	!= encou.end -encou.start) fatal("unable to write to network");
+        != encou.end -encou.start) fatal("unable to write to network");
     if (verbose > 2) infou("write bytes: ", encou.end -encou.start);
     bytesou +=encou.end -encou.start;
     encou.start =encou.end =encou.buf =encoubuf.s;
@@ -186,12 +186,12 @@ void decode(void) {
     if (getdec) {
       len =decin.size -(decin.end -decin.buf);
       if ((len =read(fdstdin, decin.end, len)) < 0)
-	fatal("unable to read from network");
+        fatal("unable to read from network");
       if (len == 0) {
-	if (verbose > 2) info("eof reading from network");
-	close(fdstdin); close(decpipe[1]);
-	fdstdin =decpipe[1] =-1;
-	return;
+        if (verbose > 2) info("eof reading from network");
+        close(fdstdin); close(decpipe[1]);
+        fdstdin =decpipe[1] =-1;
+        return;
       }
       if (verbose > 2) infou("read bytes: ", len);
       bytesin +=len;
@@ -202,53 +202,53 @@ void decode(void) {
       rc =matrixSslDecode(ssl, &decin, &decou, &error, &alvl, &adesc);
       if (rc == SSL_SUCCESS) break;
       if (rc == SSL_ERROR) {
-	if (decou.end > decou.start)
-	  if (write(fdstdou, decou.start, decou.end -decou.start)
-	      != decou.end -decou.start) warn("unable to write to network");
-	close(fdstdou); fdstdou =-1;
-	fatals("ssl decode error", error);
+        if (decou.end > decou.start)
+          if (write(fdstdou, decou.start, decou.end -decou.start)
+              != decou.end -decou.start) warn("unable to write to network");
+        close(fdstdou); fdstdou =-1;
+        fatals("ssl decode error", error);
       }
       if (rc == SSL_PROCESS_DATA) {
-	if (write(decpipe[1], decou.start, decou.end -decou.start)
-	    != decou.end -decou.start) fatal("unable to write to prog");
-	decou.start =decou.end =decou.buf;
-	if (decin.start > decin.buf) { /* align */
-	  byte_copy(decin.buf, decin.end -decin.start, decin.start);
-	  decin.end -=decin.start -decin.buf;
-	  decin.start =decin.buf;
-	}
-	break;
+        if (write(decpipe[1], decou.start, decou.end -decou.start)
+            != decou.end -decou.start) fatal("unable to write to prog");
+        decou.start =decou.end =decou.buf;
+        if (decin.start > decin.buf) { /* align */
+          byte_copy(decin.buf, decin.end -decin.start, decin.start);
+          decin.end -=decin.start -decin.buf;
+          decin.start =decin.buf;
+        }
+        break;
       }
       if (rc == SSL_SEND_RESPONSE) {
-	if (write(fdstdou, decou.start, decou.end -decou.start)
-	    != (decou.end -decou.start))
-	  fatal("unable to send ssl response");
-	bytesou +=decou.end -decou.start;
-	if (verbose > 2) info("sending ssl handshake response");
-	if (verbose > 2) infou("write bytes: ", decou.end -decou.start);
-	decou.start =decou.end =decou.buf;
-	break;
+        if (write(fdstdou, decou.start, decou.end -decou.start)
+            != (decou.end -decou.start))
+          fatal("unable to send ssl response");
+        bytesou +=decou.end -decou.start;
+        if (verbose > 2) info("sending ssl handshake response");
+        if (verbose > 2) infou("write bytes: ", decou.end -decou.start);
+        decou.start =decou.end =decou.buf;
+        break;
       }
       if (rc == SSL_ALERT) {
-	close(fdstdou); fdstdou =-1;
-	if (adesc != SSL_ALERT_CLOSE_NOTIFY)
-	  fatals("ssl alert from peer", adesc);
-	if (verbose > 2) info("ssl close notify from peer");
-	finish();
-	_exit(0);
+        close(fdstdou); fdstdou =-1;
+        if (adesc != SSL_ALERT_CLOSE_NOTIFY)
+          fatals("ssl alert from peer", adesc);
+        if (verbose > 2) info("ssl close notify from peer");
+        finish();
+        _exit(0);
       }
       if (rc == SSL_PARTIAL) {
-	getdec =1;
-	if (decin.size -(decin.end -decin.buf) < bufsizein) {
-	  if (! blowup(&decin, &decinbuf, bufsizein)) die_nomem();
-	  if (verbose > 1) infou("decode input buffer size: ", decin.size);
-	}
-	break;
+        getdec =1;
+        if (decin.size -(decin.end -decin.buf) < bufsizein) {
+          if (! blowup(&decin, &decinbuf, bufsizein)) die_nomem();
+          if (verbose > 1) infou("decode input buffer size: ", decin.size);
+        }
+        break;
       }
       if (rc == SSL_FULL) {
-	if (! blowup(&decou, &decoubuf, bufsizeou)) die_nomem();
-	if (verbose > 1) infou("decode output buffer size: ", decou.size);
-	continue;
+        if (! blowup(&decou, &decoubuf, bufsizeou)) die_nomem();
+        if (verbose > 1) infou("decode output buffer size: ", decou.size);
+        continue;
       }
     }
     if (decin.start == decin.end) {
@@ -281,7 +281,7 @@ void doio(void) {
     rc =matrixSslEncodeClientHello(ssl, &decou, 0);
     if (rc != 0) fatalx("unable to encode client hello");
     if (write(fdstdou, decou.start, decou.end -decou.start)
-	!= (decou.end -decou.start))
+        != (decou.end -decou.start))
       fatal("unable to send client hello");
     if (verbose > 2) info("sending client hello");
     if (verbose > 2) infou("write bytes: ", decou.end -decou.start);

@@ -86,19 +86,19 @@ int main(int argc, char **argv) {
     case IPSVD_EXEC:
       sa.s[sa.len -1] ='X';
       if (cdb_make_add(&c, d->d_name, str_len(d->d_name), sa.s, sa.len) == -1)
-	fatal2("unable to add entry", instdir);
+        fatal2("unable to add entry", instdir);
       continue;
     case IPSVD_DENY:
       if (! sa.len) {
-	if (cdb_make_add(&c, d->d_name, str_len(d->d_name), "D", 1) == -1)
-	  fatal2("unable to add entry", instdir);
-	continue;
+        if (cdb_make_add(&c, d->d_name, str_len(d->d_name), "D", 1) == -1)
+          fatal2("unable to add entry", instdir);
+        continue;
       }
     case IPSVD_INSTRUCT:
       for (i =0; i < sa.len; i++) if (sa.s[i] == '\n') sa.s[i] =0;
       sa.s[sa.len -1] ='I';
       if (cdb_make_add(&c, d->d_name, str_len(d->d_name), sa.s, sa.len) == -1)
-	fatal2("unable to add entry", instdir);
+        fatal2("unable to add entry", instdir);
       continue;
     }
     warn("ignore", d->d_name);

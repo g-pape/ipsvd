@@ -45,70 +45,70 @@ int ipsvd_instruct(stralloc *inst, stralloc *match, char *ip) {
     while ((i =byte_chr(insts, instslen, 0)) < instslen) {
       switch(*insts) {
       case '+':
-	if ((delim =str_chr(insts, '=')) <= 1) break; /* empty inst */
-	if (insts[delim] == '=') {
-	  insts[delim] =0;
-	  if (! pathexec_env(insts +1, insts +delim +1)) return(-1);
-	  insts[delim] ='=';
-	}
-	else if (! pathexec_env(insts +1, 0)) return(-1);
-	break;
+        if ((delim =str_chr(insts, '=')) <= 1) break; /* empty inst */
+        if (insts[delim] == '=') {
+          insts[delim] =0;
+          if (! pathexec_env(insts +1, insts +delim +1)) return(-1);
+          insts[delim] ='=';
+        }
+        else if (! pathexec_env(insts +1, 0)) return(-1);
+        break;
       case 'C':
-	if (! phccmax) break;
-	delim =scan_ulong(insts +1, &phccmax);
-	if (insts[delim +1] == ':') {
-	  if (ipsvd_fmt_msg(&msg, insts +delim +2) == -1) return(-1);
-	  if (! stralloc_0(&msg)) return(-1);
-	  phccmsg =msg.s;
-	}
-	break;
+        if (! phccmax) break;
+        delim =scan_ulong(insts +1, &phccmax);
+        if (insts[delim +1] == ':') {
+          if (ipsvd_fmt_msg(&msg, insts +delim +2) == -1) return(-1);
+          if (! stralloc_0(&msg)) return(-1);
+          phccmsg =msg.s;
+        }
+        break;
       case '=':
-	if (ip && (rc != IPSVD_INSTRUCT)) {
-	  unsigned int next;
+        if (ip && (rc != IPSVD_INSTRUCT)) {
+          unsigned int next;
 
-	  rc =IPSVD_DENY;
-	  next =str_chr(insts +1, ':'); ++next;
-	  if ((next == 2) && (insts[1] == '0')) {
-	    if (! stralloc_copys(&sa, ip)) return(-1);
-	  }
-	  else
-	    if (! stralloc_copyb(&sa, insts +1, next -1)) return(-1);
-	  if (insts[next] != 0) ++next;
+          rc =IPSVD_DENY;
+          next =str_chr(insts +1, ':'); ++next;
+          if ((next == 2) && (insts[1] == '0')) {
+            if (! stralloc_copys(&sa, ip)) return(-1);
+          }
+          else
+            if (! stralloc_copyb(&sa, insts +1, next -1)) return(-1);
+          if (insts[next] != 0) ++next;
 
-	  if ((dns_ip4(&ips, &sa) == -1) || (ips.len < 4))
-	    if (dns_ip4_qualify(&ips, &fqdn, &sa) == -1) {
-	      if (! stralloc_0(&sa)) return(-1);
-	      strerr_warn5(progname, ": warning: ",
-			   "unable to look up ip address: ", sa.s,
-			   ": ", &strerr_sys);
-	      break;
-	    }
-	  if (ips.len < 4) {
-	    if (! stralloc_0(&sa)) return(-1);
-	    strerr_warn4(progname, ": warning: ",
-			 "unable to look up ip address: ", sa.s, 0);
-	    break;
-	  }
-	  for (j =0; j +4 <= ips.len; j +=4) {
-	    char tmp[IP4_FMT];
-	    
-	    tmp[ipsvd_fmt_ip(tmp, ips.s +j)] =0;
-	    if (str_equal(tmp, ip)) {
-	      inst->len =insts -inst->s +i +1;
-	      if (insts[next]) {
-		forward =insts +next;
-		return(IPSVD_FORWARD);
-	      }
-	      return(IPSVD_INSTRUCT);
-	    }
-	  }
-	}
-	break;
+          if ((dns_ip4(&ips, &sa) == -1) || (ips.len < 4))
+            if (dns_ip4_qualify(&ips, &fqdn, &sa) == -1) {
+              if (! stralloc_0(&sa)) return(-1);
+              strerr_warn5(progname, ": warning: ",
+                           "unable to look up ip address: ", sa.s,
+                           ": ", &strerr_sys);
+              break;
+            }
+          if (ips.len < 4) {
+            if (! stralloc_0(&sa)) return(-1);
+            strerr_warn4(progname, ": warning: ",
+                         "unable to look up ip address: ", sa.s, 0);
+            break;
+          }
+          for (j =0; j +4 <= ips.len; j +=4) {
+            char tmp[IP4_FMT];
+            
+            tmp[ipsvd_fmt_ip(tmp, ips.s +j)] =0;
+            if (str_equal(tmp, ip)) {
+              inst->len =insts -inst->s +i +1;
+              if (insts[next]) {
+                forward =insts +next;
+                return(IPSVD_FORWARD);
+              }
+              return(IPSVD_INSTRUCT);
+            }
+          }
+        }
+        break;
       case 0: case '#': /* skip empty line and comment */ 
-	break;
+        break;
       default:
-	strerr_warn6(progname, ": warning: ",
-		     "bad instruction: ", match->s, ": ", insts, 0);
+        strerr_warn6(progname, ": warning: ",
+                     "bad instruction: ", match->s, ": ", insts, 0);
       }
       insts +=i +1;
       instslen -=i +1;
@@ -119,17 +119,17 @@ int ipsvd_instruct(stralloc *inst, stralloc *match, char *ip) {
 }
 
 int ipsvd_check_direntry(stralloc *d, stralloc *m, char *ip,
-			 time_t now, unsigned long t, int *rc) {
+                         time_t now, unsigned long t, int *rc) {
   int i;
   struct stat s;
 
   if (stat(m->s, &s) != -1) {
     if (t && (s.st_mode & S_IWUSR) && (now >= s.st_atime))
       if ((now -s.st_atime) >= t) {
-	if (unlink(m->s) == -1)
-	  strerr_warn4(progname, ": warning: unable to unlink: ", m->s, ": ",
-		       &strerr_sys);
-	return(0);
+        if (unlink(m->s) == -1)
+          strerr_warn4(progname, ": warning: unable to unlink: ", m->s, ": ",
+                       &strerr_sys);
+        return(0);
       }
     if (! (s.st_mode & S_IXUSR) && ! (s.st_mode & S_IRUSR)) {
       *rc =IPSVD_DENY; return(1);
@@ -159,7 +159,7 @@ int ipsvd_check_direntry(stralloc *d, stralloc *m, char *ip,
 }
 
 int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir,
-		    char *ip, char *name, unsigned long timeout) {
+                    char *ip, char *name, unsigned long timeout) {
   struct stat s;
   int i;
   int rc;
@@ -181,8 +181,8 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir,
       ok =ipsvd_check_direntry(data, match, ip, now, timeout, &rc);
       if (ok == -1) return(-1);
       if (ok) {
-	if (rc == IPSVD_FORWARD) goto forwarded;
-	return(rc);
+        if (rc == IPSVD_FORWARD) goto forwarded;
+        return(rc);
       }
       if ((i =byte_rchr(match->s, match->len, '.')) == match->len) break;
       if (i <= base) break;
@@ -200,8 +200,8 @@ int ipsvd_check_dir(stralloc *data, stralloc *match, char *dir,
       ok =ipsvd_check_direntry(data, match, ip, now, timeout, &rc);
       if (ok == -1) return(-1);
       if (ok) {
-	if (rc == IPSVD_FORWARD) goto forwarded;
-	return(rc);
+        if (rc == IPSVD_FORWARD) goto forwarded;
+        return(rc);
       }
       if ((i =byte_chr(name, str_len(name), '.')) == str_len(name)) break;
       name +=i +1;
@@ -254,23 +254,23 @@ int ipsvd_check_cdbentry(stralloc *d, stralloc *m, char *ip, int *rc) {
       if (! dlen) return(-1);
       switch(d->s[dlen -1]) {
       case 'D':
-	*rc =IPSVD_DENY;
-	return(1);
+        *rc =IPSVD_DENY;
+        return(1);
       case 'X':
-	d->s[dlen -1] =0; d->len =dlen;
-	*rc =IPSVD_EXEC;
-	return(1);
+        d->s[dlen -1] =0; d->len =dlen;
+        *rc =IPSVD_EXEC;
+        return(1);
       case 'I':
-	d->s[dlen -1] =0; d->len =dlen;
-	if ((*rc =ipsvd_instruct(d, m, ip)) == -1) return(-1);
-	return(1);
+        d->s[dlen -1] =0; d->len =dlen;
+        if ((*rc =ipsvd_instruct(d, m, ip)) == -1) return(-1);
+        return(1);
       }
     }
   return(0);
 }
 
 int ipsvd_check_cdb(stralloc *data, stralloc *match, char *cdb,
-		    char *ip, char *name, unsigned long unused) {
+                    char *ip, char *name, unsigned long unused) {
   int ok;
   int i;
   int rc;
@@ -301,9 +301,9 @@ int ipsvd_check_cdb(stralloc *data, stralloc *match, char *cdb,
       ok =ipsvd_check_cdbentry(data, match, ip, &rc);
       if (ok == -1) return(-1);
       if (ok) {
-	if (rc == IPSVD_FORWARD) goto forwarded;
-	close(fd);
-	return(rc);
+        if (rc == IPSVD_FORWARD) goto forwarded;
+        close(fd);
+        return(rc);
       }
       if ((i =byte_chr(name, str_len(name), '.')) == str_len(name)) break;
       name +=i +1;
@@ -347,7 +347,7 @@ int ipsvd_check_cdb(stralloc *data, stralloc *match, char *cdb,
 }
 
 int ipsvd_check(int c, stralloc *data, stralloc *match, char *db,
-		char *ip, char *name, unsigned long timeout) {
+                char *ip, char *name, unsigned long timeout) {
   if (c)
     return(ipsvd_check_cdb(data, match, db, ip, name, 0));
   else

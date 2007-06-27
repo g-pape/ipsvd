@@ -35,8 +35,8 @@ void cdb_init(struct cdb *c,int fd)
     if (st.st_size <= 0xffffffff) {
       x = mmap(0,st.st_size,PROT_READ,MAP_SHARED,fd,0);
       if (x + 1) {
-	c->size = st.st_size;
-	c->map = x;
+        c->size = st.st_size;
+        c->map = x;
       }
     }
 }
@@ -115,14 +115,14 @@ int cdb_findnext(struct cdb *c,char *key,unsigned int len)
       if (cdb_read(c,buf,8,pos) == -1) return -1;
       uint32_unpack(buf,&u);
       if (u == len)
-	switch(match(c,key,len,pos + 8)) {
-	  case -1:
-	    return -1;
-	  case 1:
-	    uint32_unpack(buf + 4,&c->dlen);
-	    c->dpos = pos + 8 + len;
-	    return 1;
-	}
+        switch(match(c,key,len,pos + 8)) {
+          case -1:
+            return -1;
+          case 1:
+            uint32_unpack(buf + 4,&c->dlen);
+            c->dpos = pos + 8 + len;
+            return 1;
+        }
     }
   }
 

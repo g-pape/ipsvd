@@ -24,9 +24,9 @@ int dns_ip4_packet(stralloc *out,const char *buf,unsigned int len)
     if (byte_equal(header,2,DNS_T_A))
       if (byte_equal(header + 2,2,DNS_C_IN))
         if (datalen == 4) {
-	  if (!dns_packet_copy(buf,len,pos,header,4)) return -1;
-	  if (!stralloc_catb(out,header,4)) return -1;
-	}
+          if (!dns_packet_copy(buf,len,pos,header,4)) return -1;
+          if (!stralloc_catb(out,header,4)) return -1;
+        }
     pos += datalen;
   }
 

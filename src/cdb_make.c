@@ -134,8 +134,8 @@ int cdb_make_finish(struct cdb_make *c)
     for (u = 0;u < count;++u) {
       where = (hp->h >> 8) % len;
       while (c->hash[where].p)
-	if (++where == len)
-	  where = 0;
+        if (++where == len)
+          where = 0;
       c->hash[where] = *hp++;
     }
 

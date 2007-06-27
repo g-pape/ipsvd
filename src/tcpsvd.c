@@ -180,7 +180,7 @@ void connection_accept(int c) {
   if (ucspi) ucspi_env();
   if (instructs) {
     ac =ipsvd_check(iscdb, &inst, &match, (char*)instructs,
-		    remote_ip, remote_hostname.s, timeout);
+                    remote_ip, remote_hostname.s, timeout);
     if (ac == -1) drop2("unable to check inst", remote_ip);
     if (ac == IPSVD_ERR) drop2("unable to read", (char*)instructs);
   }
@@ -190,9 +190,9 @@ void connection_accept(int c) {
     if (phcc > phccmax) {
       ac =IPSVD_DENY;
       if (phccmsg) {
-	ndelay_on(c);
-	if (write(c, phccmsg, str_len(phccmsg)) == -1)
-	  warn("unable to write concurrency message");
+        ndelay_on(c);
+        if (write(c, phccmsg, str_len(phccmsg)) == -1)
+          warn("unable to write concurrency message");
       }
     }
     if (verbose) {
@@ -220,11 +220,11 @@ void connection_accept(int c) {
     if (instructs) {
       out(" ");
       if (iscdb) {
-	out((char*)instructs); out("/");
+        out((char*)instructs); out("/");
       }
       outfix(match.s);
       if(inst.s && inst.len && (verbose > 1)) {
-	out(": "); outinst(&inst);
+        out(": "); outinst(&inst);
       }
     }
     flush("\n");
@@ -282,9 +282,9 @@ int main(int argc, char **argv) {
       delim =scan_ulong(optarg, &phccmax);
       if (phccmax < 1) usage();
       if (optarg[delim] == ':') {
-	if (ipsvd_fmt_msg(&msg, optarg +delim +1) == -1) die_nomem();
-	if (! stralloc_0(&msg)) die_nomem();
-	phccmsg =msg.s;
+        if (ipsvd_fmt_msg(&msg, optarg +delim +1) == -1) die_nomem();
+        if (! stralloc_0(&msg)) die_nomem();
+        phccmsg =msg.s;
       }
       break;
     case 'i': if (instructs) usage(); instructs =optarg; break;

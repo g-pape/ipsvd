@@ -26,11 +26,11 @@ int dns_mx_packet(stralloc *out,const char *buf,unsigned int len)
     uint16_unpack_big(header + 8,&datalen);
     if (byte_equal(header,2,DNS_T_MX))
       if (byte_equal(header + 2,2,DNS_C_IN)) {
-	if (!dns_packet_copy(buf,len,pos,pref,2)) return -1;
-	if (!dns_packet_getname(buf,len,pos + 2,&q)) return -1;
-	if (!stralloc_catb(out,pref,2)) return -1;
-	if (!dns_domain_todot_cat(out,q)) return -1;
-	if (!stralloc_0(out)) return -1;
+        if (!dns_packet_copy(buf,len,pos,pref,2)) return -1;
+        if (!dns_packet_getname(buf,len,pos + 2,&q)) return -1;
+        if (!stralloc_catb(out,pref,2)) return -1;
+        if (!dns_domain_todot_cat(out,q)) return -1;
+        if (!stralloc_0(out)) return -1;
       }
     pos += datalen;
   }

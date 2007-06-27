@@ -19,11 +19,11 @@ int dns_domain_fromdot(char **out,const char *buf,unsigned int n)
     ch = *buf++; --n;
     if (ch == '.') {
       if (labellen) {
-	if (namelen + labellen + 1 > sizeof name) return 0;
-	name[namelen++] = labellen;
-	byte_copy(name + namelen,labellen,label);
-	namelen += labellen;
-	labellen = 0;
+        if (namelen + labellen + 1 > sizeof name) return 0;
+        name[namelen++] = labellen;
+        byte_copy(name + namelen,labellen,label);
+        namelen += labellen;
+        labellen = 0;
       }
       continue;
     }
@@ -31,17 +31,17 @@ int dns_domain_fromdot(char **out,const char *buf,unsigned int n)
       if (!n) break;
       ch = *buf++; --n;
       if ((ch >= '0') && (ch <= '7')) {
-	ch -= '0';
-	if (n && (*buf >= '0') && (*buf <= '7')) {
-	  ch <<= 3;
-	  ch += *buf - '0';
-	  ++buf; --n;
-	  if (n && (*buf >= '0') && (*buf <= '7')) {
-	    ch <<= 3;
-	    ch += *buf - '0';
-	    ++buf; --n;
-	  }
-	}
+        ch -= '0';
+        if (n && (*buf >= '0') && (*buf <= '7')) {
+          ch <<= 3;
+          ch += *buf - '0';
+          ++buf; --n;
+          if (n && (*buf >= '0') && (*buf <= '7')) {
+            ch <<= 3;
+            ch += *buf - '0';
+            ++buf; --n;
+          }
+        }
       }
     }
     if (labellen >= sizeof label) return 0;

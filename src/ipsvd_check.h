@@ -14,6 +14,6 @@ extern char *phccmsg;
 #define IPSVD_FORWARD 5
 
 extern int ipsvd_check(int, stralloc *, stralloc *, char *, char *, char *,
-		       unsigned long);
+                       unsigned long);
 
 #endif

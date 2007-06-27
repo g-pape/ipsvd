@@ -17,8 +17,8 @@ int ipsvd_hostname(stralloc *host, char *ip, unsigned int paranoid) {
     }
     for (i =0; i +4 <= sa.len; i +=4)
       if (byte_equal(ip, 4, sa.s +i)) {
-	paranoid =0;
-	break;
+        paranoid =0;
+        break;
       }
     if (paranoid) host->len =0;
   }

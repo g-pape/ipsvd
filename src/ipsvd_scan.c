@@ -4,7 +4,7 @@
 #include "scan.h"
 
 unsigned int ipsvd_scan_port(const char *s, const char *proto,
-			     unsigned long *p) {
+                             unsigned long *p) {
   struct servent *se;
 
   if (! *s) return(0);

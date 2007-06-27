@@ -107,7 +107,7 @@ void connection_accept(int c) {
 
   if (instructs) {
     ac =ipsvd_check(iscdb, &inst, &match, (char*)instructs,
-		    remote_ip, remote_hostname.s, timeout);
+                    remote_ip, remote_hostname.s, timeout);
     if (ac == -1) discard("unable to check inst", remote_ip);
     if (ac == IPSVD_ERR) discard("unable to read", (char*)instructs);
   }
@@ -128,11 +128,11 @@ void connection_accept(int c) {
     if (instructs) {
       out(" ");
       if (iscdb) {
-	out((char*)instructs); out("/");
+        out((char*)instructs); out("/");
       }
       outfix(match.s);
       if(inst.s && inst.len && (verbose > 1)) {
-	out(": "); outinst(&inst);
+        out(": "); outinst(&inst);
       }
     }
     flush("\n");
@@ -285,19 +285,19 @@ int main(int argc, const char **argv, const char *const *envp) {
     if (io[0].revents | IOPAUSE_READ) {
       io[0].revents =0;
       while ((pid =fork()) == -1) {
-	warn("unable to fork, sleeping");
-	sleep(5);
+        warn("unable to fork, sleeping");
+        sleep(5);
       }
       if (pid == 0) { /* child */
-	if (recvfrom(s, 0, 0, MSG_PEEK, (struct sockaddr *)&socka,
-		     &socka_size) == -1) drop("unable to read from socket");
-	connection_accept(s);
+        if (recvfrom(s, 0, 0, MSG_PEEK, (struct sockaddr *)&socka,
+                     &socka_size) == -1) drop("unable to read from socket");
+        connection_accept(s);
       }
       while (wait_pid(&wstat, pid) == -1) warn("error waiting for child");
       if (verbose) {
-	out(INFO); out("end ");
-	bufnum[fmt_ulong(bufnum, pid)] =0;
-	out(bufnum); flush("\n");
+        out(INFO); out("end ");
+        bufnum[fmt_ulong(bufnum, pid)] =0;
+        out(bufnum); flush("\n");
       }
     }
   }
