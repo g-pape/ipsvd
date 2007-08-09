@@ -187,6 +187,16 @@ is set,
 accepts server ceritificates it would normally reject with
 .
  fatal: ssl decode error: bad certificate
+.TP
+SSLIO_HANDSHAKE_TIMOUT
+The environment variable
+.I SSLIO_HANDSHAKE_TIMEOUT
+overrides the default number of seconds
+.B sslio
+will try to complete the ssl handshake (300).
+If the handshake isn't completed after this number of seconds,
+.B sslio
+exits.
 .SH SEE ALSO
 sslsvd(8),
 tcpsvd(8),

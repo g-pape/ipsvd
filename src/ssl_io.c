@@ -82,6 +82,7 @@ static int rc;
 static int handshake =1;
 static int getdec =1;
 static char *s;
+static unsigned long handshake_timeout =300;
 
 static sslBuf_t encin, encou;
 static stralloc encinbuf ={0};
@@ -267,6 +268,7 @@ void doio(void) {
   iopause_fd x[2];
   struct taia deadline;
   struct taia now;
+  struct taia timeout;
 
   if (! stralloc_ready(&encinbuf, bufsizein)) die_nomem();
   encin.buf =encin.start =encin.end =encinbuf.s; encin.size =bufsizein;
@@ -289,6 +291,10 @@ void doio(void) {
     decou.start =decou.end =decou.buf;
   }
 
+  taia_now(&now);
+  taia_uint(&timeout, handshake_timeout);
+  taia_add(&timeout, &now, &timeout);
+
   for (;;) {
     iopause_fd *xx =x;
     int l =2;
@@ -305,8 +311,19 @@ void doio(void) {
     if (! l) return;
 
     taia_now(&now);
-    taia_uint(&deadline, 30);
-    taia_add(&deadline, &now, &deadline);
+    if (handshake) {
+      if (taia_less(&timeout, &now)) {
+        if (verbose) info("ssl handshake timeout, exit.");
+        return;
+      }
+      deadline.sec =timeout.sec;
+      deadline.nano =timeout.nano;
+      deadline.atto =timeout.atto;
+    }
+    else {
+      taia_uint(&deadline, 30);
+      taia_add(&deadline, &now, &deadline);
+    }
     iopause(xx, l, &deadline, &now);
     
     if (x[0].revents) encode();
@@ -321,6 +338,9 @@ int ssl_io(unsigned int newsession, const char **prog) {
   if ((s =env_get("SSLIO_BUFOU"))) scan_ulong(s, &bufsizeou);
   if (bufsizein < 64) bufsizein =64;
   if (bufsizeou < 64) bufsizeou =64;
+  if ((s =env_get("SSLIO_HANDSHAKE_TIMEOUT")))
+    scan_ulong(s, &handshake_timeout);
+  if (handshake_timeout < 1) handshake_timeout =1;
 
   if (pipe(encpipe) == -1) fatalm("unable to create pipe for encoding");
   if (pipe(decpipe) == -1) fatalm("unable to create pipe for decoding");

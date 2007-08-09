@@ -257,6 +257,35 @@ Read the private key from the file
 .IR cert ).
 If the \-/ option is given, first the cert file is read, then the root
 directory is changed.
+.SH ENVIRONMENT
+.TP
+SSLIO_BUFIN
+The environment variable
+.I SSLIO_BUFIN
+overrides the default input buffer size for
+.B sslsvd
+(8192).
+.TP
+SSLIO_BUFOU
+The environment variable
+.I SSLIO_BUFOU
+overrides the default output buffer size for
+.B sslsvd
+(12288).
+If the output buffer is too small to hold encrypted or decrypted data,
+.B sslio
+automatically blows up the buffer to
+.I SSLIO_BUFOU
+more bytes.
+.TP
+SSLIO_HANDSHAKE_TIMOUT
+The environment variable
+.I SSLIO_HANDSHAKE_TIMEOUT
+overrides the default number of seconds
+.B sslsvd
+will try to complete the ssl handshake (300).
+If the handshake isn't completed after this number of seconds,
+the client will be disconnected.
 .SH SEE ALSO
 ipsvd(7),
 tcpsvd(8),
