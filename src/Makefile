@@ -43,9 +43,13 @@ matrixssl.a: makelib matrixssl
 
 matrixssl: matrixssl.tar.gz compile load
 	gzip -dc matrixssl.tar.gz |tar xf -
+	test -e matrixssl || ln -s matrixssl-* matrixssl
 	sed -e 's/#define USE_MULTITHREADING/#undef USE_MULTITHREADING/' \
 	  <matrixssl/src/matrixConfig.h >matrixConfig.h && \
 	    mv -f matrixConfig.h matrixssl/src/matrixConfig.h
+	echo '#ifndef CLK_TCK' >>matrixssl/src/os/osLayer.h
+	echo '#define CLK_TCK CLOCKS_PER_SEC' >>matrixssl/src/os/osLayer.h
+	echo '#endif' >>matrixssl/src/os/osLayer.h
 	touch matrixssl
 
 check-tcpsvd: load check-tcpsvd.o unix.a byte.a socket.lib
@@ -127,7 +131,7 @@ nossl:
 
 clean:
 	rm -f `cat TARGETS` *~
-	rm -rf matrixssl
+	rm -rf matrixssl matrixssl-*
 
 
 alloc.o: alloc.c alloc.h compile error.h

@@ -6,6 +6,7 @@
     SSL_HANDSHAKE_TIMEOUT to disconnect a client if the ssl handshake
     isn't completed within some number of seconds (thx Nikola Vladov);
     add ENVIRONMENT section to man/sslsvd.8.
+  * Makefile: build with matrixssl-1-8-3-open.
 
 ipsvd 0.12.1
 Sat, 04 Feb 2006 19:14:23 +0000
