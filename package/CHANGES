@@ -1,3 +1,5 @@
+ipsvd 0.13.0
+Sun, 26 Aug 2007 11:04:21 +0000
   * ipsvd_check.c, man/ipsvd-instruct.5: lines starting with # are
     comments, ignore them completely.
   * ssl_io.c, man/sslio.8: support env variable SSLIO_BAD_CERTIFICATE to
