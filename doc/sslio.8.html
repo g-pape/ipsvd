@@ -110,6 +110,18 @@ variable <i>SSLIO_BUFIN</i> overrides the default input buffer size for <b>sslio
 output buffer size for <b>sslio</b> (12288). If the output buffer is too small
 to hold encrypted or decrypted data, <b>sslio</b> automatically blows up the buffer
 to <i>SSLIO_BUFOU</i> more bytes. </dd>
+
+<dt>SSLIO_BAD_CERTIFICATE </dt>
+<dd>(client mode)  If the environment
+variable <i>SSLIO_BAD_CERTIFICATE</i> is set, <b>sslio -c</b> accepts server ceritificates
+it would normally reject with   fatal: ssl decode error: bad certificate<br>
+ </dd>
+
+<dt>SSLIO_HANDSHAKE_TIMOUT </dt>
+<dd>The environment variable <i>SSLIO_HANDSHAKE_TIMEOUT</i>
+overrides the default number of seconds <b>sslio</b> will try to complete the
+ssl handshake (300). If the handshake isn&rsquo;t completed after this number of
+seconds, <b>sslio</b> exits. </dd>
 </dl>
 
 <h2><a name='sect5'>See Also</a></h2>

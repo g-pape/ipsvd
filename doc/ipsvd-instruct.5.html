@@ -62,35 +62,37 @@ action is taken (the program <i>prog</i> is run to handle the connection).
 If
 <i><b>ipsvd</b>(7)</i> is given instructions for an incoming connection, it reads the
 corresponding file and interprets each line as follows. The file may be
-empty, meaning that there is no special instruction. 
+empty, meaning that there is no special instruction. <p>
+Empty lines and lines
+starting with &lsquo;&lsquo;#&rsquo;&rsquo; are ignored. 
 <dl>
 
 <dt><b>+</b><i>VAR=VALUE</i> </dt>
-<dd>environment.
-If the line starts with a plus (&lsquo;&lsquo;+&rsquo;&rsquo;), and the string following the plus contains
-a &lsquo;&lsquo;=&rsquo;&rsquo;, <i><b>ipsvd</b>(7)</i> puts the string following the plus into the environment before
-starting <i>prog</i> to handle the connection. If the string following the plus
-doesn&rsquo;t contain a &lsquo;&lsquo;=&rsquo;&rsquo;, <i><b>ipsvd</b>(7)</i> makes sure that the environment variable with
-the name string is not set. </dd>
+<dd>environment. If the line starts with
+a plus (&lsquo;&lsquo;+&rsquo;&rsquo;), and the string following the plus contains a &lsquo;&lsquo;=&rsquo;&rsquo;, <i><b>ipsvd</b>(7)</i> puts
+the string following the plus into the environment before starting <i>prog</i>
+to handle the connection. If the string following the plus doesn&rsquo;t contain
+a &lsquo;&lsquo;=&rsquo;&rsquo;, <i><b>ipsvd</b>(7)</i> makes sure that the environment variable with the name string
+is not set. </dd>
 
 <dt><b>C</b><i>num[:<i>msg</i>]</i> </dt>
-<dd>concurrency. If the line starts with
-a &lsquo;&lsquo;C&rsquo;&rsquo;, and is followed by a number, the per host concurrency limit for the
-IP address that initiated the connection is set to this number. If <i>num</i> is
-zero, per host concurrency limit is disabled. If <i>num</i> is followed by &lsquo;&lsquo;:<i>msg&rsquo;&rsquo;,</i>
-the message <i>msg</i> is written to this client if possible, if the per host
-concurrency limit is reached. 
-<p> <i>msg</i> may contain backslash-escaped characters
-as follows: &lsquo;&lsquo;\\&rsquo;&rsquo; is converted to a single backslash, &lsquo;&lsquo;\n&rsquo;&rsquo; is converted to a new
-line character, and &lsquo;&lsquo;\r&rsquo;&rsquo; is converted to a carriage return. 
-<p> On multiple concurrency
-instructions the last processed concurrency instruction is considered. Not
-all <i><b>ipsvd</b>(7)</i>&rsquo;s support per host concurrency. </dd>
+<dd>concurrency. If the line starts with a &lsquo;&lsquo;C&rsquo;&rsquo;, and is followed
+by a number, the per host concurrency limit for the IP address that initiated
+the connection is set to this number. If <i>num</i> is zero, per host concurrency
+limit is disabled. If <i>num</i> is followed by &lsquo;&lsquo;:<i>msg&rsquo;&rsquo;,</i> the message <i>msg</i> is written
+to this client if possible, if the per host concurrency limit is reached.
+
+<p> <i>msg</i> may contain backslash-escaped characters as follows: &lsquo;&lsquo;\\&rsquo;&rsquo; is converted
+to a single backslash, &lsquo;&lsquo;\n&rsquo;&rsquo; is converted to a new line character, and &lsquo;&lsquo;\r&rsquo;&rsquo; is
+converted to a carriage return. 
+<p> On multiple concurrency instructions the
+last processed concurrency instruction is considered. Not all <i><b>ipsvd</b>(7)</i>&rsquo;s
+support per host concurrency. </dd>
 
 <dt><b>=</b><i>hostname[:<i>forward</i>]</i> </dt>
-<dd>check hostname.
-If the line starts with a &lsquo;&lsquo;=&rsquo;&rsquo;, and is followed by a hostname, <i><b>ipsvd</b>(7)</i> looks
-up the IP addresses for <i>hostname</i> in DNS and checks if the client&rsquo;s IP address
+<dd>check hostname. If the
+line starts with a &lsquo;&lsquo;=&rsquo;&rsquo;, and is followed by a hostname, <i><b>ipsvd</b>(7)</i> looks up
+the IP addresses for <i>hostname</i> in DNS and checks if the client&rsquo;s IP address
 matches one of these IP addresses. If so, <i><i>ipsvd</i>(7)</i> stops processing the
 instructions here and runs <i>prog</i>. If <i>hostname</i> is followed a colon and <i>forward</i>,
 <i><b>ipsvd</b>(7)</i> now examines the file <i>forward</i> and acts accordingly, instead of

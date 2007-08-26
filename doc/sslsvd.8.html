@@ -152,12 +152,35 @@ given, first the cert file is read, then the root directory is changed.
 </dd>
 </dl>
 
-<h2><a name='sect5'>See Also</a></h2>
-<i>ipsvd(7)</i>, <i>tcpsvd(8)</i>, <i>udpsvd(8)</i>, <i>ipsvd-instruct(5)</i>, <i>ipsvd-cdb(8)</i>,
-<i>sslio(8)</i> <p>
+<h2><a name='sect5'>Environment</a></h2>
+
+<dl>
+
+<dt>SSLIO_BUFIN </dt>
+<dd>The environment variable <i>SSLIO_BUFIN</i> overrides the
+default input buffer size for <b>sslsvd</b> (8192). </dd>
+
+<dt>SSLIO_BUFOU </dt>
+<dd>The environment
+variable <i>SSLIO_BUFOU</i> overrides the default output buffer size for <b>sslsvd</b>
+(12288). If the output buffer is too small to hold encrypted or decrypted
+data, <b>sslio</b> automatically blows up the buffer to <i>SSLIO_BUFOU</i> more bytes.
+</dd>
+
+<dt>SSLIO_HANDSHAKE_TIMOUT </dt>
+<dd>The environment variable <i>SSLIO_HANDSHAKE_TIMEOUT</i>
+overrides the default number of seconds <b>sslsvd</b> will try to complete the
+ssl handshake (300). If the handshake isn&rsquo;t completed after this number of
+seconds, the client will be disconnected. </dd>
+</dl>
+
+<h2><a name='sect6'>See Also</a></h2>
+<i>ipsvd(7)</i>, <i>tcpsvd(8)</i>, <i>udpsvd(8)</i>,
+<i>ipsvd-instruct(5)</i>, <i>ipsvd-cdb(8)</i>, <i>sslio(8)</i> <p>
 <i>http://smarden.org/ipsvd/</i> 
-<h2><a name='sect6'>Author</a></h2>
-Gerrit Pape &lt;pape@smarden.org&gt; <p>
+<h2><a name='sect7'>Author</a></h2>
+Gerrit
+Pape &lt;pape@smarden.org&gt; <p>
 
 <hr><p>
 <a name='toc'><b>Table of Contents</b></a><p>
@@ -169,8 +192,9 @@ Gerrit Pape &lt;pape@smarden.org&gt; <p>
 <ul>
 <li><a name='toc4' href='#sect4'>Ssl Options</a></li>
 </ul>
-<li><a name='toc5' href='#sect5'>See Also</a></li>
-<li><a name='toc6' href='#sect6'>Author</a></li>
+<li><a name='toc5' href='#sect5'>Environment</a></li>
+<li><a name='toc6' href='#sect6'>See Also</a></li>
+<li><a name='toc7' href='#sect7'>Author</a></li>
 </ul>
 </body>
 </html>
