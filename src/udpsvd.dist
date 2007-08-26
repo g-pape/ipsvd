@@ -1,7 +1,7 @@
 usage: udpsvd [-hpv] [-u user] [-l name] [-i dir|-x cdb] [-t sec] host port prog
 
 111
-$Id$
+$Id: 6b2489d8fe307441eac6268441dbf623cbe2fbc5 $
 usage: udpsvd [-hpv] [-u user] [-l name] [-i dir|-x cdb] [-t sec] host port prog
 
 111
