@@ -357,7 +357,9 @@ int ssl_io(unsigned int newsession, const char **prog) {
     }
     if (ssluser) {
       /* drop permissions */
-      if (prot_gid(sslugid.gid) == -1) fatalm("unable to set gid");
+      if (setgroups(sslugid.gids, sslugid.gid) == -1)
+        fatal("unable to set groups");
+      if (setgid(*sslugid.gid) == -1) fatal("unable to set gid");
       if (prot_uid(sslugid.uid) == -1) fatalm("unable to set uid");
     }
     if (newsession) {
@@ -385,7 +387,9 @@ int ssl_io(unsigned int newsession, const char **prog) {
     fatalm("unable to setup filedescriptor for encoding");
   sslCloseOsdep();
   if (svuser) {
-    if (prot_gid(ugid.gid) == -1) fatalm("unable to set gid for prog");
+    if (setgroups(ugid.gids, ugid.gid) == -1)
+      fatal("unable to set groups for prog");
+    if (setgid(*ugid.gid) == -1) fatal("unable to set gid for prog");
     if (prot_uid(ugid.uid) == -1) fatalm("unable to set uid for prog");
   }
   pathexec(prog);

@@ -321,7 +321,7 @@ int main(int argc, char **argv) {
   if (phccmax > cmax) phccmax =cmax;
 
   if (user)
-    if (! uidgid_get(&ugid, user, 1)) {
+    if (! uidgids_get(&ugid, user)) {
       if (errno)
         strerr_die4sys(111, FATAL, "unable to get user/group: ", user, ": ");
       strerr_die3x(100, FATAL, "unknown user/group: ", user);
@@ -332,7 +332,7 @@ int main(int argc, char **argv) {
   if ((getuid() == 0) && (! ssluser))
     strerr_die2x(100, FATAL, "-U ssluser must be set when running as root");
   if (ssluser)
-    if (! uidgid_get(&sslugid, ssluser, 1)) {
+    if (! uidgids_get(&sslugid, ssluser)) {
       if (errno)
         strerr_die4sys(111, FATAL, "unable to get user/group: ", ssluser, ": ");
       strerr_die3x(100, FATAL, "unknown user/group: ", ssluser);
@@ -387,7 +387,8 @@ int main(int argc, char **argv) {
 #else
   if (user) {
     /* drop permissions */
-    if (prot_gid(ugid.gid) == -1) fatal("unable to set gid");
+    if (setgroups(ugid.gids, ugid.gid) == -1) fatal("unable to set groups");
+    if (setgid(*ugid.gid) == -1) fatal("unable to set gid");
     if (prot_uid(ugid.uid) == -1) fatal("unable to set uid");
   }
 #endif

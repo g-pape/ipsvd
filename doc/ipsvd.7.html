@@ -51,34 +51,37 @@ that the timeout is disabled. </dd>
 <dd>local hostname. Do not look up the local
 hostname in DNS, but use <i>name</i> as hostname. </dd>
 
-<dt><b>-u <i>user</i>[:<i>group</i>]</b> </dt>
+<dt><b>-u <i>[:]user[:group]</b> </i></dt>
 <dd>drop permissions.
-Switch user ID to <i>user</i>&rsquo;s UID, and group ID to <i>user</i>&rsquo;s primary GID before running
-<i>prog</i>. If <i>user</i> is followed by a colon and a group name, the group ID is switched
-to the GID of <i>group</i> instead. All supplementary groups are removed. </dd>
+Set uid and gid to the <i>user</i>&rsquo;s uid and gid, as found in <i>/etc/passwd</i>, before
+running <i>prog</i>. If <i>user</i> is followed by a colon and a <i>group</i>, set the gid to
+<i>group</i>&rsquo;s gid, as found in <i>/etc/group</i>, instead of <i>user</i>&rsquo;s gid. If <i>group</i> consists
+of a colon-separated list of group names, set the group ids of all listed
+groups. If <i>user</i> is prefixed with a colon, the <i>user</i> and all <i>group</i> arguments
+are interpreted as uid and gids respectively, and not looked up in the
+password or group file. All supplementary groups are removed. </dd>
 
 <dt><b>-h</b> </dt>
-<dd>Look
-up the client&rsquo;s hostname in DNS. </dd>
+<dd>Look up the
+client&rsquo;s hostname in DNS. </dd>
 
 <dt><b>-p</b> </dt>
-<dd>paranoid. After looking up the client&rsquo;s
-hostname in DNS, look up the IP addresses in DNS for that hostname, and
-forget about the hostname if none of the addresses match the client&rsquo;s IP
-address. You should set this option if you use hostname based instructions.
-The -p option implies the -h option. </dd>
+<dd>paranoid. After looking up the client&rsquo;s hostname
+in DNS, look up the IP addresses in DNS for that hostname, and forget about
+the hostname if none of the addresses match the client&rsquo;s IP address. You
+should set this option if you use hostname based instructions. The -p option
+implies the -h option. </dd>
 </dl>
 
 <h2><a name='sect4'>Signals</a></h2>
-If an <b>ipsvd</b> receives a TERM signal,
-it exists with 0. 
+If an <b>ipsvd</b> receives a TERM signal, it exists
+with 0. 
 <h2><a name='sect5'>See Also</a></h2>
-<i>tcpsvd(8)</i>, <i>sslsvd(8)</i>, <i>udpsvd(8)</i>, <i>ipsvd-instruct(5)</i>,
-<i>ipsvd-cdb(8)</i> <p>
+<i>tcpsvd(8)</i>, <i>sslsvd(8)</i>, <i>udpsvd(8)</i>, <i>ipsvd-instruct(5)</i>, <i>ipsvd-cdb(8)</i>
+<p>
 <i>http://smarden.org/ipsvd/</i> 
 <h2><a name='sect6'>Author</a></h2>
-Gerrit Pape &lt;pape@smarden.org&gt;
-<p>
+Gerrit Pape &lt;pape@smarden.org&gt; <p>
 
 <hr><p>
 <a name='toc'><b>Table of Contents</b></a><p>

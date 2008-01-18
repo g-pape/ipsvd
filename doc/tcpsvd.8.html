@@ -69,66 +69,69 @@ is 0, which means that the timeout is disabled. </dd>
 not look up the local hostname in DNS, but use <i>name</i> as hostname. This option
 must be set if <b>tcpsvd</b> listens on port 53 to avoid loops. </dd>
 
-<dt><b>-u <i>user</i>[:<i>group</i>]</b>
-</dt>
-<dd>drop permissions. Switch user ID to <i>user</i>&rsquo;s UID, and group ID to <i>user</i>&rsquo;s primary
-GID after creating and binding to the socket. If <i>user</i> is followed by a colon
-and a group name, the group ID is switched to the GID of <i>group</i> instead.
-All supplementary groups are removed. </dd>
-
-<dt><b>-c <i>n</b> </i></dt>
-<dd>concurrency. Handle up to <i>n</i> connections
-simultaneously. Default is 30. If there are <i>n</i> connections active, <b>tcpsvd</b>
-defers acceptance of a new connection until an active connection is closed.
+<dt><b>-u <i>[:]user[:group]</b>
+</i></dt>
+<dd>drop permissions. Set uid and gid to the <i>user</i>&rsquo;s uid and gid, as found in
+<i>/etc/passwd</i>, before running <i>prog</i>. If <i>user</i> is followed by a colon and a <i>group</i>,
+set the gid to <i>group</i>&rsquo;s gid, as found in <i>/etc/group</i>, instead of <i>user</i>&rsquo;s gid.
+If <i>group</i> consists of a colon-separated list of group names, set the group
+ids of all listed groups. If <i>user</i> is prefixed with a colon, the <i>user</i> and
+all <i>group</i> arguments are interpreted as uid and gids respectively, and not
+looked up in the password or group file. All supplementary groups are removed.
 </dd>
 
+<dt><b>-c <i>n</b> </i></dt>
+<dd>concurrency. Handle up to <i>n</i> connections simultaneously. Default is 30.
+If there are <i>n</i> connections active, <b>tcpsvd</b> defers acceptance of a new connection
+until an active connection is closed. </dd>
+
 <dt><b>-C <i>n</i>[:<i>msg</i>]</b> </dt>
-<dd>per host concurrency. Allow only up to <i>n</i> connections from the
-same IP address simultaneously. If there are <i>n</i> active connections from one
-IP address, new incoming connections from this IP address are closed immediately.
-If <i>n</i> is followed by :<i>msg,</i> the message <i>msg</i> is written to the client if possible,
-before closing the connection. By default <i>msg</i> is empty. See <i><b>ipsvd-instruct</b>(5)</i>
-for supported escape sequences in <i>msg</i>. 
-<p> For each accepted connection, the
-current per host concurrency is available through the environment variable
-<i>TCPCONCURRENCY</i>. <i>n</i> and <i>msg</i> can be overwritten by <i><b>ipsvd</b>(7)</i> instructions, see
-<i><b>ipsvd-instruct</b>(5)</i>.<b></b> By default <b>tcpsvd</b> doesn&rsquo;t keep track of connections. </dd>
+<dd>per host concurrency. Allow
+only up to <i>n</i> connections from the same IP address simultaneously. If there
+are <i>n</i> active connections from one IP address, new incoming connections
+from this IP address are closed immediately. If <i>n</i> is followed by :<i>msg,</i> the
+message <i>msg</i> is written to the client if possible, before closing the connection.
+By default <i>msg</i> is empty. See <i><b>ipsvd-instruct</b>(5)</i> for supported escape sequences
+in <i>msg</i>. 
+<p> For each accepted connection, the current per host concurrency
+is available through the environment variable <i>TCPCONCURRENCY</i>. <i>n</i> and <i>msg</i>
+can be overwritten by <i><b>ipsvd</b>(7)</i> instructions, see <i><b>ipsvd-instruct</b>(5)</i>.<b></b> By default
+<b>tcpsvd</b> doesn&rsquo;t keep track of connections. </dd>
 
 <dt><b>-h</b> </dt>
-<dd>Look
-up the client&rsquo;s hostname in DNS. </dd>
+<dd>Look up the client&rsquo;s hostname
+in DNS. </dd>
 
 <dt><b>-p</b> </dt>
-<dd>paranoid. After looking up the client&rsquo;s
-hostname in DNS, look up the IP addresses in DNS for that hostname, and
-forget about the hostname if none of the addresses match the client&rsquo;s IP
-address. You should set this option if you use hostname based instructions.
-The -p option implies the -h option. </dd>
+<dd>paranoid. After looking up the client&rsquo;s hostname in DNS, look up
+the IP addresses in DNS for that hostname, and forget about the hostname
+if none of the addresses match the client&rsquo;s IP address. You should set this
+option if you use hostname based instructions. The -p option implies the
+-h option. </dd>
 
 <dt><b>-b <i>n</b> </i></dt>
-<dd>backlog. Allow a backlog of approximately
-<i>n</i> TCP SYNs. On some systems <i>n</i> is silently limited. Default is 20. </dd>
+<dd>backlog. Allow a backlog of approximately <i>n</i> TCP SYNs. On some
+systems <i>n</i> is silently limited. Default is 20. </dd>
 
 <dt><b>-E</b> </dt>
-<dd>no special
-environment. Do not set up TCP-related environment variables. </dd>
+<dd>no special environment. Do
+not set up TCP-related environment variables. </dd>
 
 <dt><b>-v</b> </dt>
-<dd>verbose. Print
-verbose messsages to standard output. </dd>
+<dd>verbose. Print verbose messsages
+to standard output. </dd>
 
 <dt><b>-vv</b> </dt>
-<dd>more verbose. Print more verbose
-messages to standard output. </dd>
+<dd>more verbose. Print more verbose messages to standard
+output. </dd>
 </dl>
 
 <h2><a name='sect4'>See Also</a></h2>
-<i>ipsvd(7)</i>, <i>sslsvd(8)</i>, <i>udpsvd(8)</i>, <i>ipsvd-instruct(5)</i>,
-<i>ipsvd-cdb(8)</i>, <i>sslio(8)</i> <p>
+<i>ipsvd(7)</i>, <i>sslsvd(8)</i>, <i>udpsvd(8)</i>, <i>ipsvd-instruct(5)</i>, <i>ipsvd-cdb(8)</i>,
+<i>sslio(8)</i> <p>
 <i>http://smarden.org/ipsvd/</i> 
 <h2><a name='sect5'>Author</a></h2>
-Gerrit Pape &lt;pape@smarden.org&gt;
-<p>
+Gerrit Pape &lt;pape@smarden.org&gt; <p>
 
 <hr><p>
 <a name='toc'><b>Table of Contents</b></a><p>

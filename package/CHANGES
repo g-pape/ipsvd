@@ -1,3 +1,13 @@
+ipsvd 0.14.0
+Sat, 19 Jan 2008 00:17:20 +0000
+  * uidgid.c, uidgid.h: support numerical uid, gids through :uid:gid...
+    (taken from the runit package).
+  * tcpsvd.c, udpsvd.c, sslio.c, ssl_io.c: support numerical uid, gids,
+    and colon-separated list of groups through :uid:gid... with the -u,
+    -U arguments (thx Nikola Vladov).
+  * man/tcpsvd.8, man/udpsvd.8, man/sslsvd.8, man/sslio.8, man/ipsvd.7:
+    adapt.
+
 ipsvd 0.13.0
 Sun, 26 Aug 2007 11:04:21 +0000
   * ipsvd_check.c, man/ipsvd-instruct.5: lines starting with # are

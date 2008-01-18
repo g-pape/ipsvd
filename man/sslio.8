@@ -62,38 +62,72 @@ run directly by
 or
 .BR tcpserver (1).
 .TP
-.B \-u \fIuser\fR[:\fIgroup\fR]
+.B \-u \fI[:]user[:group]
 drop permissions.
-Switch user ID to
+Set uid and gid to the
 .IR user 's
-UID, and group ID to
-.IR user 's
-primary GID before reading data from, or writing data to the network.
+uid and gid, as found in
+.IR /etc/passwd ,
+before reading data from, or writing data to the network.
 If
 .I user
-is followed by a colon and a group name, the group ID is switched to
-the GID of
+is followed by a colon and a
+.IR group ,
+set the gid to
+.IR group 's
+gid, as found in
+.IR /etc/group ,
+instead of
+.IR user 's
+gid.
+If
 .I group
-instead.
+consists of a colon-separated list of group names,
+set the group ids of all listed groups.
+If
+.I user
+is prefixed with a colon, the
+.I user
+and all
+.I group
+arguments are interpreted as uid and gids respectively, and not looked up in
+the password or group file.
 All supplementary groups are removed.
 This option must be set when
 .B sslio
 is started by root, and cannot be set otherwise.
 .TP
-.B \-U \fIuser\fR[:\fIgroup\fR]
+.B \-U \fI[:]user[:group]
 drop permissions.
-Switch user ID to
+Set uid and gid to the
 .IR user 's
-UID, and group ID to
-.IR user 's
-primary GID before starting the service program
+uid and gid, as found in
+.IR /etc/passwd ,
+before running
 .IR prog .
 If
 .I user
-is followed by a colon and a group name, the group ID is switched to
-the GID of
+is followed by a colon and a
+.IR group ,
+set the gid to
+.IR group 's
+gid, as found in
+.IR /etc/group ,
+instead of
+.IR user 's
+gid.
+If
 .I group
-instead.
+consists of a colon-separated list of group names,
+set the group ids of all listed groups.
+If
+.I user
+is prefixed with a colon, the
+.I user
+and all
+.I group
+arguments are interpreted as uid and gids respectively, and not looked up in
+the password or group file.
 All supplementary groups are removed.
 This option should be set when
 .B sslio

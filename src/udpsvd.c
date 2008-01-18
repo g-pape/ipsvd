@@ -217,7 +217,7 @@ int main(int argc, const char **argv, const char *const *envp) {
   prog =argv;
 
   if (user)
-    if (! uidgid_get(&ugid, user, 1))
+    if (! uidgids_get(&ugid, user))
       strerr_die3x(100, FATAL, "unknown user/group: ", user);
 
   dns_random_init(seed);
@@ -256,7 +256,8 @@ int main(int argc, const char **argv, const char *const *envp) {
   ndelay_off(s);
 
   if (user) { /* drop permissions */
-    if (prot_gid(ugid.gid) == -1) fatal("unable to set gid");
+    if (setgroups(ugid.gids, ugid.gid) == -1) fatal("unable to set groups");
+    if (setgid(*ugid.gid) == -1) fatal("unable to set gid");
     if (prot_uid(ugid.uid) == -1) fatal("unable to set uid");
   }
   close(0);

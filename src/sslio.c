@@ -63,12 +63,12 @@ int main(int argc, const char **argv) {
     if (! cert) cert ="./cert.pem";
     if (! key) key =cert;
   }
-  if (ssluser) if (! uidgid_get(&sslugid, ssluser, 1)) {
+  if (ssluser) if (! uidgids_get(&sslugid, ssluser)) {
     if (errno)
       strerr_die3sys(111, "sslio[", id, "]: fatal: unable to get user/group: ");
     strerr_die4x(100, "sslio[", id, "]: fatal: unknown user/group: ", ssluser);
   }
-  if (svuser) if (! uidgid_get(&ugid, svuser, 1)) {
+  if (svuser) if (! uidgids_get(&ugid, svuser)) {
     if (errno)
       strerr_die3sys(111, "sslio[", id, "]: fatal: unable to get user/group: ");
     strerr_die4x(100, "sslio[", id, "]: fatal: unknown user/group: ", svuser);

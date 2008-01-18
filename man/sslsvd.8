@@ -115,20 +115,37 @@ Do not look up the local hostname in DNS, but use
 .I name
 as hostname.
 .TP
-.B \-u \fIuser\fR[:\fIgroup\fR]
+.B \-u \fI[:]user[:group]
 drop permissions.
-Switch user ID to
+Set uid and gid to the
 .IR user 's
-UID, and group ID to
-.IR user 's
-primary GID before running
+uid and gid, as found in
+.IR /etc/passwd ,
+before running
 .IR prog .
 If
 .I user
-is followed by a colon and a group name, the group ID is switched to
-the GID of
+is followed by a colon and a
+.IR group ,
+set the gid to
+.IR group 's
+gid, as found in
+.IR /etc/group ,
+instead of
+.IR user 's
+gid.
+If
 .I group
-instead.
+consists of a colon-separated list of group names,
+set the group ids of all listed groups.
+If
+.I user
+is prefixed with a colon, the
+.I user
+and all
+.I group
+arguments are interpreted as uid and gids respectively, and not looked up in
+the password or group file.
 All supplementary groups are removed.
 .TP
 .B \-c \fIn
@@ -215,19 +232,37 @@ more verbose.
 Print more verbose messages to standard output.
 .SS SSL OPTIONS
 .TP
-.B \-U \fIssluser
+.B \-U \fI[:]user[:group]
 drop permissions.
-Switch user ID to
-.IR ssluser 's
-UID, and group ID to
-.IR ssluser 's
-primary GID before running the SSLv3 encrypt/decrypt process.
+Set uid and gid to the
+.IR user 's
+uid and gid, as found in
+.IR /etc/passwd ,
+before running the SSLv3 encrypt/decrypt process.
 If
-.I ssluser
-is followed by a colon and a group name, the group ID is switched to
-the GID of
+.I user
+is followed by a colon and a
+.IR group ,
+set the gid to
+.IR group 's
+gid, as found in
+.IR /etc/group ,
+instead of
+.IR user 's
+gid.
+If
 .I group
-instead.
+consists of a colon-separated list of group names,
+set the group ids of all listed groups.
+If
+.I user
+is prefixed with a colon, the
+.I user
+and all
+.I group
+arguments are interpreted as uid and gids respectively, and not looked up in
+the password or group file.
+All supplementary groups are removed.
 This option must be set when
 .B sslsvd
 is started by root.
