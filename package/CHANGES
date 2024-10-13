@@ -1,3 +1,9 @@
+  * cdb_make.c, pathexec.h, pathexec_env.c, pathexec_run.c, seek_set.c,
+    sgetopt.c, sgetopt.h, subgetopt.c, subgetopt.h, tcpsvd.c, trycpp.c,
+    tryflock.c, trypoll.c, trysgact.c, trysgprm.c, tryulong64.c,
+    trywaitp.c, udpsvd.c, x86cpuid.c: incorporate lib changes from
+    runit-2.2.0 and adapt ipsvd programs to properly build with modern
+    toolchains (thx Gentoo, Debian, Void Linux).
   * prot.c, prot.h, chkshsgr.c, tryshsgr.c, hasshsgr.h?, warn-shsgr:
     remove; obsolete.
   * Makefile, TARGETS: no longer check for "shortsetgroups" (thx Leah

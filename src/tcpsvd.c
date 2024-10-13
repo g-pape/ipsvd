@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <grp.h>
 #include "dns.h"
 #include "socket.h"
 #include "ip4.h"
@@ -49,7 +50,7 @@ unsigned int lookuphost =0;
 unsigned int verbose =0;
 unsigned long backlog =20;
 unsigned int paranoid =0;
-const char **prog;
+char **prog;
 unsigned long cnum =0;
 unsigned long cmax =30;
 unsigned long timeout =0;
@@ -150,8 +151,8 @@ void sig_child_handler() {
 
 void connection_accept(int c) {
   int ac;
-  const char **run;
-  const char *args[4];
+  char **run;
+  char *args[4];
   char *ip =(char*)&socka.sin_addr;
 
   remote_ip[ipsvd_fmt_ip(remote_ip, ip)] =0;
@@ -252,7 +253,7 @@ void connection_accept(int c) {
   pathexec(run);
 #endif
 
-  drop2("unable to run", (char *)*prog);
+  drop2("unable to run", *prog);
 }
 
 int main(int argc, char **argv) {
@@ -269,10 +270,10 @@ int main(int argc, char **argv) {
   phccmax =0;
 
 #ifdef SSLSVD
-  while ((opt =getopt(argc, (const char **)argv,
+  while ((opt =getopt(argc, argv,
                       "c:C:i:x:u:l:Eb:hpt:vVU:/:Z:K:")) != opteof) {
 #else
-  while ((opt =getopt(argc, (const char **)argv,
+  while ((opt =getopt(argc, argv,
                       "c:C:i:x:u:l:Eb:hpt:vV")) != opteof) {
 #endif
     switch(opt) {
@@ -316,7 +317,7 @@ int main(int argc, char **argv) {
   if (! argv || ! *argv) usage();
   local_port =*argv++;
   if (! argv || ! *argv) usage();
-  prog =(const char **)argv;
+  prog =argv;
   if (phccmax > cmax) phccmax =cmax;
 
   if (user)

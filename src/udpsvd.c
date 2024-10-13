@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <grp.h>
 #include "dns.h"
 #include "socket.h"
 #include "ip4.h"
@@ -33,7 +34,7 @@
 
 const char *progname;
 
-const char **prog;
+char **prog;
 const char *instructs =0;
 unsigned int iscdb =0;
 unsigned int verbose =0;
@@ -87,8 +88,8 @@ void sig_term_handler() {
 
 void connection_accept(int c) {
   int ac;
-  const char **run;
-  const char *args[4];
+  char **run;
+  char *args[4];
   char *ip =(char*)&socka.sin_addr;
 
   remote_ip[ipsvd_fmt_ip(remote_ip, ip)] =0;
@@ -156,7 +157,7 @@ void connection_accept(int c) {
   discard("unable to run", (char*)*prog);
 }
 
-int main(int argc, const char **argv, const char *const *envp) {
+int main(int argc, char **argv, char *const *envp) {
   int opt;
   char *user =0;
   char *host;
@@ -267,7 +268,7 @@ int main(int argc, const char **argv, const char *const *envp) {
     if (user) {
       bufnum[fmt_ulong(bufnum, ugid.uid)] =0;
       out(", uid "); out(bufnum);
-      bufnum[fmt_ulong(bufnum, ugid.gid)] =0;
+      bufnum[fmt_ulong(bufnum, (unsigned long)ugid.gid)] =0;
       out(", gid "); out(bufnum);
     }
     flush(", starting.\n");
