@@ -1,3 +1,4 @@
+  * doc/install.html: add link to sha256sum.asc.
   * doc/install.html: change mail address.
   * debian/: remove; obsolete.
   * cdb_make.c, pathexec.h, pathexec_env.c, pathexec_run.c, seek_set.c,
