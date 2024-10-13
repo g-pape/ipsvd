@@ -1,3 +1,9 @@
+  * prot.c, prot.h, chkshsgr.c, tryshsgr.c, hasshsgr.h?, warn-shsgr:
+    remove; obsolete.
+  * Makefile, TARGETS: no longer check for "shortsetgroups" (thx Leah
+    Neukirchen).
+  * ssl_io.c, tcpsvd.c, udpsvd.c: replace prot_uid() with setuid().
+
 ipsvd 1.0.0
 Sun, 15 Jun 2008 17:45:26 +0000
 

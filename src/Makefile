@@ -194,12 +194,6 @@ byte_zero.o: byte.h byte_zero.c compile
 case_diffb.o: case.h case_diffb.c compile
 	./compile case_diffb.c
 
-chkshsgr: chkshsgr.o load
-	./load chkshsgr
-
-chkshsgr.o: chkshsgr.c compile
-	./compile chkshsgr.c
-
 choose: choose.sh warn-auto.sh
 	rm -f choose
 	cat warn-auto.sh choose.sh >choose
@@ -329,11 +323,6 @@ hassgact.h: choose compile hassgact.h1 hassgact.h2 load trysgact.c
 hassgprm.h: choose compile hassgprm.h1 hassgprm.h2 load trysgprm.c
 	./choose cl trysgprm hassgprm.h1 hassgprm.h2 >hassgprm.h
 
-hasshsgr.h: chkshsgr choose compile hasshsgr.h1 hasshsgr.h2 load tryshsgr.c \
-	  warn-shsgr
-	./chkshsgr || (cat warn-shsgr; exit 1)
-	./choose clr tryshsgr hasshsgr.h1 hasshsgr.h2 >hasshsgr.h
-
 haswaitp.h: choose compile haswaitp.h1 haswaitp.h2 load trywaitp.c
 	./choose cl trywaitp haswaitp.h1 haswaitp.h2 >haswaitp.h
 
@@ -391,9 +380,6 @@ pathexec_env.o: alloc.h byte.h compile env.h gen_alloc.h pathexec.h \
 pathexec_run.o: compile env.h error.h gen_alloc.h pathexec.h pathexec_run.c \
 	  str.h stralloc.h
 	./compile pathexec_run.c
-
-prot.o: compile hasshsgr.h prot.c prot.h
-	./compile prot.c
 
 readclose.o: compile error.h gen_alloc.h readclose.c readclose.h stralloc.h
 	./compile readclose.c
@@ -482,7 +468,7 @@ subgetopt.o: compile subgetopt.c subgetopt.h
 	./compile subgetopt.c
 
 sysdeps: compile direntry.h hasflock.h hasmkffo.h hassgact.h hassgprm.h \
-	  hasshsgr.h haswaitp.h iopause.h load select.h systype uint64.h \
+	  haswaitp.h iopause.h load select.h systype uint64.h \
 	  uint32.h socket.lib
 	rm -f sysdeps
 	cat systype compile load socket.lib >>sysdeps
@@ -495,7 +481,6 @@ sysdeps: compile direntry.h hasflock.h hasmkffo.h hassgact.h hassgprm.h \
 	grep sysdep iopause.h >>sysdeps
 	grep sysdep hasmkffo.h >>sysdeps
 	grep sysdep hasflock.h >>sysdeps
-	grep sysdep hasshsgr.h >>sysdeps
 	cat sysdeps
 
 systype: find-systype.sh trycpp.c x86cpuid.c
@@ -570,7 +555,7 @@ unix.a: alloc.o alloc_re.o buffer.o buffer_0.o buffer_1.o buffer_2.o \
 	  env.o error.o error_str.o fd_copy.o fd_move.o fifo.o lock_ex.o \
 	  lock_exnb.o makelib ndelay_off.o ndelay_on.o open_append.o \
 	  open_read.o open_trunc.o open_write.o openreadclose.o \
-	  pathexec_env.o pathexec_run.o prot.o readclose.o seek_set.o \
+	  pathexec_env.o pathexec_run.o readclose.o seek_set.o \
 	  sgetopt.o sig.o sig_block.o sig_catch.o sig_pause.o \
 	  socket_bind.o socket_conn.o socket_tcp.o socket_udp.o \
 	  stralloc_cat.o stralloc_catb.o stralloc_cats.o stralloc_copy.o \
@@ -581,7 +566,7 @@ unix.a: alloc.o alloc_re.o buffer.o buffer_0.o buffer_1.o buffer_2.o \
 	  coe.o env.o error.o error_str.o fd_copy.o fd_move.o fifo.o \
 	  lock_ex.o lock_exnb.o ndelay_off.o ndelay_on.o open_append.o \
 	  open_read.o open_trunc.o open_write.o openreadclose.o \
-	  pathexec_env.o pathexec_run.o prot.o readclose.o seek_set.o \
+	  pathexec_env.o pathexec_run.o readclose.o seek_set.o \
 	  sgetopt.o sig.o sig_block.o sig_catch.o sig_pause.o \
 	  socket_bind.o socket_conn.o socket_tcp.o socket_udp.o \
 	  stralloc_cat.o stralloc_catb.o stralloc_cats.o stralloc_copy.o \

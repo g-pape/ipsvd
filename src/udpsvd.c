@@ -17,7 +17,6 @@
 #include "fmt.h"
 #include "error.h"
 #include "strerr.h"
-#include "prot.h"
 #include "ndelay.h"
 #include "scan.h"
 #include "fd.h"
@@ -258,7 +257,7 @@ int main(int argc, const char **argv, const char *const *envp) {
   if (user) { /* drop permissions */
     if (setgroups(ugid.gids, ugid.gid) == -1) fatal("unable to set groups");
     if (setgid(*ugid.gid) == -1) fatal("unable to set gid");
-    if (prot_uid(ugid.uid) == -1) fatal("unable to set uid");
+    if (setuid(ugid.uid) == -1) fatal("unable to set uid");
   }
   close(0);
 

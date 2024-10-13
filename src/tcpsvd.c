@@ -22,7 +22,6 @@
 #include "sig.h"
 #include "fd.h"
 #include "wait.h"
-#include "prot.h"
 #include "pathexec.h"
 #include "ndelay.h"
 
@@ -389,7 +388,7 @@ int main(int argc, char **argv) {
     /* drop permissions */
     if (setgroups(ugid.gids, ugid.gid) == -1) fatal("unable to set groups");
     if (setgid(*ugid.gid) == -1) fatal("unable to set gid");
-    if (prot_uid(ugid.uid) == -1) fatal("unable to set uid");
+    if (setuid(ugid.uid) == -1) fatal("unable to set uid");
   }
 #endif
   close(0);
