@@ -268,7 +268,7 @@ int main(int argc, char **argv, char *const *envp) {
     if (user) {
       bufnum[fmt_ulong(bufnum, ugid.uid)] =0;
       out(", uid "); out(bufnum);
-      bufnum[fmt_ulong(bufnum, (unsigned long)ugid.gid)] =0;
+      bufnum[fmt_ulong(bufnum, *ugid.gid)] =0;
       out(", gid "); out(bufnum);
     }
     flush(", starting.\n");
