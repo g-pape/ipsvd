@@ -1,3 +1,4 @@
+  * doc/upgrade.html: typo.
   * tcpsvd.c, udpsvd.c: print proper group id when verbose.
   * doc/install.html: add link to sha256sum.asc.
   * doc/install.html: change mail address.
