@@ -26,16 +26,7 @@
 #include "pathexec.h"
 #include "ndelay.h"
 
-#ifdef SSLSVD
-#include "matrixSsl.h"
-#include "ssl_io.h"
-#endif
-
-#ifdef SSLSVD
-#define USAGE " [-Ehpv] [-u user] [-c n] [-C n:msg] [-b n] [-l name] [-i dir|-x cdb] [-t sec] [-U ssluser] [-/ root] [-Z cert] [-K key] host port prog"
-#else
 #define USAGE " [-Ehpv] [-u user] [-c n] [-C n:msg] [-b n] [-l name] [-i dir|-x cdb] [-t sec] host port prog"
-#endif
 
 #define VERSION "$Id$"
 
@@ -64,10 +55,7 @@ char *local_port;
 static stralloc remote_hostname ={0};
 char remote_ip[IP4_FMT];
 char remote_port[FMT_ULONG];
-#ifdef SSLSVD
-#else
 struct uidgid ugid;
-#endif
 
 static char seed[128];
 char bufnum[FMT_ULONG];
@@ -245,13 +233,7 @@ void connection_accept(int c) {
   sig_uncatch(sig_pipe);
   sig_uncatch(sig_child);
   sig_unblock(sig_child);
-#ifdef SSLSVD
-  pid =getpid();
-  id[fmt_ulong(id, pid)] =0;
-  ssl_io(0, run);
-#else
   pathexec(run);
-#endif
 
   drop2("unable to run", *prog);
 }
@@ -269,13 +251,8 @@ int main(int argc, char **argv) {
   progname =*argv;
   phccmax =0;
 
-#ifdef SSLSVD
-  while ((opt =getopt(argc, argv,
-                      "c:C:i:x:u:l:Eb:hpt:vVU:/:Z:K:")) != opteof) {
-#else
   while ((opt =getopt(argc, argv,
                       "c:C:i:x:u:l:Eb:hpt:vV")) != opteof) {
-#endif
     switch(opt) {
     case 'c': scan_ulong(optarg, &cmax); if (cmax < 1) usage(); break;
     case 'C':
@@ -300,12 +277,6 @@ int main(int argc, char **argv) {
     case 'p': lookuphost =1; paranoid =1; break;
     case 't': scan_ulong(optarg, &timeout); break;
     case 'v': ++verbose; break;
-#ifdef SSLSVD
-    case 'U': ssluser =(char*)optarg; break;
-    case '/': root =(char*)optarg; break;
-    case 'Z': cert =(char*)optarg; break;
-    case 'K': key =(char*)optarg; break;
-#endif
     case 'V': strerr_warn1(VERSION, 0);
     case '?': usage();
     }
@@ -326,27 +297,6 @@ int main(int argc, char **argv) {
         strerr_die4sys(111, FATAL, "unable to get user/group: ", user, ": ");
       strerr_die3x(100, FATAL, "unknown user/group: ", user);
     }
-#ifdef SSLSVD
-  svuser =user;
-  client =0;
-  if ((getuid() == 0) && (! ssluser))
-    strerr_die2x(100, FATAL, "-U ssluser must be set when running as root");
-  if (ssluser)
-    if (! uidgids_get(&sslugid, ssluser)) {
-      if (errno)
-        strerr_die4sys(111, FATAL, "unable to get user/group: ", ssluser, ": ");
-      strerr_die3x(100, FATAL, "unknown user/group: ", ssluser);
-    }
-  if (! cert) cert ="./cert.pem";
-  if (! key) key =cert;
-  if (matrixSslOpen() < 0) fatal("unable to initialize ssl");
-  if (matrixSslReadKeys(&keys, cert, key, 0, ca) < 0) {
-    if (client) fatal("unable to read cert, key, or ca file");
-    fatal("unable to read cert or key file");
-  }
-  if (matrixSslNewSession(&ssl, keys, 0, SSL_FLAGS_SERVER) < 0)
-    strerr_die2x(111, FATAL, "unable to create ssl session");
-#endif
 
   dns_random_init(seed);
   sig_block(sig_child);
@@ -383,29 +333,23 @@ int main(int argc, char **argv) {
   if (listen(s, backlog) == -1) fatal("unable to listen");
   ndelay_off(s);
 
-#ifdef SSLSVD
-#else
   if (user) {
     /* drop permissions */
     if (setgroups(ugid.gids, ugid.gid) == -1) fatal("unable to set groups");
     if (setgid(*ugid.gid) == -1) fatal("unable to set gid");
     if (setuid(ugid.uid) == -1) fatal("unable to set uid");
   }
-#endif
   close(0);
 
   if (verbose) {
     out(INFO); out("listening on "); outfix(local_ip); out(":");
     outfix(local_port);
-#ifdef SSLSVD
-#else
     if (user) {
       bufnum[fmt_ulong(bufnum, ugid.uid)] =0;
       out(", uid "); out(bufnum);
       bufnum[fmt_ulong(bufnum, *ugid.gid)] =0;
       out(", gid "); out(bufnum);
     }
-#endif
     flush(", starting.\n");
   }
   for (;;) {
@@ -432,9 +376,6 @@ int main(int argc, char **argv) {
     if (pid == 0) {
       /* child */
       close(s);
-#ifdef SSLSVD
-      if (*progname) *progname ='\\';
-#endif
       connection_accept(conn);
     }
     if (phccmax) ipsvd_phcc_setpid(pid);

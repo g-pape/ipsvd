@@ -1,3 +1,4 @@
+  * tcpsvd.c, tcpsvd.dist: remove sslsvd code; obsolete.
   * *ssl*: remove; obsolete.
   * Makefile, TARGETS, check-dist, package/compile, package/upgrade:
     remove support for matrixssl; no longer build sslio, sslsvd programs.
