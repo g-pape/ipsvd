@@ -13,7 +13,6 @@
 <a href="#instruct">Powerful client-based instructions</a><br>
 <a href="#libdjbdns">Secure DNS client library</a><br>
 <a href="#runit">Reliable service management and logging</a><br>
-<a href="#ssl">Small footprint SSL support</a> (on Linux and MacOSX)<br>
 <a href="#smallcode">Small code size</a>
 <hr>
 <a name="separation"><h3>One daemon for each service</h3></a>
@@ -67,29 +66,6 @@ The <a href="http://smarden.org/runit/">runit</a> packages provides
 service supervision</a> and a
 <a href="http://smarden.org/runit/benefits.html#log">
 reliable logging facility</a>.
-<hr>
-<a name="ssl"><h3>Small footprint SSL support</h3></a>
-On Linux and MacOSX the <i>ipsvd</i> package optionally provides the
-<a href="sslio.8.html">sslio</a> program to encrypt a network connection
-using the SSLv3 implementation of the
-<a href="http://www.matrixssl.org">matrixssl</a> library.
-This can be used to add SSLv3 functionality to server programs that do not
-support SSL, and to replace a built-in SSL support of a server program.
-See the <a href="examples.html#tcp">examples</a>.
-<p>
-If linked statically with the SSL library and the
-<a href="usedietlibc.html">diet libc</a>, the
-<a href="sslio.8.html">sslio</a> program is less than 70k of size and has
-this <tt>ps xuw</tt> output on my system:
-<pre>
- USER       PID %CPU %MEM   VSZ  RSS TTY      STAT START   TIME COMMAND
- nobody   22906  0.2  0.0   192  160 ?        S    13:22   0:00 sslio
-</pre>
-<!--
-If linked statically with the SSL library and dynamically against the
-<a href="http://www.gnu.org/directory/GNU/glibc.html">glibc</a>, it' about
-80k of size.
--->
 <hr>
 <a name="smallcode"><h3>Small code size</h3></a>
 One of the <i>ipsvd</i> project's principles is to keep the code size small.

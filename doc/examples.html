@@ -46,19 +46,6 @@ instructions through the directory <tt>./peers</tt>.
      /usr/bin/checkpw /usr/sbin/bincimapd
 </pre>
 This <tt>run</tt> script provides a
-<a href="http://www.bincimap.org/">bincimaps</a> service on
-<tt>10.0.0.14:993</tt>, but using the <a href="sslio.8.html">sslio</a>
-program, and so the <a href="http://www.matrixssl.org/">matrixssl</a>
-library, instead of <tt>bincimap</tt>'s builtin <tt>OpenSSL</tt> support.
-<pre>
- #!/bin/sh
- exec 2&gt;&amp;1
- exec tcpsvd -v -c40 -l0 10.0.0.14 993 \
-   sslio -vv -C/imapd.pem -unobody -//etc/bincimap/bincimaps/jail \
-     bincimap-up --conf=/etc/bincimap/bincimap.conf -a -- \
-       /usr/bin/checkpw /usr/sbin/bincimapd
-</pre>
-This <tt>run</tt> script provides a
 <a href="http://www.qmail.org/">qmail-smtpd</a> service on
 <tt>192.168.14.6:25</tt>, with per-host concurrency limit, and with per-host
 instructions through the directory <tt>./peers</tt>.
@@ -69,16 +56,6 @@ instructions through the directory <tt>./peers</tt>.
   tcpsvd -vvh -i./peers -uqmaild \
     -c40 -C'10:421 per host concurrency limit reached\r\n' \
       192.168.14.6 25 qmail-smtpd
-</pre>
-This <tt>run</tt> script provides a
-<a href="http://www.fefe.de/fnord/">fnord</a> <tt>https</tt> service on
-<tt>10.0.5.4</tt>.
-<pre>
- #!/bin/sh
- exec 2&gt;&amp;1
- cd /public/10.0.5.4
- exec chpst -m300000 -Uwwwuser tcpsvd -v 10.0.5.4 443 \
-   sslio -v -unobody -//etc/fnord/jail -C./cert.pem fnord
 </pre>
 <hr>
 <h3><a name="udp">UDP/IP service examples</a></h3>
