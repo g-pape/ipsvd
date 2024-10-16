@@ -1,3 +1,5 @@
+  * man/ipsvd-cdb.8, man/ipsvd-instruct.5, man/ipsvd.7, man/tcpsvd.8,
+    man/udpsvd.8: remove references to sslio.8, sslsvd.8.
   * man/sslio.8, man/sslsvd.8: remove; obsolete.
   * tcpsvd.c, tcpsvd.dist: remove sslsvd code; obsolete.
   * *ssl*: remove; obsolete.
