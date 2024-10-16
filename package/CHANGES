@@ -1,3 +1,6 @@
+  * *ssl*: remove; obsolete.
+  * Makefile, TARGETS, check-dist, package/compile, package/upgrade:
+    remove support for matrixssl; no longer build sslio, sslsvd programs.
   * doc/upgrade.html: typo.
   * tcpsvd.c, udpsvd.c: print proper group id when verbose.
   * doc/install.html: add link to sha256sum.asc.

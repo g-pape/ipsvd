@@ -4,10 +4,6 @@ udpsvd
 udpsvd.o
 ipsvd-cdb
 ipsvd-cdb.o
-sslio
-sslio.o
-sslsvd
-sslsvd.o
 check-tcpsvd
 check-tcpsvd.o
 check-udpsvd
@@ -20,15 +16,10 @@ ipsvd_log.o
 ipsvd_hostname.o
 ipsvd_phcc.o
 ipsvd_scan.o
-ssl_io.o
-sslerror_str.o
 uidgid.o
 socket.lib
 trysocketlib
 trysocketlib.o
-command.ssl
-matrixSsl.h
-matrixssl.a
 cdb_hash.o
 cdb_make.o
 cdb.a
@@ -158,4 +149,3 @@ dns.a
 ipsvd-cdb.local
 tcpsvd.local
 udpsvd.local
-sslio.local

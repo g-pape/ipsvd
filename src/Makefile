@@ -1,10 +1,9 @@
 IT=tcpsvd udpsvd ipsvd-cdb
 
-default: command.ssl $(IT)
-	$(MAKE) `cat command.ssl`
+default: sysdeps $(IT)
 
 check: check-tcpsvd check-udpsvd check-ipsvd-cdb
-	./check-local $(IT) `grep -v nossl <command.ssl || :`
+	./check-local $(IT)
 
 tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
 	  ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a dns.a unix.a byte.a \
@@ -12,13 +11,6 @@ tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
 	./load tcpsvd ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
 	  ipsvd_phcc.o ipsvd_scan.o uidgid.o cdb.a dns.a unix.a byte.a \
 	  time.a `cat socket.lib`
-
-sslsvd: load sslsvd.o ssl_io.o sslerror_str.o ipsvd_log.o ipsvd_fmt.o \
-	  ipsvd_check.o ipsvd_hostname.o ipsvd_phcc.o ipsvd_scan.o uidgid.o \
-	  cdb.a dns.a unix.a byte.a time.a socket.lib matrixssl.a
-	./load sslsvd ssl_io.o sslerror_str.o ipsvd_log.o ipsvd_fmt.o \
-	  ipsvd_check.o ipsvd_hostname.o ipsvd_phcc.o ipsvd_scan.o uidgid.o \
-	  cdb.a dns.a unix.a byte.a time.a `cat socket.lib` matrixssl.a
 
 udpsvd: load udpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
 	  ipsvd_scan.o uidgid.o cdb.a dns.a unix.a byte.a time.a socket.lib
@@ -30,27 +22,6 @@ ipsvd-cdb: load ipsvd-cdb.o ipsvd_fmt.o ipsvd_check.o cdb.a dns.a unix.a \
 	  byte.a time.a
 	./load ipsvd-cdb ipsvd_fmt.o ipsvd_check.o cdb.a dns.a unix.a byte.a \
 	  time.a `cat socket.lib`
-
-sslio: load sslio.o ssl_io.o uidgid.o sslerror_str.o unix.a byte.a time.a \
-	  matrixssl.a
-	./load sslio ssl_io.o uidgid.o sslerror_str.o unix.a byte.a time.a \
-	  matrixssl.a
-
-matrixssl.a: makelib matrixssl
-	install -m0644 Makefile.matrixssl matrixssl/src/Makefile.matrixssl
-	(cd matrixssl/src && $(MAKE) -fMakefile.matrixssl matrixssl.a)
-	install -m0644 matrixssl/src/matrixssl.a matrixssl.a
-
-matrixssl: matrixssl.tar.gz compile load
-	gzip -dc matrixssl.tar.gz |tar xf -
-	test -e matrixssl || ln -s matrixssl-* matrixssl
-	sed -e 's/#define USE_MULTITHREADING/#undef USE_MULTITHREADING/' \
-	  <matrixssl/src/matrixConfig.h >matrixConfig.h && \
-	    mv -f matrixConfig.h matrixssl/src/matrixConfig.h
-	echo '#ifndef CLK_TCK' >>matrixssl/src/os/osLayer.h
-	echo '#define CLK_TCK CLOCKS_PER_SEC' >>matrixssl/src/os/osLayer.h
-	echo '#endif' >>matrixssl/src/os/osLayer.h
-	touch matrixssl
 
 check-tcpsvd: load check-tcpsvd.o unix.a byte.a socket.lib
 	./load check-tcpsvd unix.a byte.a `cat socket.lib`
@@ -64,20 +35,11 @@ check-ipsvd-cdb: load check-ipsvd-cdb.o uint32_unpack.o unix.a byte.a
 tcpsvd.o: compile sysdeps tcpsvd.c ipsvd_log.h
 	./compile tcpsvd.c
 
-sslsvd.o: compile sysdeps tcpsvd.c ssl_io.c ipsvd_log.h matrixssl
-	./compile -I./matrixssl sslsvd.c
-
-ssl_io.o: compile sysdeps ssl_io.c matrixssl
-	./compile -I./matrixssl ssl_io.c
-
 udpsvd.o: compile sysdeps udpsvd.c ipsvd_log.h
 	./compile udpsvd.c
 
 ipsvd-cdb.o: compile sysdeps ipsvd-cdb.c
 	./compile ipsvd-cdb.c
-
-sslio.o: compile sysdeps sslio.c matrixssl
-	./compile -I./matrixssl sslio.c
 
 check-tcpsvd.o: compile check-tcpsvd.c
 	./compile check-tcpsvd.c
@@ -109,9 +71,6 @@ ipsvd_scan.o: compile ipsvd_scan.c
 uidgid.o: compile uidgid.c uidgid.h
 	./compile uidgid.c
 
-sslerror_str.o: compile sslerror_str.c sslerror_str.h matrixssl
-	./compile -I./matrixssl sslerror_str.c
-
 socket.lib: compile load trysocketlib.c
 	./compile trysocketlib.c
 	(./load trysocketlib >/dev/null 2>&1 || \
@@ -120,18 +79,8 @@ socket.lib: compile load trysocketlib.c
 	    echo '-lsocket -lnsl') ) >socket.lib
 	rm -f trysocketlib.o trysocketlib
 
-command.ssl: command.sslcheck
-command.sslcheck:
-	( (test ! -r matrixssl.tar.gz && echo nossl) || \
-	  echo sslio sslsvd) >command.sslcheck
-	mv -f command.sslcheck command.ssl
-
-nossl:
-	: no ssl library, not making sslio
-
 clean:
 	rm -f `cat TARGETS` *~
-	rm -rf matrixssl matrixssl-*
 
 
 alloc.o: alloc.c alloc.h compile error.h

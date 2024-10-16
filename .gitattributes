@@ -1,5 +1,3 @@
 /src/ipsvd-cdb.c	ident
-/src/ssl_io.c	ident
-/src/sslio.c	ident
 /src/tcpsvd.c	ident
 /src/udpsvd.c	ident
