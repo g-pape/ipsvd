@@ -1,6 +1,6 @@
 DESTDIR=
 
-PACKAGE=ipsvd-1.0.0
+PACKAGE=ipsvd-1.1.0
 DIRS=doc man src package
 MANPAGES=man/ipsvd.7 man/tcpsvd.8 man/udpsvd.8 man/ipsvd-cdb.8 \
 man/ipsvd-instruct.5

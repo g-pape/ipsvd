@@ -7,9 +7,9 @@ test -d src || sh -cx '! : Wrong working directory.'
 here=`env - PATH=$PATH pwd`
 parent=`dirname $here`
 
-echo 'Creating symlink ipsvd -> ipsvd-1.0.0...'
+echo 'Creating symlink ipsvd -> ipsvd-1.1.0...'
 rm -f ipsvd
-ln -s ipsvd-1.0.0 ipsvd
+ln -s ipsvd-1.1.0 ipsvd
 mv -f ipsvd ..
 
 echo 'Making command links in /command...'
@@ -19,6 +19,10 @@ for i in `cat package/commands`; do
   ln -s $parent/ipsvd/command/$i /command/$i'{new}'
   mv -f /command/$i'{new}' /command/$i
 done
+if test -e /command/sslio; then
+  echo 'Removing sslio, sslsvd from /command...'
+  rm -f /command/sslio /command/sslsvd
+fi
 echo 'Making compatibility links in /usr/local/bin...'
 mkdir -p /usr/local/bin/.
 for i in `cat package/commands`; do
@@ -26,3 +30,7 @@ for i in `cat package/commands`; do
   ln -s /command/$i /usr/local/bin/$i'{new}'
   mv -f /usr/local/bin/$i'{new}' /usr/local/bin/$i
 done
+if test -e /usr/local/bin/sslio; then
+  echo 'Removing sslio, sslsvd from /usr/local/bin...'
+  rm -f /usr/local/bin/sslio /usr/local/bin/sslsvd
+fi

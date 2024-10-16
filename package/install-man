@@ -22,4 +22,8 @@ for k in 5 7 8; do
     mv -f /usr/local/man/man$k/$i.gz'{new}' /usr/local/man/man$k/$i.gz
   done
 done
+if test -e /usr/local/man/man8/sslio.8.gz; then
+  echo 'Removing sslio, sslsvd manpage links from /usr/local/man...'
+  rm -f /usr/local/man/man8/sslio.8.gz /usr/local/man/man8/sslsvd.8.gz
+fi
 cd ..
