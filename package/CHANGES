@@ -1,3 +1,4 @@
+  * src/Makefile: target check depends on target default now.
   * doc/index.html: remove reference to mailing list misc@list.smarden.org.
   * doc/index.html: add reference to repository on github.com.
   * doc/install.html: put back installation step removed by mistake.

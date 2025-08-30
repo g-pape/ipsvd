@@ -2,7 +2,7 @@ IT=tcpsvd udpsvd ipsvd-cdb
 
 default: sysdeps $(IT)
 
-check: check-tcpsvd check-udpsvd check-ipsvd-cdb
+check: default check-tcpsvd check-udpsvd check-ipsvd-cdb
 	./check-local $(IT)
 
 tcpsvd: load tcpsvd.o ipsvd_log.o ipsvd_fmt.o ipsvd_check.o ipsvd_hostname.o \
