@@ -14,7 +14,7 @@ unsigned int i;
 /* to be optimized */
 
 int ipsvd_phcc_init(unsigned int c) {
-  if (cc) alloc_free(cc);
+  if (cc) alloc_free((char *)cc);
   cc =(struct hcc*)alloc(c *sizeof(struct hcc));
   if (! cc) return(-1);
   for (i =0; i < c; ++i) {
@@ -59,5 +59,5 @@ int ipsvd_phcc_rem(int pid) {
 }
 
 void ipsvd_phcc_free(void) {
-  if (cc) alloc_free(cc);
+  if (cc) alloc_free((char *)cc);
 }
