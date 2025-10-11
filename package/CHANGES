@@ -1,3 +1,5 @@
+  * doc/index.html: Related links: remove links to distributions, repair
+    broken links.
   * doc/*: switch all cr.yp.to http links to https.
   * doc/*, man/*: switch all smarden.org http links to https.
   * alloc.h, buffer.c, buffer.h, buffer_get.c, buffer_put.c, buffer_write.c,
