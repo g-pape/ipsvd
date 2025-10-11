@@ -1,3 +1,4 @@
+  * doc/*, man/*: switch all smarden.org http links to https.
   * alloc.h, buffer.c, buffer.h, buffer_get.c, buffer_put.c, buffer_write.c,
     byte.h, check-udpsvd.c, ipsvd_phcc.c, pathexec_env.c, select.h1,
     select.h2, sig.c, sig.h, sig_catch.c, socket_bind.c, socket_conn.c,
