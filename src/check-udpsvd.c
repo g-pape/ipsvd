@@ -19,7 +19,7 @@ int main() {
   if (s == -1) strerr_die1sys(111, "fatal: unable to create socket: ");
   if (socket_bind4(s, ip, 0) == -1)
     strerr_die1sys(111, "fatal: unable to bind socket: ");
-  byte_zero(&sa, sizeof(sa));
+  byte_zero((char *)&sa, sizeof(sa));
   sa.sin_family =AF_INET;
   uint16_pack_big((char *)&sa.sin_port, 12614);
   byte_copy((char *)&sa.sin_addr, 4, ip);

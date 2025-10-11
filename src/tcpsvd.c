@@ -113,14 +113,14 @@ void connection_status() {
   out(bufnum); flush("\n");
 }
 
-void sig_term_handler() {
+void sig_term_handler(int) {
   if (phccmax) ipsvd_phcc_free();
   if (verbose) {
     out(INFO); flush("sigterm received, exit.\n");
   }
   _exit(0);
 }
-void sig_child_handler() {
+void sig_child_handler(int) {
   int wstat;
   int i;
 

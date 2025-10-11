@@ -79,7 +79,7 @@ void discard(char *m0, char *m1) {
   strerr_die6sys(111, DROP, "discard data: ", m0, ": ", m1, ": ");
 }
 
-void sig_term_handler() {
+void sig_term_handler(int) {
   if (verbose) {
     out(INFO); flush("sigterm received, exit.\n");
   }

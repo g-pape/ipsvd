@@ -1,7 +1,7 @@
 usage: tcpsvd [-Ehpv] [-u user] [-c n] [-C n:msg] [-b n] [-l name] [-i dir|-x cdb] [-t sec] host port prog
 
 111
-$Id: ad115818707474c00ed81e5e97a7e7e9357bf2a6 $
+$Id: 16cb92804227aac9e77bc83af3cd019617d8a2e7 $
 usage: tcpsvd [-Ehpv] [-u user] [-c n] [-C n:msg] [-b n] [-l name] [-i dir|-x cdb] [-t sec] host port prog
 
 111
