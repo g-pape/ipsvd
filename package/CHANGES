@@ -1,3 +1,4 @@
+  * tcpsvd.c, udpsvd.c: use parameter name "unused" in sighandler functions.
   * hasflock.h1: add #include <unistd.h>.
   * doc/*.html: !DOCTYPE.
   * doc/index.html: Related links: remove links to distributions, repair
