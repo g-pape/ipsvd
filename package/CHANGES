@@ -1,3 +1,4 @@
+  * doc/*.html: !DOCTYPE.
   * doc/index.html: Related links: remove links to distributions, repair
     broken links.
   * doc/*: switch all cr.yp.to http links to https.
