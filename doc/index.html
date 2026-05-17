@@ -1,64 +1,63 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 <title>ipsvd - internet protocol service daemons</title>
+<style type="text/css">pre { padding: 0em 1em; overflow: auto; }</style>
 </head>
 <body>
-<a href="https://smarden.org/pape/">G. Pape</a>
-<hr>
-<h1>ipsvd - internet protocol service daemons</h1>
-<hr>
-<a href="install.html">How to install ipsvd</a><br>
-<a href="upgrade.html">Upgrading from previous versions of ipsvd</a><br>
-<p>
-<a href="benefits.html">Benefits</a><br>
-<a href="usedietlibc.html">How to use dietlibc</a>
-<p>
-<a href="examples.html">Examples</a>
-<p>
-<a href="ipsvd.7.html">The <tt>ipsvd</tt> interface</a><br>
-<a href="tcpsvd.8.html">The <tt>tcpsvd</tt> program</a><br>
-<a href="udpsvd.8.html">The <tt>udpsvd</tt> program</a><br>
-<p>
-<a href="ipsvd-instruct.5.html">The ipsvd instructions</a><br>
-<a href="ipsvd-cdb.8.html">The <tt>ipsvd-cdb</tt> program</a>
-<hr>
-<i>ipsvd</i> is a set of internet protocol service daemons for Unix.
-It currently includes a TCP/IP service daemon and an UDP/IP service daemon.
-<p>
-An internet protocol service (<i>ipsv</i>) daemon waits for incoming
-connections on a local socket; for new connections, it conditionally runs an
-arbitrary program with standard input reading from the socket, and standard
-output writing to the socket (if connected), to handle the connection.
-Standard error is used for logging.
-<p>
-<i>ipsv</i> daemons can be told to read and follow pre-defined instructions
-on how to handle incoming connections; based on the client's IP address or
-hostname, they can run different programs, set a different environment, deny
-a connection, or set a per host concurrency limit.
-<p>
-Normally the <i>ipsv</i> daemons are run by a supervisor process, such as
-<a href="https://smarden.org/runit/runsv.8.html">runsv</a> from the
-<a href="https://smarden.org/runit/">runit</a> package, or
-<a href="https://cr.yp.to/daemontools/supervise.html">supervise</a> from the
-<a href="https://cr.yp.to/daemontools.html">daemontools</a> package.
-<p>
-<i>ipsvd</i> can be used to run services normally run by <i>inetd</i>,
-<i>xinetd</i>, or <i>tcpserver</i>.
-<hr>
-Contribute to <i>ipsvd</i> through
-<a href="https://github.com/g-pape/ipsvd/">GitHub ipsvd</a>.
-<hr>
-Related links:
+<p><a href="https://smarden.org/pape/">G. Pape</a></p>
+<hr />
+<h1 id="ipsvd---internet-protocol-service-daemons">ipsvd - internet
+protocol service daemons</h1>
+<hr />
+<p><a href="install.html">How to install ipsvd</a><br />
+<a href="upgrade.html">Upgrading from previous versions of ipsvd</a></p>
+<p><a href="benefits.html">Benefits</a><br />
+<a href="usedietlibc.html">How to use dietlibc</a></p>
+<p><a href="examples.html">Examples</a></p>
+<p><a href="ipsvd.7.html">The <code>ipsvd</code> interface</a><br />
+<a href="tcpsvd.8.html">The <code>tcpsvd</code> program</a><br />
+<a href="udpsvd.8.html">The <code>udpsvd</code> program</a></p>
+<p><a href="ipsvd-instruct.5.html">The ipsvd instructions</a><br />
+<a href="ipsvd-cdb.8.html">The <code>ipsvd-cdb</code> program</a></p>
+<hr />
+<p><em>ipsvd</em> is a set of internet protocol service daemons for
+Unix. It currently includes a TCP/IP service daemon and an UDP/IP
+service daemon.</p>
+<p>An internet protocol service (<em>ipsv</em>) daemon waits for
+incoming connections on a local socket; for new connections, it
+conditionally runs an arbitrary program with standard input reading from
+the socket, and standard output writing to the socket (if connected), to
+handle the connection. Standard error is used for logging.</p>
+<p><em>ipsv</em> daemons can be told to read and follow pre-defined
+instructions on how to handle incoming connections; based on the
+client's IP address or hostname, they can run different programs, set a
+different environment, deny a connection, or set a per host concurrency
+limit.</p>
+<p>Normally the <em>ipsv</em> daemons are run by a supervisor process,
+such as <a href="https://smarden.org/runit/runsv.8.html">runsv</a> from
+the <a href="https://smarden.org/runit/">runit</a> package, or <a
+href="https://cr.yp.to/daemontools/supervise.html">supervise</a> from
+the <a href="https://cr.yp.to/daemontools.html">daemontools</a>
+package.</p>
+<p><em>ipsvd</em> can be used to run services normally run by
+<em>inetd</em>, <em>xinetd</em>, or <em>tcpserver</em>.</p>
+<hr />
+<p>Contribute to <em>ipsvd</em> through <a
+href="https://github.com/g-pape/ipsvd/">GitHub ipsvd</a>.</p>
+<hr />
+<p>Related links:</p>
 <ul>
-<li><a href="https://cr.yp.to/ucspi-tcp.html">ucspi-tcp</a>
-<li><a href="https://netcat.sourceforge.net">netcat</a>
-<li><a href="https://en.wikipedia.org/wiki/Xinetd">xinetd</a>
-<li><a href="https://en.wikipedia.org/wiki/Inetd">inetd</a>
+<li><a href="https://cr.yp.to/ucspi-tcp.html">ucspi-tcp</a></li>
+<li><a href="https://netcat.sourceforge.net">netcat</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Xinetd">xinetd</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Inetd">inetd</a></li>
 </ul>
-<hr>
-<address><a href="mailto:pape@smarden.org">
-Gerrit Pape &lt;pape@smarden.org&gt;
-</a></address>
+<hr />
+<p><a href="mailto:pape@smarden.org">Gerrit Pape
+&lt;pape@smarden.org&gt;</a></p>
 </body>
 </html>

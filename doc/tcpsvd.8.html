@@ -1,146 +1,155 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-
-
+<!DOCTYPE html>
 <html>
 <head>
-<title>tcpsvd(8) manual page</title>
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<title>tcpsvd(8)</title>
 </head>
-<body bgcolor='white'>
-<a href='https://smarden.org/pape/'>G. Pape</a><br><a href='index.html'>ipsvd</a><hr>
-
-<h2><a name='sect0'>Name</a></h2>
-tcpsvd - TCP/IP service daemon 
-<h2><a name='sect1'>Synopsis</a></h2>
-<b>tcpsvd</b> [-hpEvv] [-c <i>n]</i> [-C <i>n:<i>msg</i>]</i>
-[-b <i>n]</i> [-u <i>user]</i> [-l <i>name]</i> [-i <i>dir</i>|-x <i>cdb</i>] [ -t <i>sec</i>] <i>host</i> <i>port</i> <i>prog</i> 
-<h2><a name='sect2'>Description</a></h2>
-<b>tcpsvd</b>
-creates a TCP/IP socket, binds it to the address <i>host</i>:<i>port</i>, and listens
-on the socket for incoming connections. <p>
-On each incoming connection, <b>tcpsvd</b>
-conditionally runs a program, with standard input reading from the socket,
-and standard output writing to the socket, to handle this connection. <b>tcpsvd</b>
-keeps listening on the socket for new connections, and can handle multiple
-connections simultaneously. <p>
-<b>tcpsvd</b> optionally checks for special instructions
+<body>
+<p><a href="https://smarden.org/pape/">G. Pape</a><br />
+<a href="index.html">ipsvd</a></p>
+<hr />
+<h3 id="name">NAME</h3>
+<p>tcpsvd - TCP/IP service daemon</p>
+<h3 id="synopsis">SYNOPSIS</h3>
+<p><strong>tcpsvd</strong> [-hpEvv] [-c <em>n</em>] [-C
+<em>n</em>:<em>msg</em>] [-b <em>n</em>] [-u <em>user</em>] [-l
+<em>name</em>] [-i <em>dir</em>|-x <em>cdb</em>] [ -t <em>sec</em>]
+<em>host</em> <em>port</em> <em>prog</em></p>
+<h3 id="description">DESCRIPTION</h3>
+<p><strong>tcpsvd</strong> creates a TCP/IP socket, binds it to the
+address <em>host</em>:<em>port</em>, and listens on the socket for
+incoming connections.</p>
+<p>On each incoming connection, <strong>tcpsvd</strong> conditionally
+runs a program, with standard input reading from the socket, and
+standard output writing to the socket, to handle this connection.
+<strong>tcpsvd</strong> keeps listening on the socket for new
+connections, and can handle multiple connections simultaneously.</p>
+<p><strong>tcpsvd</strong> optionally checks for special instructions
 depending on the IP address or hostname of the client that initiated the
-connection, see <i><b>ipsvd-instruct</b>(5)</i>. 
-<h2><a name='sect3'>Options</a></h2>
-
+connection, see <strong>ipsvd-instruct</strong>(5).</p>
+<h3 id="options">OPTIONS</h3>
 <dl>
-
-<dt><i>host</i> </dt>
-<dd><i>host</i> either is a hostname,
-or a dotted-decimal IP address, or 0. If <i>host</i> is 0, <b>tcpsvd</b> accepts connections
-to any local IP address. </dd>
-
-<dt><i>port</i> </dt>
-<dd><b>tcpsvd</b> accepts connections to <i>host</i>:<i>port</i>. <i>port</i>
-may be a name from /etc/services or a number. </dd>
-
-<dt><i>prog</i> </dt>
-<dd><i>prog</i> consists of one
-or more arguments. For each connection, <b>tcpsvd</b> normally runs <i>prog</i>, with
-file descriptor 0 reading from the network, and file descriptor 1 writing
-to the network. By default it also sets up TCP-related environment variables,
-see <i><b>tcp-environ</b>(5)</i> </dd>
-
-<dt><b>-i <i>dir</b> </i></dt>
-<dd>read instructions for handling new connections
-from the instructions directory <i>dir</i>. See <i><b>ipsvd-instruct</b>(5)</i> for details. </dd>
-
-<dt><b>-x
-<i>cdb</b> </i></dt>
-<dd>read instructions for handling new connections from the constant database
-<i>cdb</i>. The constant database normally is created from an instructions directory
-by running <i><b>ipsvd-cdb</b>(8)</i>. </dd>
-
-<dt><b>-t <i>sec</b> </i></dt>
-<dd>timeout. This option only takes effect if the
--i option is given. While checking the instructions directory, check the
-time of last access of the file that matches the clients address or hostname
-if any, discard and remove the file if it wasn&rsquo;t accessed within the last
-<i>sec</i> seconds; <b>tcpsvd</b> does not discard or remove a file if the user&rsquo;s write
-permission is not set, for those files the timeout is disabled. Default
-is 0, which means that the timeout is disabled. </dd>
-
-<dt><b>-l <i>name</b> </i></dt>
-<dd>local hostname. Do
-not look up the local hostname in DNS, but use <i>name</i> as hostname. This option
-must be set if <b>tcpsvd</b> listens on port 53 to avoid loops. </dd>
-
-<dt><b>-u <i>[:]user[:group]</b>
-</i></dt>
-<dd>drop permissions. Set uid and gid to the <i>user</i>&rsquo;s uid and gid, as found in
-<i>/etc/passwd</i>, before running <i>prog</i>. If <i>user</i> is followed by a colon and a <i>group</i>,
-set the gid to <i>group</i>&rsquo;s gid, as found in <i>/etc/group</i>, instead of <i>user</i>&rsquo;s gid.
-If <i>group</i> consists of a colon-separated list of group names, set the group
-ids of all listed groups. If <i>user</i> is prefixed with a colon, the <i>user</i> and
-all <i>group</i> arguments are interpreted as uid and gids respectively, and not
-looked up in the password or group file. All supplementary groups are removed.
+<dt><em>host</em></dt>
+<dd>
+<em>host</em> either is a hostname, or a dotted-decimal IP address, or
+0. If <em>host</em> is 0, <strong>tcpsvd</strong> accepts connections to
+any local IP address.
 </dd>
-
-<dt><b>-c <i>n</b> </i></dt>
-<dd>concurrency. Handle up to <i>n</i> connections simultaneously. Default is 30.
-If there are <i>n</i> connections active, <b>tcpsvd</b> defers acceptance of a new connection
-until an active connection is closed. </dd>
-
-<dt><b>-C <i>n</i>[:<i>msg</i>]</b> </dt>
-<dd>per host concurrency. Allow
-only up to <i>n</i> connections from the same IP address simultaneously. If there
-are <i>n</i> active connections from one IP address, new incoming connections
-from this IP address are closed immediately. If <i>n</i> is followed by :<i>msg,</i> the
-message <i>msg</i> is written to the client if possible, before closing the connection.
-By default <i>msg</i> is empty. See <i><b>ipsvd-instruct</b>(5)</i> for supported escape sequences
-in <i>msg</i>. 
-<p> For each accepted connection, the current per host concurrency
-is available through the environment variable <i>TCPCONCURRENCY</i>. <i>n</i> and <i>msg</i>
-can be overwritten by <i><b>ipsvd</b>(7)</i> instructions, see <i><b>ipsvd-instruct</b>(5)</i>.<b></b> By default
-<b>tcpsvd</b> doesn&rsquo;t keep track of connections. </dd>
-
-<dt><b>-h</b> </dt>
-<dd>Look up the client&rsquo;s hostname
-in DNS. </dd>
-
-<dt><b>-p</b> </dt>
-<dd>paranoid. After looking up the client&rsquo;s hostname in DNS, look up
-the IP addresses in DNS for that hostname, and forget about the hostname
-if none of the addresses match the client&rsquo;s IP address. You should set this
+<dt><em>port</em></dt>
+<dd>
+<strong>tcpsvd</strong> accepts connections to
+<em>host</em>:<em>port</em>. <em>port</em> may be a name from
+/etc/services or a number.
+</dd>
+<dt><em>prog</em></dt>
+<dd>
+<em>prog</em> consists of one or more arguments. For each connection,
+<strong>tcpsvd</strong> normally runs <em>prog</em>, with file
+descriptor 0 reading from the network, and file descriptor 1 writing to
+the network. By default it also sets up TCP-related environment
+variables, see <strong>tcp-environ</strong>(5)
+</dd>
+<dt><strong>-i</strong> <em>dir</em></dt>
+<dd>
+read instructions for handling new connections from the instructions
+directory <em>dir</em>. See <strong>ipsvd-instruct</strong>(5) for
+details.
+</dd>
+<dt><strong>-x</strong> <em>cdb</em></dt>
+<dd>
+read instructions for handling new connections from the constant
+database <em>cdb</em>. The constant database normally is created from an
+instructions directory by running <strong>ipsvd-cdb</strong>(8).
+</dd>
+<dt><strong>-t</strong> <em>sec</em></dt>
+<dd>
+timeout. This option only takes effect if the -i option is given. While
+checking the instructions directory, check the time of last access of
+the file that matches the clients address or hostname if any, discard
+and remove the file if it wasn't accessed within the last <em>sec</em>
+seconds; <strong>tcpsvd</strong> does not discard or remove a file if
+the user's write permission is not set, for those files the timeout is
+disabled. Default is 0, which means that the timeout is disabled.
+</dd>
+<dt><strong>-l</strong> <em>name</em></dt>
+<dd>
+local hostname. Do not look up the local hostname in DNS, but use
+<em>name</em> as hostname. This option must be set if
+<strong>tcpsvd</strong> listens on port 53 to avoid loops.
+</dd>
+<dt><strong>-u</strong> [:]<em>user</em>[:<em>group</em>]</dt>
+<dd>
+drop permissions. Set uid and gid to the <em>user</em>'s uid and gid, as
+found in <em>/etc/passwd</em>, before running <em>prog</em>. If
+<em>user</em> is followed by a colon and a <em>group</em>, set the gid
+to <em>group</em>'s gid, as found in <em>/etc/group</em>, instead of
+<em>user</em>'s gid. If <em>group</em> consists of a colon-separated
+list of group names, set the group ids of all listed groups. If
+<em>user</em> is prefixed with a colon, the <em>user</em> and all
+<em>group</em> arguments are interpreted as uid and gids respectively,
+and not looked up in the password or group file. All supplementary
+groups are removed.
+</dd>
+<dt><strong>-c</strong> <em>n</em></dt>
+<dd>
+concurrency. Handle up to <em>n</em> connections simultaneously. Default
+is 30. If there are <em>n</em> connections active,
+<strong>tcpsvd</strong> defers acceptance of a new connection until an
+active connection is closed.
+</dd>
+<dt><strong>-C</strong> <em>n</em>[:<em>msg</em>]</dt>
+<dd>
+<p>per host concurrency. Allow only up to <em>n</em> connections from
+the same IP address simultaneously. If there are <em>n</em> active
+connections from one IP address, new incoming connections from this IP
+address are closed immediately. If <em>n</em> is followed by
+:<em>msg,</em> the message <em>msg</em> is written to the client if
+possible, before closing the connection. By default <em>msg</em> is
+empty. See <strong>ipsvd-instruct</strong>(5) for supported escape
+sequences in <em>msg</em>.</p>
+<p>For each accepted connection, the current per host concurrency is
+available through the environment variable <em>TCPCONCURRENCY</em>.
+<em>n</em> and <em>msg</em> can be overwritten by
+<strong>ipsvd</strong>(7) instructions, see
+<strong>ipsvd-instruct</strong>(5). By default <strong>tcpsvd</strong>
+doesn't keep track of connections.</p>
+</dd>
+<dt><strong>-h</strong></dt>
+<dd>
+Look up the client's hostname in DNS.
+</dd>
+<dt><strong>-p</strong></dt>
+<dd>
+paranoid. After looking up the client's hostname in DNS, look up the IP
+addresses in DNS for that hostname, and forget about the hostname if
+none of the addresses match the client's IP address. You should set this
 option if you use hostname based instructions. The -p option implies the
--h option. </dd>
-
-<dt><b>-b <i>n</b> </i></dt>
-<dd>backlog. Allow a backlog of approximately <i>n</i> TCP SYNs. On some
-systems <i>n</i> is silently limited. Default is 20. </dd>
-
-<dt><b>-E</b> </dt>
-<dd>no special environment. Do
-not set up TCP-related environment variables. </dd>
-
-<dt><b>-v</b> </dt>
-<dd>verbose. Print verbose messsages
-to standard output. </dd>
-
-<dt><b>-vv</b> </dt>
-<dd>more verbose. Print more verbose messages to standard
-output. </dd>
+-h option.
+</dd>
+<dt><strong>-b</strong> <em>n</em></dt>
+<dd>
+backlog. Allow a backlog of approximately <em>n</em> TCP SYNs. On some
+systems <em>n</em> is silently limited. Default is 20.
+</dd>
+<dt><strong>-E</strong></dt>
+<dd>
+no special environment. Do not set up TCP-related environment variables.
+</dd>
+<dt><strong>-v</strong></dt>
+<dd>
+verbose. Print verbose messsages to standard output.
+</dd>
+<dt><strong>-vv</strong></dt>
+<dd>
+more verbose. Print more verbose messages to standard output.
+</dd>
 </dl>
-
-<h2><a name='sect4'>See Also</a></h2>
-<i>ipsvd(7)</i>, <i>udpsvd(8)</i>, <i>ipsvd-instruct(5)</i>, <i>ipsvd-cdb(8)</i> <p>
-<i>https://smarden.org/ipsvd/</i> 
-<h2><a name='sect5'>Author</a></h2>
-Gerrit Pape &lt;pape@smarden.org&gt; <p>
-
-<hr><p>
-<a name='toc'><b>Table of Contents</b></a><p>
-<ul>
-<li><a name='toc0' href='#sect0'>Name</a></li>
-<li><a name='toc1' href='#sect1'>Synopsis</a></li>
-<li><a name='toc2' href='#sect2'>Description</a></li>
-<li><a name='toc3' href='#sect3'>Options</a></li>
-<li><a name='toc4' href='#sect4'>See Also</a></li>
-<li><a name='toc5' href='#sect5'>Author</a></li>
-</ul>
+<h3 id="see-also">SEE ALSO</h3>
+<p>ipsvd(7), udpsvd(8), ipsvd-instruct(5), ipsvd-cdb(8),</p>
+<p>https://smarden.org/ipsvd/</p>
+<h3 id="author">AUTHOR</h3>
+<p>Gerrit Pape &lt;pape@smarden.org&gt;</p>
 </body>
 </html>

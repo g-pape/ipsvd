@@ -1,127 +1,110 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 <title>ipsvd - examples</title>
+<style type="text/css">pre { padding: 0em 1em; overflow: auto; }</style>
 </head>
 <body>
-<a href="https://smarden.org/pape/">G. Pape</a><br>
-<a href="index.html">ipsvd</a><br>
-<hr>
-<h1>ipsvd - examples</h1>
-<hr>
-<a href="#tcp">TCP/IP services</a><br>
-<a href="#udp">UDP/IP services</a><br>
-<a href="#instruct"><i>ipsvd</i> instructions</a><br>
-<hr>
-<h3><a name="tcp">TCP/IP service examples</a></h3>
-This <tt>run</tt> script provides an <i>identd</i> service on
-<tt>0.0.0.0:113</tt>
-<pre>
- #!/bin/sh
- exec tcpsvd -l0 0 113 identd
-</pre>
-This <tt>run</tt> script provides a
-<a href="http://untroubled.org/mailfront/">smtpfront-qmail</a> service on
-<tt>192.168.2.1:25</tt>, with per-host instructions through the constant
-database <tt>./peers.cdb</tt>.
-<pre>
- #!/bin/sh
+<p><a href="https://smarden.org/pape/">G. Pape</a><br />
+<a href="index.html">ipsvd</a></p>
+<hr />
+<h1 id="ipsvd---examples">ipsvd - examples</h1>
+<hr />
+<p><a href="#tcp">TCP/IP services</a><br />
+<a href="#udp">UDP/IP services</a><br />
+<a href="#instruct"><em>ipsvd</em> instructions</a></p>
+<hr />
+<h3 id="tcpip-service-examples"><span id="tcp">TCP/IP service
+examples</span></h3>
+<p>This <code>run</code> script provides an <em>identd</em> service on
+<code>0.0.0.0:113</code></p>
+<pre><code> #!/bin/sh
+ exec tcpsvd -l0 0 113 identd</code></pre>
+<p>This <code>run</code> script provides a <a
+href="http://untroubled.org/mailfront/">smtpfront-qmail</a> service on
+<code>192.168.2.1:25</code>, with per-host instructions through the
+constant database <code>./peers.cdb</code>.</p>
+<pre><code> #!/bin/sh
  exec 2&gt;&amp;1
- MAXSMTPD="`cat /var/qmail/control/concurrencyincoming`"
+ MAXSMTPD=&quot;`cat /var/qmail/control/concurrencyincoming`&quot;
  exec softlimit -m2000000 \
    env SMTPGREETING=smarden.org \
        MAILRULES=/etc/mailfront/smtp/mailrules \
-   tcpsvd -vp -uqmaild -c"$MAXSMTPD" -x./peers.cdb 192.168.2.1 25 \
-     smtpfront-qmail
-</pre>
-This <tt>run</tt> script provides a
-<a href="http://www.bincimap.org/">bincimaps</a> service on
-<tt>10.0.0.14:993</tt>, with per-host concurrency limit, and with per-host
-instructions through the directory <tt>./peers</tt>.
-<pre>
- #!/bin/sh
+   tcpsvd -vp -uqmaild -c&quot;$MAXSMTPD&quot; -x./peers.cdb 192.168.2.1 25 \
+     smtpfront-qmail</code></pre>
+<p>This <code>run</code> script provides a <a
+href="http://www.bincimap.org/">bincimaps</a> service on
+<code>10.0.0.14:993</code>, with per-host concurrency limit, and with
+per-host instructions through the directory <code>./peers</code>.</p>
+<pre><code> #!/bin/sh
  exec 2&gt;&amp;1
  exec tcpsvd -vvp -c40 -C10 -l0 -i./peers 10.0.0.14 993 \
    bincimap-up --logtype=multilog --conf=/etc/bincimap/bincimap.conf --ssl -- \
-     /usr/bin/checkpw /usr/sbin/bincimapd
-</pre>
-This <tt>run</tt> script provides a
-<a href="http://www.qmail.org/">qmail-smtpd</a> service on
-<tt>192.168.14.6:25</tt>, with per-host concurrency limit, and with per-host
-instructions through the directory <tt>./peers</tt>.
-<pre>
- #!/bin/sh
+     /usr/bin/checkpw /usr/sbin/bincimapd</code></pre>
+<p>This <code>run</code> script provides a <a
+href="http://www.qmail.org/">qmail-smtpd</a> service on
+<code>192.168.14.6:25</code>, with per-host concurrency limit, and with
+per-host instructions through the directory <code>./peers</code>.</p>
+<pre><code> #!/bin/sh
  exec 2&gt;&amp;1
  exec softlimit -m2000000 \
   tcpsvd -vvh -i./peers -uqmaild \
-    -c40 -C'10:421 per host concurrency limit reached\r\n' \
-      192.168.14.6 25 qmail-smtpd
-</pre>
-<hr>
-<h3><a name="udp">UDP/IP service examples</a></h3>
-This <tt>run</tt> script provides a <i>talkd</i> service on
-<tt>192.168.1.1:517</tt>
-<pre>
- #!/bin/sh
- exec udpsvd -unobody:tty 192.168.1.1 517 in.talkd
-</pre>
-This <tt>run</tt> script provides a <i>tftpd</i> service on
-<tt>0.0.0.0:69</tt> with per-IP-address instructions through the directory
-<tt>/etc/tftpd/peers</tt>
-<pre>
- #!/bin/sh
+    -c40 -C&#39;10:421 per host concurrency limit reached\r\n&#39; \
+      192.168.14.6 25 qmail-smtpd</code></pre>
+<hr />
+<h3 id="udpip-service-examples"><span id="udp">UDP/IP service
+examples</span></h3>
+<p>This <code>run</code> script provides a <em>talkd</em> service on
+<code>192.168.1.1:517</code></p>
+<pre><code> #!/bin/sh
+ exec udpsvd -unobody:tty 192.168.1.1 517 in.talkd</code></pre>
+<p>This <code>run</code> script provides a <em>tftpd</em> service on
+<code>0.0.0.0:69</code> with per-IP-address instructions through the
+directory <code>/etc/tftpd/peers</code></p>
+<pre><code> #!/bin/sh
  cd /
  exec 2&gt;&amp;1
  exec udpsvd -v -lbootserver -unobody -i/etc/tftpd/peers 0 69 \
-   in.tftpd -s /boot/tftpboot/
-</pre>
-<hr>
-<h3><a name="instruct"><i>ipsvd</i> instruction examples</a></h3>
-This <tt>run</tt> script provides a <i>telnetd</i> TCP/IP service, with
-per-IP-address <a href="ipsvd-instruct.5.html">instructions</a> through the
-directory <tt>./peers</tt>
-<pre>
- #!/bin/sh
- exec tcpsvd -i./peers 0.0.0.0 23 in.telnetd
-</pre>
-Per default any client IP address is allowed to connect to this service.
-To allow connections from <tt>192.168.1.17</tt>, and to deny connections
-from anywhere else, do
-<pre>
- # touch ./peers/192.168.1.17; chmod 644 ./peers/192.168.1.17
- # touch ./peers/0; chmod 0 ./peers/0
-</pre>
-To allow connections from <tt>192.168.3.0-255</tt>, do
-<pre>
- # touch ./peers/192.168.3; chmod 644 ./peers/192.168.3
-</pre>
-To deny connections from <tt>10.0.*.*</tt> explicitly, do
-<pre>
- # touch ./peers/10.0; chmod 0 ./peers/10.0
-</pre>
-To have <tt>TRUST=true</tt> set in the environment when running
-<i>in.telnetd</i> for a connection from <tt>192.168.14.2</tt>, do
-<pre>
- # echo '+TRUST=true' >./peers/192.168.14.2; chmod 644 ./peers/192.168.14.2
-</pre>
-To provide a <i>sshd</i> login for connections from <tt>10.2.0.14</tt> on
-port 23,
-and the usual <i>telnetd</i> service for all others, do
-<pre>
- # echo 'sshd -i' >./peers/10.2.0.14; chmod 744 ./peers/10.2.0.14
-</pre>
-To allow only connections from IP addresses the (dynamic) hostnames
-<tt>floyd.dyn.smarden.org</tt> and <tt>greg.dyn.smarden.org</tt> currently
-resolve to, do
-<pre>
- # echo '=floyd.dyn.smarden.org' &gt;./peers/0
- # echo '=greg.dyn.smarden.org' &gt;&gt;./peers/0
- # chmod 644 ./peers/0
-</pre>
-See <a href="ipsvd-instruct.5.html">ipsvd instructions</a> for details.
-<hr>
-<address><a href="mailto:pape@smarden.org">
-Gerrit Pape &lt;pape@smarden.org&gt;
-</a></address>
+   in.tftpd -s /boot/tftpboot/</code></pre>
+<hr />
+<h3 id="ipsvd-instruction-examples"><span id="instruct"><em>ipsvd</em>
+instruction examples</span></h3>
+<p>This <code>run</code> script provides a <em>telnetd</em> TCP/IP
+service, with per-IP-address <a
+href="ipsvd-instruct.5.html">instructions</a> through the directory
+<code>./peers</code></p>
+<pre><code> #!/bin/sh
+ exec tcpsvd -i./peers 0.0.0.0 23 in.telnetd</code></pre>
+<p>Per default any client IP address is allowed to connect to this
+service. To allow connections from <code>192.168.1.17</code>, and to
+deny connections from anywhere else, do</p>
+<pre><code> # touch ./peers/192.168.1.17; chmod 644 ./peers/192.168.1.17
+ # touch ./peers/0; chmod 0 ./peers/0</code></pre>
+<p>To allow connections from <code>192.168.3.0-255</code>, do</p>
+<pre><code> # touch ./peers/192.168.3; chmod 644 ./peers/192.168.3</code></pre>
+<p>To deny connections from <code>10.0.*.*</code> explicitly, do</p>
+<pre><code> # touch ./peers/10.0; chmod 0 ./peers/10.0</code></pre>
+<p>To have <code>TRUST=true</code> set in the environment when running
+<em>in.telnetd</em> for a connection from <code>192.168.14.2</code>,
+do</p>
+<pre><code> # echo &#39;+TRUST=true&#39; &gt;./peers/192.168.14.2; chmod 644 ./peers/192.168.14.2</code></pre>
+<p>To provide a <em>sshd</em> login for connections from
+<code>10.2.0.14</code> on port 23, and the usual <em>telnetd</em>
+service for all others, do</p>
+<pre><code> # echo &#39;sshd -i&#39; &gt;./peers/10.2.0.14; chmod 744 ./peers/10.2.0.14</code></pre>
+<p>To allow only connections from IP addresses the (dynamic) hostnames
+<code>floyd.dyn.smarden.org</code> and <code>greg.dyn.smarden.org</code>
+currently resolve to, do</p>
+<pre><code> # echo &#39;=floyd.dyn.smarden.org&#39; &gt;./peers/0
+ # echo &#39;=greg.dyn.smarden.org&#39; &gt;&gt;./peers/0
+ # chmod 644 ./peers/0</code></pre>
+<p>See <a href="ipsvd-instruct.5.html">ipsvd instructions</a> for
+details.</p>
+<hr />
+<p><a href="mailto:pape@smarden.org">Gerrit Pape
+&lt;pape@smarden.org&gt;</a></p>
 </body>
 </html>

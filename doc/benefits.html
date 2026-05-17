@@ -1,85 +1,92 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 <title>ipsvd - benefits</title>
+<style type="text/css">pre { padding: 0em 1em; overflow: auto; }</style>
 </head>
 <body>
-<a href="https://smarden.org/pape/">G. Pape</a><br>
-<a href="index.html">ipsvd</a><br>
-<hr>
-<h1>ipsvd - benefits</h1>
-<hr>
-<a href="#separation">One daemon for each service</a><br>
-<a href="#instruct">Powerful client-based instructions</a><br>
-<a href="#libdjbdns">Secure DNS client library</a><br>
-<a href="#runit">Reliable service management and logging</a><br>
-<a href="#smallcode">Small code size</a>
-<hr>
-<a name="separation"><h3>One daemon for each service</h3></a>
-Unlike other projects also handling IP services through inetd-compatible
-server programs that provide one daemon to handle several services on
-multiple server addresses (<tt>ipaddress:port</tt>), <i>ipsvd</i> provides
-daemons that handle one server address only.
-Setting up one service daemon for each server address separates the
-configurations of services, allows to apply different memory and other
-resource limits easily, and supports running in changed root directories.
-<i>ipsvd</i> instructions optionally can be shared.
-<hr>
-<a name="instruct"><h3>Powerful client-based instructions</h3></a>
-<i>ipsvd</i> allows flexible dynamic instructions and fast static
-instructions.
-Dynamic instructions defined through a directory can be adjusted on the fly
-through other programs and the administrator.
-The filesystem's file and directory permissions can be used to grant and
-restrict access to the configuration.
-For mostly static instructions, an instructions directory can be compiled
-into a <a href="https://cr.yp.to/cdb.html">constant data base</a> for faster
-lookup.
-<p>
-Based on <i>ipsvd</i>'s client-based
-<a href="ipsvd-instruct.5.html">instructions</a>, the process state of the
-server program can be altered, the per-client concurrency can be adjusted,
-connections can be denied, and even a completely different server program
-can be started for special clients, see some
-<a href="examples.html#instruct">examples</a>.
-<p>
-Clients are identified by their IP address and through IP address ranges, by
-the fully qualified domain name the client's IP address reverse-resolves
-and parts if it, and by host names currently resolving to the client's IP
-address (to identify clients through dynamic DNS names), see
-<a href="ipsvd-instruct.5.html">ipsvd instructions</a> for details.
-<hr>
-<a name="libdjbdns"><h3>Secure DNS client library</h3></a>
-The <i>ipsvd</i> programs use the
-<a href="https://smarden.org/pape/djb/">djbdns client library</a>
-to query the DNS.
-This DNS client library is known to be
-<a href="https://cr.yp.to/djbdns/res-disaster.html">secure</a> yet very
-<a href="https://cr.yp.to/djbdns/qualify.html">convenient</a>.
-<hr>
-<a name="runit"><h3>Reliable service management and logging</h3></a>
-The daemons provided by the <i>ipsvd</i> package normally are run by a
-<a href="https://smarden.org/runit/runsv.8.html">runsv</a> supervisor
-process, and started and managed through its control interface.
-The <a href="https://smarden.org/runit/">runit</a> packages provides
-<a href="https://smarden.org/runit/benefits.html#supervision">
-service supervision</a> and a
-<a href="https://smarden.org/runit/benefits.html#log">
-reliable logging facility</a>.
-<hr>
-<a name="smallcode"><h3>Small code size</h3></a>
-One of the <i>ipsvd</i> project's principles is to keep the code size small.
-This minimizes the possibility of bugs introduced by programmer's fault,
-and makes it more easy for security related people to proofread the source
-code.
-As of version 0.9.2 of <i>ipsvd</i>, the source is about 1400 lines of C
-code.
-<p>
-The small size and memory footprint of the programs makes the <i>ipsvd</i>
-package well suited for embedded systems.
-<hr>
-<address><a href="mailto:pape@smarden.org">
-Gerrit Pape &lt;pape@smarden.org&gt;
-</a></address>
+<p><a href="https://smarden.org/pape/">G. Pape</a><br />
+<a href="index.html">ipsvd</a></p>
+<hr />
+<h1 id="ipsvd---benefits">ipsvd - benefits</h1>
+<hr />
+<p><a href="#separation">One daemon for each service</a><br />
+<a href="#instruct">Powerful client-based instructions</a><br />
+<a href="#libdjbdns">Secure DNS client library</a><br />
+<a href="#runit">Reliable service management and logging</a><br />
+<a href="#smallcode">Small code size</a></p>
+<hr />
+<p><span id="separation"></span></p>
+<h3 id="one-daemon-for-each-service">One daemon for each service</h3>
+<p>Unlike other projects also handling IP services through
+inetd-compatible server programs that provide one daemon to handle
+several services on multiple server addresses
+(<code>ipaddress:port</code>), <em>ipsvd</em> provides daemons that
+handle one server address only. Setting up one service daemon for each
+server address separates the configurations of services, allows to apply
+different memory and other resource limits easily, and supports running
+in changed root directories. <em>ipsvd</em> instructions optionally can
+be shared.</p>
+<hr />
+<p><span id="instruct"></span></p>
+<h3 id="powerful-client-based-instructions">Powerful client-based
+instructions</h3>
+<p><em>ipsvd</em> allows flexible dynamic instructions and fast static
+instructions. Dynamic instructions defined through a directory can be
+adjusted on the fly through other programs and the administrator. The
+filesystem's file and directory permissions can be used to grant and
+restrict access to the configuration. For mostly static instructions, an
+instructions directory can be compiled into a <a
+href="https://cr.yp.to/cdb.html">constant data base</a> for faster
+lookup.</p>
+<p>Based on <em>ipsvd</em>'s client-based <a
+href="ipsvd-instruct.5.html">instructions</a>, the process state of the
+server program can be altered, the per-client concurrency can be
+adjusted, connections can be denied, and even a completely different
+server program can be started for special clients, see some <a
+href="examples.html#instruct">examples</a>.</p>
+<p>Clients are identified by their IP address and through IP address
+ranges, by the fully qualified domain name the client's IP address
+reverse-resolves and parts if it, and by host names currently resolving
+to the client's IP address (to identify clients through dynamic DNS
+names), see <a href="ipsvd-instruct.5.html">ipsvd instructions</a> for
+details.</p>
+<hr />
+<p><span id="libdjbdns"></span></p>
+<h3 id="secure-dns-client-library">Secure DNS client library</h3>
+<p>The <em>ipsvd</em> programs use the <a
+href="https://smarden.org/pape/djb/">djbdns client library</a> to query
+the DNS. This DNS client library is known to be <a
+href="https://cr.yp.to/djbdns/res-disaster.html">secure</a> yet very <a
+href="https://cr.yp.to/djbdns/qualify.html">convenient</a>.</p>
+<hr />
+<p><span id="runit"></span></p>
+<h3 id="reliable-service-management-and-logging">Reliable service
+management and logging</h3>
+<p>The daemons provided by the <em>ipsvd</em> package normally are run
+by a <a href="https://smarden.org/runit/runsv.8.html">runsv</a>
+supervisor process, and started and managed through its control
+interface. The <a href="https://smarden.org/runit/">runit</a> packages
+provides <a
+href="https://smarden.org/runit/benefits.html#supervision">service
+supervision</a> and a <a
+href="https://smarden.org/runit/benefits.html#log">reliable logging
+facility</a>.</p>
+<hr />
+<p><span id="smallcode"></span></p>
+<h3 id="small-code-size">Small code size</h3>
+<p>One of the <em>ipsvd</em> project's principles is to keep the code
+size small. This minimizes the possibility of bugs introduced by
+programmer's fault, and makes it more easy for security related people
+to proofread the source code. As of version 0.9.2 of <em>ipsvd</em>, the
+source is about 1400 lines of C code.</p>
+<p>The small size and memory footprint of the programs makes the
+<em>ipsvd</em> package well suited for embedded systems.</p>
+<hr />
+<p><a href="mailto:pape@smarden.org">Gerrit Pape
+&lt;pape@smarden.org&gt;</a></p>
 </body>
 </html>
