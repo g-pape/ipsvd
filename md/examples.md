@@ -90,34 +90,34 @@ Per default any client IP address is allowed to connect to this service.
 To allow connections from `192.168.1.17`, and to deny connections from
 anywhere else, do
 
-     # touch ./peers/192.168.1.17; chmod 644 ./peers/192.168.1.17
-     # touch ./peers/0; chmod 0 ./peers/0
+    touch ./peers/192.168.1.17; chmod 644 ./peers/192.168.1.17
+    touch ./peers/0; chmod 0 ./peers/0
 
 To allow connections from `192.168.3.0-255`, do
 
-     # touch ./peers/192.168.3; chmod 644 ./peers/192.168.3
+    touch ./peers/192.168.3; chmod 644 ./peers/192.168.3
 
 To deny connections from `10.0.*.*` explicitly, do
 
-     # touch ./peers/10.0; chmod 0 ./peers/10.0
+    touch ./peers/10.0; chmod 0 ./peers/10.0
 
 To have `TRUST=true` set in the environment when running *in.telnetd*
 for a connection from `192.168.14.2`, do
 
-     # echo '+TRUST=true' >./peers/192.168.14.2; chmod 644 ./peers/192.168.14.2
+    echo '+TRUST=true' >./peers/192.168.14.2; chmod 644 ./peers/192.168.14.2
 
 To provide a *sshd* login for connections from `10.2.0.14` on port 23,
 and the usual *telnetd* service for all others, do
 
-     # echo 'sshd -i' >./peers/10.2.0.14; chmod 744 ./peers/10.2.0.14
+    echo 'sshd -i' >./peers/10.2.0.14; chmod 744 ./peers/10.2.0.14
 
 To allow only connections from IP addresses the (dynamic) hostnames
 `floyd.dyn.smarden.org` and `greg.dyn.smarden.org` currently resolve to,
 do
 
-     # echo '=floyd.dyn.smarden.org' >./peers/0
-     # echo '=greg.dyn.smarden.org' >>./peers/0
-     # chmod 644 ./peers/0
+    echo '=floyd.dyn.smarden.org' >./peers/0
+    echo '=greg.dyn.smarden.org' >>./peers/0
+    chmod 644 ./peers/0
 
 See [ipsvd instructions](ipsvd-instruct.5.html) for details.
 

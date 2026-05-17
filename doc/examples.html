@@ -81,26 +81,26 @@ href="ipsvd-instruct.5.html">instructions</a> through the directory
 <p>Per default any client IP address is allowed to connect to this
 service. To allow connections from <code>192.168.1.17</code>, and to
 deny connections from anywhere else, do</p>
-<pre><code> # touch ./peers/192.168.1.17; chmod 644 ./peers/192.168.1.17
- # touch ./peers/0; chmod 0 ./peers/0</code></pre>
+<pre><code>touch ./peers/192.168.1.17; chmod 644 ./peers/192.168.1.17
+touch ./peers/0; chmod 0 ./peers/0</code></pre>
 <p>To allow connections from <code>192.168.3.0-255</code>, do</p>
-<pre><code> # touch ./peers/192.168.3; chmod 644 ./peers/192.168.3</code></pre>
+<pre><code>touch ./peers/192.168.3; chmod 644 ./peers/192.168.3</code></pre>
 <p>To deny connections from <code>10.0.*.*</code> explicitly, do</p>
-<pre><code> # touch ./peers/10.0; chmod 0 ./peers/10.0</code></pre>
+<pre><code>touch ./peers/10.0; chmod 0 ./peers/10.0</code></pre>
 <p>To have <code>TRUST=true</code> set in the environment when running
 <em>in.telnetd</em> for a connection from <code>192.168.14.2</code>,
 do</p>
-<pre><code> # echo &#39;+TRUST=true&#39; &gt;./peers/192.168.14.2; chmod 644 ./peers/192.168.14.2</code></pre>
+<pre><code>echo &#39;+TRUST=true&#39; &gt;./peers/192.168.14.2; chmod 644 ./peers/192.168.14.2</code></pre>
 <p>To provide a <em>sshd</em> login for connections from
 <code>10.2.0.14</code> on port 23, and the usual <em>telnetd</em>
 service for all others, do</p>
-<pre><code> # echo &#39;sshd -i&#39; &gt;./peers/10.2.0.14; chmod 744 ./peers/10.2.0.14</code></pre>
+<pre><code>echo &#39;sshd -i&#39; &gt;./peers/10.2.0.14; chmod 744 ./peers/10.2.0.14</code></pre>
 <p>To allow only connections from IP addresses the (dynamic) hostnames
 <code>floyd.dyn.smarden.org</code> and <code>greg.dyn.smarden.org</code>
 currently resolve to, do</p>
-<pre><code> # echo &#39;=floyd.dyn.smarden.org&#39; &gt;./peers/0
- # echo &#39;=greg.dyn.smarden.org&#39; &gt;&gt;./peers/0
- # chmod 644 ./peers/0</code></pre>
+<pre><code>echo &#39;=floyd.dyn.smarden.org&#39; &gt;./peers/0
+echo &#39;=greg.dyn.smarden.org&#39; &gt;&gt;./peers/0
+chmod 644 ./peers/0</code></pre>
 <p>See <a href="ipsvd-instruct.5.html">ipsvd instructions</a> for
 details.</p>
 <hr />

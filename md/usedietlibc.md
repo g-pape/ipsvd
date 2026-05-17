@@ -15,16 +15,16 @@ version of [dietlibc](http://www.fefe.de/dietlibc/) installed.
 
 Change to the package directory of *ipsvd*
 
-     # cd /package/net/ipsvd/
+    cd /package/net/ipsvd/
 
 Change the `conf-cc` and `conf-ld` to use `diet`
 
-     # echo 'diet -Os gcc -O2 -Wall' >src/conf-cc
-     # echo 'diet -Os gcc -s -Os -pipe' >src/conf-ld
+    echo 'diet -Os gcc -O2 -Wall' >src/conf-cc
+    echo 'diet -Os gcc -s -Os -pipe' >src/conf-ld
 
 Rebuild and install the *ipsvd* programs:
 
-     # package/install
+    package/install
 
 ---
 

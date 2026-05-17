@@ -16,24 +16,24 @@
 <p><em>ipsvd</em> installs into <a
 href="https://cr.yp.to/slashpackage.html">/package</a>. If you don't
 have a <code>/package</code> directory, create it now:</p>
-<pre><code> # mkdir -p /package
- # chmod 1755 /package</code></pre>
+<pre><code>mkdir -p /package
+chmod 1755 /package</code></pre>
 <p>Download <a href="ipsvd-1.1.1.tar.gz">ipsvd-1.1.1.tar.gz</a> into
 <code>/package</code> (<a
 href="https://smarden.org/ipsvd/sha256sum.asc">sha256sum</a>) and unpack
 the archive</p>
-<pre><code> # cd /package
- # gunzip ipsvd-1.1.1.tar
- # tar -xpf ipsvd-1.1.1.tar
- # rm ipsvd-1.1.1.tar
- # cd net/ipsvd-1.1.1</code></pre>
+<pre><code>cd /package
+gunzip ipsvd-1.1.1.tar
+tar -xpf ipsvd-1.1.1.tar
+rm ipsvd-1.1.1.tar
+cd net/ipsvd-1.1.1</code></pre>
 <p>Now compile and install the <em>ipsvd</em> programs</p>
-<pre><code> # package/install</code></pre>
+<pre><code>package/install</code></pre>
 <p>If you want to make the man pages available in the
 <code>/usr/local/man/</code> hierarchy, do</p>
-<pre><code> # package/install-man</code></pre>
+<pre><code>package/install-man</code></pre>
 <p>To report success:</p>
-<pre><code> # mail pape-ipsvd-1.1.1@xxiv.smarden.org &lt;compile/sysdeps</code></pre>
+<pre><code>mail pape-ipsvd-1.1.1@xxiv.smarden.org &lt;compile/sysdeps</code></pre>
 <p>If you use <em>ipsvd</em> regularly, please <a
 href="https://smarden.org/pape/#contribution">contribute</a> to the
 project.</p>
