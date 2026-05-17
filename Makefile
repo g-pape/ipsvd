@@ -1,21 +1,15 @@
-DESTDIR=
-
 PACKAGE=ipsvd-1.1.1
 DIRS=doc man src package
-MANPAGES=man/ipsvd.7 man/tcpsvd.8 man/udpsvd.8 man/ipsvd-cdb.8 \
-man/ipsvd-instruct.5
 
-all: clean .manpages $(PACKAGE).tar.gz
+all: clean .doc .man $(PACKAGE).tar.gz
 
-.manpages:
-	for i in $(MANPAGES); do \
-	  rman -S -f html -r '' < $$i | \
-	  sed -e "s}name='sect\([0-9]*\)' href='#toc[0-9]*'>\(.*\)}name='sect\1'>\2}g ; \
-	  s}<a href='#toc'>Table of Contents</a><p>}<a href='http://smarden.org/pape/'>G. Pape</a><br><a href='index.html'>ipsvd</a><hr>}g ; \
-	  s}<!--.*-->}}g" \
-	  > doc/`basename $$i`.html ; \
-	done ; \
-	touch .manpages
+.doc:
+	cd md && ./gen-html ../doc
+	touch .doc
+
+.man:
+	cd md && ./gen-man ../man
+	touch .man
 
 $(PACKAGE).tar.gz:
 	rm -rf TEMP
@@ -37,10 +31,4 @@ clean:
 
 cleaner: clean
 	rm -f $(PACKAGE).tar.gz
-	for i in $(MANPAGES); do rm -f doc/`basename $$i`.html; done
-	rm -f .manpages
-
-fixup:
-	for i in src/*; do \
-	  sed -e 's/ *$$//' $$i >$$i.fixup && mv -f $$i.fixup $$i; \
-	done
+	rm -f doc/*.html man/*.[0-9] .doc .man
