@@ -30,7 +30,7 @@ database `./peers.cdb`.
      #!/bin/sh
      exec 2>&1
      MAXSMTPD="`cat /var/qmail/control/concurrencyincoming`"
-     exec softlimit -m2000000 \
+     exec chpst -m2000000 \
        env SMTPGREETING=smarden.org \
            MAILRULES=/etc/mailfront/smtp/mailrules \
        tcpsvd -vp -uqmaild -c"$MAXSMTPD" -x./peers.cdb 192.168.2.1 25 \
@@ -52,7 +52,7 @@ per-host instructions through the directory `./peers`.
 
      #!/bin/sh
      exec 2>&1
-     exec softlimit -m2000000 \
+     exec chpst -m2000000 \
       tcpsvd -vvh -i./peers -uqmaild \
         -c40 -C'10:421 per host concurrency limit reached\r\n' \
           192.168.14.6 25 qmail-smtpd
