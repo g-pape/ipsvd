@@ -1,4 +1,6 @@
-  * doc/examples.html: use chpst instead of softlimit.
+  * man/ipsvd-instruct.5, man/tcpsvd.8: typo.
+  * doc/examples.html, doc/upgrade.html: use chpst instead of softlimit; fix
+    whitespace.
   * doc/install.html: how to install as non-root user.
   * doc/*.html, man/*.?: replace; converted from markdown source.
   * buffer_put.c, byte.h, byte_chr.c, byte_copy.c, byte_cr.c, byte_diff.c,

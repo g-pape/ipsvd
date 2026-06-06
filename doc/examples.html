@@ -21,54 +21,54 @@
 examples</span></h3>
 <p>This <code>run</code> script provides an <em>identd</em> service on
 <code>0.0.0.0:113</code></p>
-<pre><code> #!/bin/sh
- exec tcpsvd -l0 0 113 identd</code></pre>
+<pre><code>#!/bin/sh
+exec tcpsvd -l0 0 113 identd</code></pre>
 <p>This <code>run</code> script provides a <a
 href="http://untroubled.org/mailfront/">smtpfront-qmail</a> service on
 <code>192.168.2.1:25</code>, with per-host instructions through the
 constant database <code>./peers.cdb</code>.</p>
-<pre><code> #!/bin/sh
- exec 2&gt;&amp;1
- MAXSMTPD=&quot;`cat /var/qmail/control/concurrencyincoming`&quot;
- exec chpst -m2000000 \
-   env SMTPGREETING=smarden.org \
-       MAILRULES=/etc/mailfront/smtp/mailrules \
-   tcpsvd -vp -uqmaild -c&quot;$MAXSMTPD&quot; -x./peers.cdb 192.168.2.1 25 \
-     smtpfront-qmail</code></pre>
+<pre><code>#!/bin/sh
+exec 2&gt;&amp;1
+MAXSMTPD=&quot;`cat /var/qmail/control/concurrencyincoming`&quot;
+exec chpst -m2000000 \
+  env SMTPGREETING=smarden.org \
+      MAILRULES=/etc/mailfront/smtp/mailrules \
+  tcpsvd -vp -uqmaild -c&quot;$MAXSMTPD&quot; -x./peers.cdb 192.168.2.1 25 \
+    smtpfront-qmail</code></pre>
 <p>This <code>run</code> script provides a <a
 href="http://www.bincimap.org/">bincimaps</a> service on
 <code>10.0.0.14:993</code>, with per-host concurrency limit, and with
 per-host instructions through the directory <code>./peers</code>.</p>
-<pre><code> #!/bin/sh
- exec 2&gt;&amp;1
- exec tcpsvd -vvp -c40 -C10 -l0 -i./peers 10.0.0.14 993 \
-   bincimap-up --logtype=multilog --conf=/etc/bincimap/bincimap.conf --ssl -- \
-     /usr/bin/checkpw /usr/sbin/bincimapd</code></pre>
+<pre><code>#!/bin/sh
+exec 2&gt;&amp;1
+exec tcpsvd -vvp -c40 -C10 -l0 -i./peers 10.0.0.14 993 \
+  bincimap-up --logtype=multilog --conf=/etc/bincimap/bincimap.conf --ssl -- \
+    /usr/bin/checkpw /usr/sbin/bincimapd</code></pre>
 <p>This <code>run</code> script provides a <a
 href="http://www.qmail.org/">qmail-smtpd</a> service on
 <code>192.168.14.6:25</code>, with per-host concurrency limit, and with
 per-host instructions through the directory <code>./peers</code>.</p>
-<pre><code> #!/bin/sh
- exec 2&gt;&amp;1
- exec chpst -m2000000 \
-  tcpsvd -vvh -i./peers -uqmaild \
-    -c40 -C&#39;10:421 per host concurrency limit reached\r\n&#39; \
-      192.168.14.6 25 qmail-smtpd</code></pre>
+<pre><code>#!/bin/sh
+exec 2&gt;&amp;1
+exec chpst -m2000000 \
+ tcpsvd -vvh -i./peers -uqmaild \
+   -c40 -C&#39;10:421 per host concurrency limit reached\r\n&#39; \
+     192.168.14.6 25 qmail-smtpd</code></pre>
 <hr />
 <h3 id="udpip-service-examples"><span id="udp">UDP/IP service
 examples</span></h3>
 <p>This <code>run</code> script provides a <em>talkd</em> service on
 <code>192.168.1.1:517</code></p>
-<pre><code> #!/bin/sh
- exec udpsvd -unobody:tty 192.168.1.1 517 in.talkd</code></pre>
+<pre><code>#!/bin/sh
+exec udpsvd -unobody:tty 192.168.1.1 517 in.talkd</code></pre>
 <p>This <code>run</code> script provides a <em>tftpd</em> service on
 <code>0.0.0.0:69</code> with per-IP-address instructions through the
 directory <code>/etc/tftpd/peers</code></p>
-<pre><code> #!/bin/sh
- cd /
- exec 2&gt;&amp;1
- exec udpsvd -v -lbootserver -unobody -i/etc/tftpd/peers 0 69 \
-   in.tftpd -s /boot/tftpboot/</code></pre>
+<pre><code>#!/bin/sh
+cd /
+exec 2&gt;&amp;1
+exec udpsvd -v -lbootserver -unobody -i/etc/tftpd/peers 0 69 \
+  in.tftpd -s /boot/tftpboot/</code></pre>
 <hr />
 <h3 id="ipsvd-instruction-examples"><span id="instruct"><em>ipsvd</em>
 instruction examples</span></h3>
@@ -76,8 +76,8 @@ instruction examples</span></h3>
 service, with per-IP-address <a
 href="ipsvd-instruct.5.html">instructions</a> through the directory
 <code>./peers</code></p>
-<pre><code> #!/bin/sh
- exec tcpsvd -i./peers 0.0.0.0 23 in.telnetd</code></pre>
+<pre><code>#!/bin/sh
+exec tcpsvd -i./peers 0.0.0.0 23 in.telnetd</code></pre>
 <p>Per default any client IP address is allowed to connect to this
 service. To allow connections from <code>192.168.1.17</code>, and to
 deny connections from anywhere else, do</p>

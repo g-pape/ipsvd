@@ -142,7 +142,7 @@ C16
 
 # SEE ALSO
 
-ipsvd(7), ipsvd-cdb(8), tcpsvd(8), udpsvd(8),
+ipsvd(7), ipsvd-cdb(8), tcpsvd(8), udpsvd(8)
 
 https://smarden.org/ipsvd/
 

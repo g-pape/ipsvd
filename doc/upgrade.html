@@ -48,13 +48,13 @@ documentation updated.</p>
 <p>Here's a sample on how to use <a href="sslio.8.html">sslio</a> in
 client mode with <code>tcpclient</code>, a <code>https@</code> program
 derived from ucspi-tcp's <code>http@</code> program:</p>
-<pre><code> #!/bin/sh
- echo &quot;GET /${2-} HTTP/1.0
- Host: ${1-0}:${3-443}
- &quot; | tcpclient -RHl0 -- &quot;${1-0}&quot; &quot;${3-443}&quot; sslio -c sh -c &#39;
-   addcr &gt;&amp;7
-   exec delcr &lt;&amp;6
- &#39; | awk &#39;/^$/ { body=1; next } { if (body) print }&#39;</code></pre>
+<pre><code>#!/bin/sh
+echo &quot;GET /${2-} HTTP/1.0
+Host: ${1-0}:${3-443}
+&quot; | tcpclient -RHl0 -- &quot;${1-0}&quot; &quot;${3-443}&quot; sslio -c sh -c &#39;
+  addcr &gt;&amp;7
+  exec delcr &lt;&amp;6
+&#39; | awk &#39;/^$/ { body=1; next } { if (body) print }&#39;</code></pre>
 <h3 id="or-0.8.2-to-0.9.x">0.8.0 or 0.8.2 to 0.9.x</h3>
 <p>This version introduces the new <a href="sslio.8.html">sslio</a>
 program (for Linux only), which can be used to encrypt network

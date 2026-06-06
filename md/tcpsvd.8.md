@@ -123,7 +123,7 @@ IP address or hostname of the client that initiated the connection, see
 
 # SEE ALSO
 
-ipsvd(7), udpsvd(8), ipsvd-instruct(5), ipsvd-cdb(8),
+ipsvd(7), udpsvd(8), ipsvd-instruct(5), ipsvd-cdb(8)
 
 https://smarden.org/ipsvd/
 

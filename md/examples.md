@@ -19,43 +19,43 @@
 
 This `run` script provides an *identd* service on `0.0.0.0:113`
 
-     #!/bin/sh
-     exec tcpsvd -l0 0 113 identd
+    #!/bin/sh
+    exec tcpsvd -l0 0 113 identd
 
 This `run` script provides a
 [smtpfront-qmail](http://untroubled.org/mailfront/) service on
 `192.168.2.1:25`, with per-host instructions through the constant
 database `./peers.cdb`.
 
-     #!/bin/sh
-     exec 2>&1
-     MAXSMTPD="`cat /var/qmail/control/concurrencyincoming`"
-     exec chpst -m2000000 \
-       env SMTPGREETING=smarden.org \
-           MAILRULES=/etc/mailfront/smtp/mailrules \
-       tcpsvd -vp -uqmaild -c"$MAXSMTPD" -x./peers.cdb 192.168.2.1 25 \
-         smtpfront-qmail
+    #!/bin/sh
+    exec 2>&1
+    MAXSMTPD="`cat /var/qmail/control/concurrencyincoming`"
+    exec chpst -m2000000 \
+      env SMTPGREETING=smarden.org \
+          MAILRULES=/etc/mailfront/smtp/mailrules \
+      tcpsvd -vp -uqmaild -c"$MAXSMTPD" -x./peers.cdb 192.168.2.1 25 \
+        smtpfront-qmail
 
 This `run` script provides a [bincimaps](http://www.bincimap.org/)
 service on `10.0.0.14:993`, with per-host concurrency limit, and with
 per-host instructions through the directory `./peers`.
 
-     #!/bin/sh
-     exec 2>&1
-     exec tcpsvd -vvp -c40 -C10 -l0 -i./peers 10.0.0.14 993 \
-       bincimap-up --logtype=multilog --conf=/etc/bincimap/bincimap.conf --ssl -- \
-         /usr/bin/checkpw /usr/sbin/bincimapd
+    #!/bin/sh
+    exec 2>&1
+    exec tcpsvd -vvp -c40 -C10 -l0 -i./peers 10.0.0.14 993 \
+      bincimap-up --logtype=multilog --conf=/etc/bincimap/bincimap.conf --ssl -- \
+        /usr/bin/checkpw /usr/sbin/bincimapd
 
 This `run` script provides a [qmail-smtpd](http://www.qmail.org/)
 service on `192.168.14.6:25`, with per-host concurrency limit, and with
 per-host instructions through the directory `./peers`.
 
-     #!/bin/sh
-     exec 2>&1
-     exec chpst -m2000000 \
-      tcpsvd -vvh -i./peers -uqmaild \
-        -c40 -C'10:421 per host concurrency limit reached\r\n' \
-          192.168.14.6 25 qmail-smtpd
+    #!/bin/sh
+    exec 2>&1
+    exec chpst -m2000000 \
+     tcpsvd -vvh -i./peers -uqmaild \
+       -c40 -C'10:421 per host concurrency limit reached\r\n' \
+         192.168.14.6 25 qmail-smtpd
 
 ---
 
@@ -63,17 +63,17 @@ per-host instructions through the directory `./peers`.
 
 This `run` script provides a *talkd* service on `192.168.1.1:517`
 
-     #!/bin/sh
-     exec udpsvd -unobody:tty 192.168.1.1 517 in.talkd
+    #!/bin/sh
+    exec udpsvd -unobody:tty 192.168.1.1 517 in.talkd
 
 This `run` script provides a *tftpd* service on `0.0.0.0:69` with
 per-IP-address instructions through the directory `/etc/tftpd/peers`
 
-     #!/bin/sh
-     cd /
-     exec 2>&1
-     exec udpsvd -v -lbootserver -unobody -i/etc/tftpd/peers 0 69 \
-       in.tftpd -s /boot/tftpboot/
+    #!/bin/sh
+    cd /
+    exec 2>&1
+    exec udpsvd -v -lbootserver -unobody -i/etc/tftpd/peers 0 69 \
+      in.tftpd -s /boot/tftpboot/
 
 ---
 
@@ -83,8 +83,8 @@ This `run` script provides a *telnetd* TCP/IP service, with
 per-IP-address [instructions](ipsvd-instruct.5.html) through the
 directory `./peers`
 
-     #!/bin/sh
-     exec tcpsvd -i./peers 0.0.0.0 23 in.telnetd
+    #!/bin/sh
+    exec tcpsvd -i./peers 0.0.0.0 23 in.telnetd
 
 Per default any client IP address is allowed to connect to this service.
 To allow connections from `192.168.1.17`, and to deny connections from

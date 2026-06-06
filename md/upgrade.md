@@ -55,13 +55,13 @@ Here\'s a sample on how to use [sslio](sslio.8.html) in client mode with
 `tcpclient`, a `https@` program derived from ucspi-tcp\'s `http@`
 program:
 
-     #!/bin/sh
-     echo "GET /${2-} HTTP/1.0
-     Host: ${1-0}:${3-443}
-     " | tcpclient -RHl0 -- "${1-0}" "${3-443}" sslio -c sh -c '
-       addcr >&7
-       exec delcr <&6
-     ' | awk '/^$/ { body=1; next } { if (body) print }'
+    #!/bin/sh
+    echo "GET /${2-} HTTP/1.0
+    Host: ${1-0}:${3-443}
+    " | tcpclient -RHl0 -- "${1-0}" "${3-443}" sslio -c sh -c '
+      addcr >&7
+      exec delcr <&6
+    ' | awk '/^$/ { body=1; next } { if (body) print }'
 
 ### 0.8.0 or 0.8.2 to 0.9.x
 
