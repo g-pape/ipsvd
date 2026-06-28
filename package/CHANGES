@@ -1,3 +1,4 @@
+  * doc/*.html: add color-scheme.
   * man/ipsvd-instruct.5, man/tcpsvd.8: typo.
   * doc/examples.html, doc/upgrade.html: use chpst instead of softlimit; fix
     whitespace.
